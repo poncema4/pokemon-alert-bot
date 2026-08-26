@@ -1,6 +1,6 @@
 {
   "home": "North Arlington, NJ",
-  "map_url": "https://poncema4.github.io/pokemon-alert-bot/",
+  "map_url": "https://poncema4.github.io/pokemon-alert-bot/live.html",
   "nearby_radius_miles": 12,
   "alert_ttl_minutes": 90,
   "keywords": [
