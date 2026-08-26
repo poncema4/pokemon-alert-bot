@@ -2,7 +2,7 @@
   "home": "North Arlington, NJ",
   "map_url": "https://poncema4.github.io/pokemon-alert-bot/",
   "nearby_radius_miles": 12,
-  "alert_ttl_minutes": 90,
+  "alert_ttl_minutes": 30,
   "keywords": [
     "pokemon elite trainer box",
     "pokemon booster bundle",
@@ -17,21 +17,5 @@
     "pokemon perfect order",
     "pokemon pitch black"
   ],
-  "retailers": ["target", "walmart", "bestbuy", "gamestop"],
-  "expected_prices": {
-    "booster pack": 4.99,
-    "booster bundle": 24.99,
-    "elite trainer box": 49.99,
-    "pitch black": 49.99,
-    "booster box": 161.76,
-    "151": 49.99,
-    "prismatic evolutions": 49.99,
-    "destined rivals": 49.99,
-    "phantasmal flames": 49.99,
-    "white flare": 49.99,
-    "black bolt": 49.99,
-    "ascended heroes": 49.99,
-    "perfect order": 49.99
-  },
-  "deal_threshold_percent": 15
+  "retailers": ["target", "walmart", "bestbuy", "gamestop"]
 }
