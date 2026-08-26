@@ -1,100 +1,72 @@
-# 🎴 Pokémon TCG Stock & Deal Alert Bot
+# Pokémon stock & promo alert bot
 
-> Never miss a restock again. Free, automated, and always watching — so you don't have to.
+Personal monitor for North Arlington / North Jersey. Discord alerts plus a live map of nearby stores and ping points.
 
-A lightweight bot that watches Target, Walmart, and Best Buy for Pokémon TCG products, pings your Discord the moment something goes back in stock, and flags real deals when prices drop below normal. Runs entirely on free infrastructure — no server bills, no laptop left open overnight.
+This is an **alert** bot. It does not buy cards or bypass retailer bot walls.
 
----
+## What still works on GitHub Actions
 
-## ✨ Features
-
-| | |
+| Source | On GitHub Actions |
 |---|---|
-| 🔍 **Auto-discovery** | Just give it search keywords — no manual product URLs to maintain |
-| 📦 **Stock alerts** | Get pinged the instant a tracked item shows as available |
-| 💰 **Deal detection** | Flags prices meaningfully below normal MSRP (catches promos like anniversary sales) |
-| 💬 **Discord notifications** | Alerts land straight in your own server, on desktop and mobile |
-| 🗺️ **Nearby store links** | Every alert includes a map link to stores near you |
-| 🆓 **100% free to run** | Powered by GitHub Actions' free scheduled workflows |
-| 🤖 **No sketchy tactics** | No CAPTCHA bypassing, no proxy evasion — plays it straight with retailer sites |
+| Target + Walmart product search | Best-effort. Cloud IPs sometimes get a bot page. |
+| Slickdeals frontpage RSS | Usually works. Catches Best Buy-style **promos** without scraping Best Buy. |
+| Pokémon.com news RSS | Usually works. |
+| r/PokemonTCGDeals | Best-effort. |
+| Best Buy + GameStop websites | **Not scraped** (they block GitHub). They stay on the **map** for in-person snipes. |
+
+GitHub runs this for you about **every 5 minutes**. GitHub often fires a few minutes late. That is a GitHub limit, not something you fix in the workflow.
 
 ---
 
-## ⚙️ How It Works
+## What you still have to do (I cannot click these)
 
-```
-┌─────────────────┐     ┌──────────────────┐     ┌───────────────────┐
-│  search_config   │ ──▶ │   monitor.py      │ ──▶ │   Discord Webhook  │
-│  (your keywords) │     │  runs every 5 min │     │  (your phone/PC)   │
-└─────────────────┘     └──────────────────┘     └───────────────────┘
-                                 │
-                                 ▼
-                          ┌─────────────┐
-                          │ state.json  │
-                          │ (memory of  │
-                          │ what's been │
-                          │  seen/sold) │
-                          └─────────────┘
-```
+I can push code. I cannot add your Discord webhook or turn on Pages in your GitHub account.
 
-1. GitHub Actions wakes the bot up every ~5 minutes (or run it continuously yourself for faster checks)
-2. It searches Target, Walmart, and Best Buy for your keywords
-3. It compares what it finds against what it saw last time
-4. New stock or a good price? → Discord gets pinged immediately
-5. Progress is saved back to the repo so you never get duplicate alerts
+### 1. Discord webhook (required for pings)
 
----
+1. Discord → your server → `#pokemon-alerts` (create the channel if needed)
+2. Channel settings → **Integrations → Webhooks → New Webhook** → Copy URL
+3. GitHub → this repo → **Settings → Secrets and variables → Actions → New repository secret**
+   - Name: `DISCORD_WEBHOOK_URL`
+   - Value: paste the webhook URL
+4. Phone: Discord app → that channel → notifications **All messages**
 
-## 🚀 Quick Start
+Optional secret: `DISCORD_PING` = `true` if you want `@everyone`.
 
-1. **Fork or clone** this repo
-2. Add your Discord webhook URL as a repository secret: `DISCORD_WEBHOOK_URL`
-3. Edit `search_config.json` with the products and prices you care about
-4. Go to **Actions → Pokemon Stock Monitor → Run workflow** to test it
-5. Sit back — it runs itself from here
+### 2. GitHub Actions
+
+After this code is on `main`:
+
+1. Repo → **Actions**
+2. If you see **I understand my workflows, go ahead and enable them** — click it (one-time)
+3. **Pokemon Stock Monitor** → **Run workflow** → **Run workflow** (this is the test)
+4. Open the run → **check-stock** → **Run stock check**. You should see search/RSS log lines.
+
+After that, leave it alone. The schedule keeps it going.
+
+### 3. Map
+
+1. **Settings → Pages** → Deploy from a branch → `main` / folder `/docs` → Save
+2. Map URL: https://poncema4.github.io/pokemon-alert-bot/
 
 ---
 
-## 📁 Project Structure
+## How to test
 
-```
-pokemon-alert-bot/
-├── monitor.py                  # Core logic: search, check, alert
-├── run_loop.py                 # Optional: run continuously on always-on hardware
-├── search_config.json          # Your keywords + expected prices (edit this!)
-├── state.json                  # Bot's memory — auto-updated, don't touch
-├── requirements.txt            # Python dependencies
-└── .github/
-    └── workflows/
-        └── monitor.yml         # The free scheduler that keeps this alive
+1. Run workflow once (step 2 above).
+2. Confirm the job is green and the log is not empty.
+3. You will **not** get a Discord ping on the first successful run on purpose — it only **remembers** current listings so you are not spammed. Later restocks, new promos, and new deal posts ping Discord.
+4. Optional local test (no Discord unless you set the env var):
+
+```bash
+pip install -r requirements.txt
+python monitor.py
 ```
 
 ---
 
-## 🔧 Configuration
+## How often it runs with you doing nothing
 
-Everything you'll actually want to tweak lives in `search_config.json`:
-
-- `keywords` — what to search for across all three retailers
-- `expected_prices` — your reference "normal" price per category, used to catch deals
-- `deal_threshold_percent` — how big a discount triggers a deal alert (default: 15%)
-- `near_location` — used to generate the "nearby stores" map link in alerts
-
----
-
-## ⚠️ Good to Know
-
-- **This bot does not auto-purchase anything.** It alerts — you still click buy.
-- **Adding to cart doesn't reserve stock** at most retailers; speed still matters once you're alerted.
-- Target and Walmart don't offer a public stock API, so those checks read the page directly and can occasionally get blocked — that's expected, not a bug.
-- GitHub's free scheduler runs roughly every 5 minutes but isn't millisecond-precise, especially during high-traffic periods.
-
----
-
-## 📜 License
-
-Personal project — built for personal use tracking your own watchlist. Not affiliated with Target, Walmart, Best Buy, or The Pokémon Company.
-
----
-
-<p align="center">Built with 🔴⚪ for one more successful pull.</p>
+- **Automatic:** every **5 minutes** (`*/5 * * * *`), 24/7, on GitHub’s free runners
+- **You:** Discord secret once, enable Actions once, enable Pages once
+- **Faster (optional):** `python run_loop.py` on a PC that stays on (every 20 seconds). Not required.

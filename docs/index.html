@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>North Jersey Pokémon Snipe Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --line: #2a3140;
+      --text: #eef1f6;
+      --muted: #9aa3b2;
+      --red: #e3350d;
+      --gold: #ffcb05;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 14px 16px 8px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #1c1410, var(--bg));
+    }
+    h1 { font-size: 1.15rem; margin: 0 0 4px; }
+    p.sub { margin: 0; color: var(--muted); font-size: 0.85rem; }
+    .layout { display: grid; grid-template-columns: 340px 1fr; min-height: calc(100vh - 72px); }
+    aside { border-right: 1px solid var(--line); overflow: auto; background: var(--panel); }
+    #map { min-height: 420px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; }
+    button.filter {
+      background: #222733;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    button.filter.active { background: var(--red); border-color: var(--red); }
+    .card {
+      margin: 0 10px 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #12151c;
+    }
+    .card h3 { margin: 0 0 4px; font-size: 0.95rem; }
+    .meta { color: var(--muted); font-size: 0.78rem; }
+    a { color: var(--gold); }
+    .dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      margin-right: 6px;
+    }
+    .open { background: #3ddc84; }
+    .closed { background: #e3350d; }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { max-height: 42vh; }
+      #map { height: 58vh; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>North Jersey Pokémon snipe map</h1>
+    <p class="sub">Home base: North Arlington, NJ · ping points update when the bot finds stock, deals, or promos</p>
+  </header>
+  <div class="layout">
+    <aside>
+      <div class="filters">
+        <button class="filter active" data-kind="all">All</button>
+        <button class="filter" data-kind="alerts">Alerts</button>
+        <button class="filter" data-kind="target">Target</button>
+        <button class="filter" data-kind="walmart">Walmart</button>
+        <button class="filter" data-kind="bestbuy">Best Buy</button>
+        <button class="filter" data-kind="lgs">Shops</button>
+      </div>
+      <div id="list"></div>
+    </aside>
+    <div id="map"></div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map("map").setView([40.7884, -74.1332], 11);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
+
+    const layers = [];
+    let filterKind = "all";
+    let stores = [];
+    let alerts = [];
+
+    function minutesNowET() {
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", hour12: false
+      }).formatToParts(new Date());
+      const h = Number(parts.find(p => p.type === "hour").value);
+      const m = Number(parts.find(p => p.type === "minute").value);
+      return h * 60 + m;
+    }
+    function toMin(hhmm) {
+      const [h, m] = hhmm.split(":").map(Number);
+      return h * 60 + m;
+    }
+    function isOpen(store) {
+      const n = minutesNowET();
+      return n >= toMin(store.open) && n < toMin(store.close);
+    }
+    function colorFor(retailer) {
+      return {
+        target: "#cc0000",
+        walmart: "#0071ce",
+        bestbuy: "#0046be",
+        gamestop: "#ffffff",
+        lgs: "#ffcb05",
+        pokemoncenter: "#e3350d",
+        promo: "#9b59b6"
+      }[retailer] || "#888";
+    }
+
+    function clearLayers() {
+      layers.forEach(l => map.removeLayer(l));
+      layers.length = 0;
+    }
+
+    function addCircle(lat, lng, opts, popup) {
+      const c = L.circleMarker([lat, lng], opts).addTo(map);
+      if (popup) c.bindPopup(popup);
+      layers.push(c);
+    }
+
+    function render() {
+      clearLayers();
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      addCircle(40.7884, -74.1332, {
+        radius: 10, color: "#ffcb05", fillColor: "#ffcb05", fillOpacity: 0.9, weight: 2
+      }, "<b>You · North Arlington</b>");
+
+      stores.forEach(s => {
+        if (filterKind !== "all" && filterKind !== "alerts") {
+          if (filterKind === "lgs" && !["lgs", "pokemoncenter", "gamestop"].includes(s.retailer)) return;
+          if (filterKind !== "lgs" && s.retailer !== filterKind) return;
+        }
+        const open = isOpen(s);
+        addCircle(s.lat, s.lng, {
+          radius: 8,
+          color: colorFor(s.retailer),
+          fillColor: colorFor(s.retailer),
+          fillOpacity: 0.85,
+          weight: 1
+        }, `<b>${s.name}</b><br>${s.address}<br>Hours: ${s.hours}<br>${open ? "Open now (approx)" : "Likely closed"}<br>${s.notes || ""}`);
+
+        if (filterKind !== "alerts") {
+          const el = document.createElement("div");
+          el.className = "card";
+          el.innerHTML = `<h3><span class="dot ${open ? "open" : "closed"}"></span>${s.name}</h3>
+            <div class="meta">${s.address}<br>${s.hours} · ${open ? "open now (approx)" : "closed (approx)"}</div>
+            <div class="meta">${s.monitored ? "Online monitor: yes" : "Map pin only (site blocks GitHub)"}</div>
+            <p>${s.notes || ""}</p>`;
+          list.appendChild(el);
+        }
+      });
+
+      alerts.forEach(a => {
+        if (filterKind === "alerts" || filterKind === "all" || a.retailer === filterKind) {
+          (a.stores || []).forEach(p => {
+            addCircle(p.lat, p.lng, {
+              radius: 14, color: "#e3350d", fillColor: "#ffcb05", fillOpacity: 0.35, weight: 3
+            }, `<b>PING · ${a.kind.toUpperCase()}</b><br>${a.title}<br><a href="${a.url}" target="_blank">Open listing</a><br>${new Date(a.ts).toLocaleString()}`);
+          });
+        }
+      });
+
+      if (filterKind === "alerts" || filterKind === "all") {
+        if (!alerts.length) {
+          const el = document.createElement("div");
+          el.className = "card";
+          el.innerHTML = "<h3>No pings yet</h3><p class='meta'>When GitHub Actions finds stock or a promo, rings appear on the map here.</p>";
+          list.prepend(el);
+        } else {
+          alerts.slice(0, 20).forEach(a => {
+            const el = document.createElement("div");
+            el.className = "card";
+            el.innerHTML = `<h3>${a.kind.toUpperCase()} · ${a.retailer}</h3>
+              <div class="meta">${new Date(a.ts).toLocaleString()}</div>
+              <p>${a.title}</p>
+              <a href="${a.url}" target="_blank">Open listing</a>`;
+            list.prepend(el);
+          });
+        }
+      }
+    }
+
+    document.querySelectorAll("button.filter").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("button.filter").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        filterKind = btn.dataset.kind;
+        render();
+      });
+    });
+
+    Promise.all([
+      fetch("stores.json").then(r => r.json()),
+      fetch("alerts.json").then(r => r.json()).catch(() => [])
+    ]).then(([storeData, alertData]) => {
+      stores = storeData.stores || [];
+      alerts = alertData || [];
+      render();
+    });
+  </script>
+</body>
+</html>
