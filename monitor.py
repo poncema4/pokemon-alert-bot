@@ -99,13 +99,16 @@ def discover_products(retailer: str, keyword: str):
     pull out product links. Returns a list of absolute URLs."""
     url = SEARCH_URLS[retailer].format(q=quote_plus(keyword))
     try:
-        r = requests.get(url, headers=HEADERS, timeout=15)
+        r = requests.get(url, headers=HEADERS, timeout=8)
         r.raise_for_status()
     except Exception as e:
         print(f"Search failed for {retailer} / '{keyword}': {e}")
         return []
 
     links = set(PRODUCT_LINK_PATTERNS[retailer].findall(r.text))
+    if not links:
+        print(f"No product links matched for {retailer} / '{keyword}' (page loaded fine, but 0 matches - selector may need updating)")
+        return []
     full_links = [BASE_URLS[retailer] + link if link.startswith("/") else link for link in links]
     return full_links[:10]  # cap per keyword/retailer so this stays fast
 
