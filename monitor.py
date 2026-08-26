@@ -71,12 +71,20 @@ def save_state(state):
     STATE_FILE.write_text(json.dumps(state, indent=2))
 
 
-def send_discord(message: str):
+def send_discord(message: str, ping_everyone: bool = True):
     if not DISCORD_WEBHOOK_URL:
         print("No Discord webhook configured, skipping alert.")
         return
+    content = f"@everyone {message}" if ping_everyone else message
+    payload = {
+        "content": content,
+        # Explicitly allow the @everyone mention to actually ping -
+        # without this, some servers/webhook configs will post the text
+        # "@everyone" without it triggering a real notification.
+        "allowed_mentions": {"parse": ["everyone"]},
+    }
     try:
-        requests.post(DISCORD_WEBHOOK_URL, json={"content": message}, timeout=10)
+        requests.post(DISCORD_WEBHOOK_URL, json=payload, timeout=10)
     except Exception as e:
         print(f"Discord send failed: {e}")
 
