@@ -4,7 +4,13 @@ on:
   schedule:
     # Fastest GitHub cron. Actual fire time can lag several minutes.
     - cron: "*/5 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      send_test_alert:
+        description: "Send one labeled Discord and map test alert"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -26,6 +32,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_PING: ${{ secrets.DISCORD_PING }}
+          SEND_TEST_ALERT: ${{ inputs.send_test_alert }}
         run: |
           python --version
           python -m py_compile monitor.py notify.py

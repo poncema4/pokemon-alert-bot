@@ -60,7 +60,6 @@ IN_STOCK_HINTS = ["add to cart", "ship it", "add to bag", "shipping"]
 SLICKDEALS_RSS = (
     "https://slickdeals.net/newsearch.php?mode=frontpage&searcharea=deals&searchin=first&rss=1"
 )
-POKEMON_NEWS_RSS = "https://www.pokemon.com/us/pokemon-news/rss"
 REDDIT_DEALS = "https://www.reddit.com/r/PokemonTCGDeals/new.json?limit=15"
 
 DEAL_WORDS = (
@@ -243,6 +242,11 @@ def main():
     print(f"Retailers this run: {retailers}")
     print("Best Buy / GameStop are map-only (GitHub Actions IPs are blocked by those sites).")
 
+    if os.environ.get("SEND_TEST_ALERT", "").lower() in ("1", "true", "yes"):
+        record_alert(alerts, "test", "target", "Discord and map alerts are connected.", map_url, stores)
+        alert("Pokemon Alert Bot test", "Discord is connected. This is a one-time manual test alert.", map_url, ping=ping)
+        sent += 1
+
     for retailer in retailers:
         for keyword in keywords:
             print(f"Checking {retailer} / {keyword}")
@@ -298,7 +302,7 @@ def main():
 
                 state[key] = new_entry
 
-    seed_feeds = not any(k.startswith(("slickdeals::", "pokenews::", "reddit::")) for k in state)
+    seed_feeds = not any(k.startswith(("slickdeals::", "reddit::")) for k in state)
 
     print("Checking Slickdeals frontpage RSS for Pokemon promos...")
     for item in fetch_rss_items(http, SLICKDEALS_RSS):
@@ -313,21 +317,6 @@ def main():
             continue
         record_alert(alerts, "promo", retailer, item["title"], item["url"], stores)
         alert("PROMO / DEAL FEED", item["title"], item["url"], ping=ping)
-        sent += 1
-
-    print("Checking Pokemon.com news RSS...")
-    for item in fetch_rss_items(http, POKEMON_NEWS_RSS):
-        blob = (item["title"] + " " + item["body"]).lower()
-        if not any(w in blob for w in ("elite trainer", "etb", "promotion", "promo", "anniversary", "release", "product")):
-            continue
-        key = f"pokenews::{item['url']}"
-        if state.get(key):
-            continue
-        state[key] = {"seen": True}
-        if seed_feeds:
-            continue
-        record_alert(alerts, "event", "pokemon", item["title"], item["url"], stores)
-        alert("POKEMON EVENT / NEWS", item["title"], item["url"], ping=False)
         sent += 1
 
     print("Checking r/PokemonTCGDeals...")
