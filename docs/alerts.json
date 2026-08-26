@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "ts": "2026-08-26T21:39:39.225830+00:00",
+    "kind": "test",
+    "retailer": "target",
+    "title": "Discord and map alerts are connected.",
+    "url": "https://poncema4.github.io/pokemon-alert-bot/",
+    "stores": [
+      {
+        "id": "target-kearny",
+        "name": "Target Kearny",
+        "lat": 40.7486,
+        "lng": -74.1459
+      },
+      {
+        "id": "target-clifton",
+        "name": "Target Clifton",
+        "lat": 40.8302,
+        "lng": -74.1408
+      },
+      {
+        "id": "target-paramus",
+        "name": "Target Paramus (Bergen Town Center)",
+        "lat": 40.9147,
+        "lng": -74.0573
+      }
+    ]
+  }
+]
