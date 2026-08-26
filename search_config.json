@@ -23,7 +23,7 @@
     "pokemon ascended heroes etb",
     "pokemon perfect order etb"
   ],
-  "retailers": ["target", "walmart", "bestbuy"],
+  "retailers": ["target", "walmart", "bestbuy", "gamestop"],
   "expected_prices": {
     "booster pack": 4.99,
     "theme deck": 16.99,

@@ -37,17 +37,22 @@ SEARCH_URLS = {
     "target": "https://www.target.com/s?searchTerm={q}",
     "walmart": "https://www.walmart.com/search?q={q}",
     "bestbuy": "https://www.bestbuy.com/site/searchpage.jsp?st={q}",
+    "gamestop": "https://www.gamestop.com/search/?q={q}",
 }
 
 PRODUCT_LINK_PATTERNS = {
     "target": re.compile(r'href="(/p/[^"]+)"'),
     "walmart": re.compile(r'href="(/ip/[^"]+)"'),
     "bestbuy": re.compile(r'href="(/site/[^"]+\.p\?[^"]*)"'),
+    # GameStop's product links follow /products/<name>/<id>.html - unverified
+    # against a live page, so if this returns 0 links, tell me and I'll adjust it.
+    "gamestop": re.compile(r'href="(/[^"]+/products/[^"]+\.html)"'),
 }
 
 BASE_URLS = {
     "target": "https://www.target.com",
     "walmart": "https://www.walmart.com",
+    "gamestop": "https://www.gamestop.com",
     "bestbuy": "https://www.bestbuy.com",
 }
 
