@@ -21,7 +21,8 @@
     "pokemon white flare etb",
     "pokemon black bolt etb",
     "pokemon ascended heroes etb",
-    "pokemon perfect order etb"
+    "pokemon perfect order etb",
+    "phone charger"
   ],
   "retailers": ["target", "walmart", "bestbuy", "gamestop"],
   "expected_prices": {
