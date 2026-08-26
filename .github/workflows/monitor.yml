@@ -26,7 +26,15 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_PING: ${{ secrets.DISCORD_PING }}
-        run: python monitor.py
+        run: |
+          python --version
+          python -m py_compile monitor.py notify.py
+          if [ -n "$DISCORD_WEBHOOK_URL" ]; then
+            echo "Discord webhook secret is configured."
+          else
+            echo "WARNING: DISCORD_WEBHOOK_URL is not configured; alerts will be skipped."
+          fi
+          python -u monitor.py
 
       - name: Save state and map pings
         run: |
