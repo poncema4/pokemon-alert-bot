@@ -35,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Run accuracy smoke tests
+        run: python -u test_accuracy.py
+
       - name: Run stock check
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
@@ -42,7 +45,7 @@ jobs:
           SEND_TEST_ALERT: ${{ inputs.send_test_alert }}
         run: |
           python --version
-          python -m py_compile monitor.py notify.py notify_new_listings.py
+          python -m py_compile monitor.py notify.py notify_new_listings.py accuracy.py test_accuracy.py
           if [ -n "$DISCORD_WEBHOOK_URL" ]; then
             echo "Discord webhook secret is configured."
           else
