@@ -2,9 +2,9 @@ name: Pokemon Stock Monitor
 
 on:
   schedule:
-    # Best-effort GitHub Actions cadence. GitHub can delay scheduled workflows,
-    # but this requests a check every 5 minutes.
-    - cron: "*/5 * * * *"
+    # GitHub's shortest supported schedule interval is 5 minutes.
+    # Offset from the top of the hour to reduce the chance of schedule delays.
+    - cron: "2-57/5 * * * *"
   workflow_dispatch:
     inputs:
       send_test_alert:
@@ -36,7 +36,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run accuracy smoke tests
-        run: python -u test_accuracy.py
+        run: python -u tests/test_accuracy.py
 
       - name: Run stock check
         env:
@@ -45,7 +45,7 @@ jobs:
           SEND_TEST_ALERT: ${{ inputs.send_test_alert }}
         run: |
           python --version
-          python -m py_compile monitor.py notify.py notify_new_listings.py accuracy.py test_accuracy.py
+          python -m py_compile monitor.py notify.py notify_new_listings.py accuracy.py tests/test_accuracy.py
           if [ -n "$DISCORD_WEBHOOK_URL" ]; then
             echo "Discord webhook secret is configured."
           else
@@ -56,6 +56,7 @@ jobs:
       - name: Alert on newly discovered Big 4 listings
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_PING: ${{ secrets.DISCORD_PING }}
         run: python -u notify_new_listings.py
 
       - name: Save state and map pings
