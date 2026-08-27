@@ -1,13 +1,3 @@
 {
-  "schema_version": 4,
-  "target::https://www.target.com/p/-/A-1010892076": {"pokemon": true, "title": "Target Pokémon product", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "target::https://www.target.com/p/-/A-1011483406": {"pokemon": true, "title": "Target Pokémon product", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "walmart::https://www.walmart.com/ip/15718673510": {"pokemon": true, "title": "Walmart Pokémon product", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "walmart::https://www.walmart.com/ip/20161351456": {"pokemon": true, "title": "Walmart Pokémon product", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "walmart::https://www.walmart.com/ip/20754418655": {"pokemon": true, "title": "Walmart Pokémon product", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "walmart::https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207": {"pokemon": true, "title": "Pokémon Destined Rivals Elite Trainer Box", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "bestbuy::https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ": {"pokemon": true, "title": "Pokémon 30th Celebration Elite Trainer Box", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "bestbuy::https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45": {"pokemon": true, "title": "Pokémon Mega Evolution Pitch Black Elite Trainer Box", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html": {"pokemon": true, "title": "Pokémon 30th Celebration Elite Trainer Box", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null},
-  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html": {"pokemon": true, "title": "Pokémon Pitch Black Elite Trainer Box", "in_stock": null, "last_seen": null, "last_alert": null, "posted_at": null}
+  "schema_version": 4
 }
