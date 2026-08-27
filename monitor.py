@@ -1,7 +1,13 @@
-"""Pokémon TCG stock/deal monitor.
+"""Pokémon TCG monitor for the four core retailers.
 
-Only the four core retailers can generate Discord alerts or live-hit pins:
-Target, Walmart, Best Buy and GameStop. Niche shops remain map-only.
+Discord alerts and live-hit pins are limited to Target, Walmart, Best Buy and
+GameStop. Niche shops remain map-only.
+
+Alert types:
+  1. IN STOCK — verified availability signal.
+  2. NEW LISTING — first discovery of a Big 4 product, regardless of stock state.
+  3. AVAILABILITY UNKNOWN — an existing product changed from a known stock state
+     to an unverifiable state (blocked/ambiguous page).
 """
 from __future__ import annotations
 
@@ -89,12 +95,7 @@ def retailer_url_is_valid(retailer, url):
 
 def extract_retailer_urls(retailer, text):
     candidates = re.findall(r'href=[\"\']([^\"\']+)', text, flags=re.I) + re.findall(r'https?://[^\"\'<>\\ ]+', text)
-    patterns = {
-        "walmart": r"/ip/\d+",
-        "target": r"/p/-/A-\d+",
-        "bestbuy": r"/(?:site|product)/[^\"\'<>\\ ]+",
-        "gamestop": r"/toys-games/trading-cards/products/[^\"\'<>\\ ]+",
-    }
+    patterns = {"walmart": r"/ip/\d+", "target": r"/p/-/A-\d+", "bestbuy": r"/(?:site|product)/[^\"\'<>\\ ]+", "gamestop": r"/toys-games/trading-cards/products/[^\"\'<>\\ ]+"}
     candidates += [BASE_URLS[retailer] + x for x in re.findall(patterns[retailer], text, flags=re.I)]
     links, seen = [], set()
     for href in candidates:
@@ -137,9 +138,8 @@ def discover_products(http, retailer, keyword, timeout):
 def parse_iso(value):
     if not value:
         return None
-    value = value.strip()
     try:
-        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        dt = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
         return dt.astimezone(timezone.utc).isoformat()
@@ -148,12 +148,7 @@ def parse_iso(value):
 
 
 def extract_posted_time(text):
-    patterns = [
-        r'"datePublished"\s*:\s*"([^"]+)"',
-        r'"publishedAt"\s*:\s*"([^"]+)"',
-        r'<meta[^>]+(?:property|name)=[\"\'](?:article:published_time|datePublished|publishdate)[\"\'][^>]+content=[\"\']([^\"\']+)',
-        r'<time[^>]+datetime=[\"\']([^\"\']+)',
-    ]
+    patterns = [r'"datePublished"\s*:\s*"([^"]+)"', r'"publishedAt"\s*:\s*"([^"]+)"', r'<meta[^>]+(?:property|name)=[\"\'](?:article:published_time|datePublished|publishdate)[\"\'][^>]+content=[\"\']([^\"\']+)', r'<time[^>]+datetime=[\"\']([^\"\']+)']
     for pattern in patterns:
         m = re.search(pattern, text, flags=re.I)
         if m:
@@ -211,9 +206,7 @@ def check_product_page(http, retailer, url, timeout):
 def clean_state(state):
     cleaned = {"schema_version": 4}
     for key, value in state.items():
-        if key == "schema_version" or not isinstance(value, dict):
-            continue
-        if "::" not in key:
+        if key == "schema_version" or not isinstance(value, dict) or "::" not in key:
             continue
         source, url = key.split("::", 1)
         if source in SEARCH_URLS and retailer_url_is_valid(source, url) and (value.get("pokemon") is True or is_pokemon(url + " " + value.get("title", ""))):
@@ -253,23 +246,6 @@ def nearby_stores(stores, retailer, home, radius, limit=5):
     return [s for _, s in matches[:limit]]
 
 
-def send_stock_alert(retailer, title, url, map_url, ping, posted_at, detected_at):
-    lines = [
-        f"**{title}**",
-        "Online product page is showing a verified availability/cart signal.",
-        "Online availability is checked independently of local-store distance.",
-    ]
-    if posted_at:
-        lines.append(f"Time Posted: {format_et(posted_at)}")
-    else:
-        lines.append("Time Posted: Not published by the retailer; alert detection time is shown below.")
-    lines.append(f"Detected: {format_et(detected_at)}")
-    if map_url:
-        lines.append(f"Map: {map_url}")
-    lines.append(f"Product: {url}")
-    alert(f"IN STOCK — {retailer.title()}", "\n".join(lines), ping=ping)
-
-
 def format_et(value):
     try:
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -278,18 +254,40 @@ def format_et(value):
         return value
 
 
-def record_alert(alerts, retailer, title, url, verified, posted_at, detected_at):
+def send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, stock=None):
+    labels = {"stock": "IN STOCK", "new": "NEW LISTING", "unknown": "AVAILABILITY UNKNOWN"}
+    descriptions = {
+        "stock": "The retailer page is showing a verified availability/cart signal.",
+        "new": "A new Pokémon product listing was discovered on the retailer site.",
+        "unknown": "The product is known to the bot, but the retailer page is currently not giving a reliable stock signal.",
+    }
+    lines = [f"**{title}**", descriptions[kind]]
+    if kind != "stock":
+        lines.append("Refresh the product page yourself because stock can change or be hidden by retailer anti-bot systems.")
+    if posted_at:
+        lines.append(f"Time Posted: {format_et(posted_at)}")
+    else:
+        lines.append("Time Posted: Not published by the retailer.")
+    lines.append(f"Detected: {format_et(detected_at)}")
+    if map_url:
+        lines.append(f"Map: {map_url}")
+    lines.append(f"Product: {url}")
+    alert(f"{labels[kind]} — {retailer.title()}", "\n".join(lines), ping=ping)
+
+
+def record_alert(alerts, retailer, kind, title, url, verified, posted_at, detected_at, stock=None):
     now = datetime.now(timezone.utc)
     alerts.insert(0, {
         "ts": detected_at,
         "detected_at": detected_at,
         "posted_at": posted_at,
         "expires_at": (now + timedelta(minutes=30)).isoformat(),
-        "kind": "stock",
+        "kind": kind,
         "retailer": retailer,
         "title": title,
         "url": url,
         "verified": verified,
+        "stock": stock,
         "online": True,
         "stores": [],
     })
@@ -298,8 +296,7 @@ def record_alert(alerts, retailer, title, url, verified, posted_at, detected_at)
 def main():
     config = load_json(CONFIG_FILE, {})
     state = clean_state(load_json(STATE_FILE, {}))
-    store_obj = load_json(STORES_FILE, {"stores": []})
-    stores = store_obj.get("stores", [])
+    stores = load_json(STORES_FILE, {"stores": []}).get("stores", [])
     alerts = load_json(ALERTS_FILE, [])
     keywords = config.get("keywords", [])
     retailers = [r for r in config.get("retailers", []) if r in SEARCH_URLS]
@@ -311,10 +308,10 @@ def main():
     http = requests.Session()
     http.headers.update(HEADERS)
     now = datetime.now(timezone.utc)
-    sent = 0
+    sent = {"stock": 0, "new": 0, "unknown": 0}
     print(f"Retailers this run: {retailers}")
     print(f"Nearby radius: {radius:.1f} miles | live pins/Discord: BIG 4 ONLY | cooldown: {cooldown:g}h")
-    print("Alert policy: VERIFIED STOCK ONLY — unknown/blocked pages never generate alerts")
+    print("Alert policy: IN STOCK + NEW LISTING + UNKNOWN — Big 4 only")
     print("Niche shops: MAP ONLY — no Discord alerts")
 
     for retailer in retailers:
@@ -335,30 +332,25 @@ def main():
             in_stock = result["stock"]
             title = result["title"] if is_pokemon(result["title"] + " " + url) else f"{retailer.title()} Pokémon product"
             posted_at = result.get("posted_at")
-            should_alert = in_stock is True and previous.get("in_stock") is not True and not recently_alerted(previous, now, cooldown)
             last_alert = previous.get("last_alert")
-            if should_alert:
+            kind = None
+            if in_stock is True and previous.get("in_stock") is not True and not recently_alerted(previous, now, cooldown):
+                kind = "stock"
+            elif previous and previous.get("in_stock") is not None and in_stock is None and not recently_alerted(previous, now, cooldown):
+                kind = "unknown"
+            if kind:
                 detected_at = now.isoformat()
-                record_alert(alerts, retailer, title, url, True, posted_at, detected_at)
-                send_stock_alert(retailer, title, url, map_url, ping, posted_at, detected_at)
-                sent += 1
+                record_alert(alerts, retailer, kind, title, url, kind == "stock", posted_at, detected_at, in_stock)
+                send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, in_stock)
+                sent[kind] += 1
                 last_alert = detected_at
-            state[key] = {
-                "pokemon": True,
-                "title": title,
-                "in_stock": in_stock,
-                "posted_at": posted_at,
-                "last_seen": now.isoformat(),
-                "last_alert": last_alert,
-            }
+            state[key] = {"pokemon": True, "title": title, "in_stock": in_stock, "posted_at": posted_at, "last_seen": now.isoformat(), "last_alert": last_alert}
 
-    # Deliberately do not alert on Slickdeals/Reddit or niche shops. They are discovery
-    # sources/map context only; Discord is reserved for the four major retailers.
-    alerts = [a for a in alerts if a.get("retailer", "").lower() in retailers and a.get("verified") is True]
+    alerts = [a for a in alerts if a.get("retailer", "").lower() in retailers]
     alerts = [a for a in alerts if not a.get("expires_at") or a.get("expires_at") > now.isoformat()]
     save_json(STATE_FILE, state)
     save_json(ALERTS_FILE, alerts[:100])
-    print(f"Done. Verified Discord alerts sent this run: {sent}. Tracked items: {len(state)-1}")
+    print(f"Done. Alerts sent this run: {sent}. Tracked items: {len(state)-1}")
 
 
 if __name__ == "__main__":
