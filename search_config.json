@@ -3,6 +3,8 @@
   "map_url": "https://poncema4.github.io/pokemon-alert-bot/",
   "nearby_radius_miles": 12,
   "alert_ttl_minutes": 30,
+  "alert_cooldown_hours": 1,
+  "search_timeout_seconds": 8,
   "keywords": [
     "pokemon elite trainer box",
     "pokemon booster bundle",
@@ -15,7 +17,37 @@
     "pokemon black bolt",
     "pokemon ascended heroes",
     "pokemon perfect order",
-    "pokemon pitch black"
+    "pokemon pitch black",
+    "pokemon 30th celebration elite trainer box",
+    "pokemon 30th celebration",
+    "pokemon 30th anniversary elite trainer box"
   ],
-  "retailers": ["target", "walmart", "bestbuy", "gamestop"]
+  "retailers": ["target", "walmart", "bestbuy", "gamestop"],
+  "seed_urls": {
+    "target": [
+      "https://www.target.com/p/-/A-1010892076"
+    ],
+    "walmart": [
+      "https://www.walmart.com/ip/15718673510",
+      "https://www.walmart.com/ip/20161351456",
+      "https://www.walmart.com/ip/20754418655"
+    ],
+    "bestbuy": [
+      "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ"
+    ],
+    "gamestop": [
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html"
+    ]
+  },
+  "niche_sources": [
+    {
+      "id": "tcgduckhunter",
+      "name": "TCGDUCKHUNTER",
+      "domain": "tcgduckhunter.com",
+      "website": "https://www.tcgduckhunter.com/",
+      "searchable": false,
+      "notes": "Local Pokémon/TCG shop. The site currently advertises Pokémon events but no conventional online product catalog; keep it on the map and enable online monitoring if product URLs appear later."
+    }
+  ]
 }
