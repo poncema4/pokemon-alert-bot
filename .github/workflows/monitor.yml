@@ -2,7 +2,8 @@ name: Pokemon Stock Monitor
 
 on:
   schedule:
-    # Fastest GitHub cron. Actual fire time can lag several minutes.
+    # GitHub's fastest supported cron cadence. Scheduled workflows can still be
+    # delayed by GitHub during load, but this requests a check every 5 minutes.
     - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
@@ -15,15 +16,21 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: pokemon-stock-monitor
+  cancel-in-progress: false
+
 jobs:
   check-stock:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: pip install -r requirements.txt

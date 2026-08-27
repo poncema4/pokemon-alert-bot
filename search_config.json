@@ -25,15 +25,18 @@
   "retailers": ["target", "walmart", "bestbuy", "gamestop"],
   "seed_urls": {
     "target": [
-      "https://www.target.com/p/-/A-1010892076"
+      "https://www.target.com/p/-/A-1010892076",
+      "https://www.target.com/p/-/A-1011483406"
     ],
     "walmart": [
       "https://www.walmart.com/ip/15718673510",
       "https://www.walmart.com/ip/20161351456",
-      "https://www.walmart.com/ip/20754418655"
+      "https://www.walmart.com/ip/20754418655",
+      "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207"
     ],
     "bestbuy": [
-      "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ"
+      "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
+      "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45"
     ],
     "gamestop": [
       "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html",
@@ -46,8 +49,29 @@
       "name": "TCGDUCKHUNTER",
       "domain": "tcgduckhunter.com",
       "website": "https://www.tcgduckhunter.com/",
+      "seed_urls": [],
       "searchable": false,
-      "notes": "Local Pokémon/TCG shop. The site currently advertises Pokémon events but no conventional online product catalog; keep it on the map and enable online monitoring if product URLs appear later."
+      "notes": "Local Pokémon/TCG shop. Official site confirms Pokémon play/events, but no conventional online product catalog was found, so it is mapped without invented inventory alerts."
+    },
+    {
+      "id": "bodega-cards",
+      "name": "Bodega Cards",
+      "domain": "bodegacards.com",
+      "website": "https://www.bodegacards.com/",
+      "seed_urls": [
+        "https://www.bodegacards.com/product/pokemon-mega-evolution-ascended-heroes-mega-box-/E7Z4XL5C7T3YAWHQMWTFOFMY"
+      ],
+      "searchable": true,
+      "notes": "Local trading-card shop with a live online product catalog; explicit product URLs are monitored so online inventory can alert without applying the local radius."
+    },
+    {
+      "id": "east-coast-connection",
+      "name": "East Coast Connection",
+      "domain": "eastcoastconnection.net",
+      "website": "https://www.eastcoastconnection.net/",
+      "seed_urls": [],
+      "searchable": true,
+      "notes": "Lyndhurst card shop with an online catalog and Pokémon category, but the current Pokémon category has no live products; kept on the map and ready for explicit product URLs."
     }
   ]
 }
