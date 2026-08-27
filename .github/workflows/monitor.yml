@@ -2,8 +2,8 @@ name: Pokemon Stock Monitor
 
 on:
   schedule:
-    # GitHub's fastest supported cron cadence. Scheduled workflows can still be
-    # delayed by GitHub during load, but this requests a check every 5 minutes.
+    # Best-effort GitHub Actions cadence. GitHub can delay scheduled workflows,
+    # but this requests a check every 5 minutes.
     - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
@@ -18,7 +18,7 @@ permissions:
 
 concurrency:
   group: pokemon-stock-monitor
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   check-stock:
