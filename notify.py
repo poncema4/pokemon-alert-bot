@@ -6,6 +6,8 @@ import requests
 
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
 
+SEPARATOR = "\n\n────────────────────────────────────────\n"
+
 
 def alert(title: str, body: str, url: str = "", ping: bool = False):
     if not DISCORD_WEBHOOK_URL:
@@ -16,6 +18,7 @@ def alert(title: str, body: str, url: str = "", ping: bool = False):
         content += f"\n{url}"
     if ping:
         content = f"@everyone {content}"
+    content += SEPARATOR
     payload = {
         "content": content[:1900],
         "allowed_mentions": {"parse": ["everyone"] if ping else []},
