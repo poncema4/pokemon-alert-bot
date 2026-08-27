@@ -1,14 +1,9 @@
-"""Pokémon TCG monitor for GitHub Actions.
+"""Fast, Pokémon-only stock monitor for GitHub Actions.
 
-Important behavior:
-- Price is never used as an alert gate.
-- Retailer availability is fail-open: verified stock alerts immediately; if a
-  specific matching product URL is found but the retailer cannot be checked,
-  the bot sends a clearly labelled POSSIBLE HIT instead of silently missing it.
-- Direct retailer search is attempted first. If Target/Walmart return HTML with
-  no product links, or Best Buy/GameStop block/time out, public web-search
-  indexes are used to discover direct retailer product URLs.
-- Live map hits are limited to configured nearby stores and expire automatically.
+Major retailers are checked for both online and local availability. Online product
+hits are never blocked by the nearby-store radius; the radius is only used to add
+local store pins to an alert. Direct product URLs are seeded for known releases so
+retailer search failures cannot hide a drop that we already know exists.
 """
 from __future__ import annotations
 
@@ -39,32 +34,28 @@ SEARCH_URLS = {
     "bestbuy": "https://www.bestbuy.com/site/searchpage.jsp?st={q}",
     "gamestop": "https://www.gamestop.com/search/?q={q}&lang=default",
 }
-BASE_URLS = {
-    "target": "https://www.target.com",
-    "walmart": "https://www.walmart.com",
-    "bestbuy": "https://www.bestbuy.com",
-    "gamestop": "https://www.gamestop.com",
-}
-DOMAINS = {
-    "target": "target.com",
-    "walmart": "walmart.com",
-    "bestbuy": "bestbuy.com",
-    "gamestop": "gamestop.com",
-}
+BASE_URLS = {"target": "https://www.target.com", "walmart": "https://www.walmart.com", "bestbuy": "https://www.bestbuy.com", "gamestop": "https://www.gamestop.com"}
+DOMAINS = {"target": "target.com", "walmart": "walmart.com", "bestbuy": "bestbuy.com", "gamestop": "gamestop.com"}
 
-IN_STOCK_HINTS = ("add to cart", "add to bag", "ship it", "shipping", "pickup", "pick up")
-OUT_OF_STOCK_HINTS = ("out of stock", "sold out", "unavailable", "not available", "currently unavailable")
-DEAL_WORDS = (
-    "pokemon", "pokémon", "etb", "elite trainer", "booster", "tcg", "trading card",
-    "151", "prismatic evolutions", "destined rivals", "phantasmal flames",
-    "white flare", "black bolt", "ascended heroes", "perfect order", "pitch black",
+IN_STOCK_HINTS = (
+    "add to cart", "add to bag", "add to basket", "ship it", "shipping available",
+    "pickup today", "pick up today", "available for pickup", "in stock", "low stock",
+)
+OUT_OF_STOCK_HINTS = (
+    "out of stock", "sold out", "currently unavailable", "not available", "unavailable",
+    "coming soon", "pre-order closed",
+)
+POKEMON_WORDS = (
+    "pokemon", "pokémon", "etb", "elite trainer", "booster", "trading card", "tcg",
+    "151", "prismatic evolutions", "destined rivals", "phantasmal flames", "white flare",
+    "black bolt", "ascended heroes", "perfect order", "pitch black", "30th celebration",
+    "30th anniversary",
 )
 SLICKDEALS_RSS = "https://slickdeals.net/newsearch.php?mode=frontpage&searcharea=deals&searchin=first&rss=1"
 REDDIT_DEALS = "https://www.reddit.com/r/PokemonTCGDeals/new.json?limit=15"
-SEARCH_FALLBACK_COOLDOWN_HOURS = 6
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
 }
@@ -101,7 +92,7 @@ def haversine_miles(a_lat, a_lng, b_lat, b_lng):
 def nearby_stores(stores, retailer, home, radius_miles, limit=5):
     matches = []
     for store in stores:
-        if store.get("retailer") != retailer:
+        if store.get("retailer") != retailer or not store.get("monitored", False):
             continue
         if home is None:
             matches.append((999999, store))
@@ -114,9 +105,8 @@ def nearby_stores(stores, retailer, home, radius_miles, limit=5):
 
 
 def maps_link(store):
-    return "https://www.google.com/maps/dir/?api=1&destination=" + quote_plus(
-        f"{store['name']} {store['address']}"
-    )
+    query = store.get("maps_query") or f"{store['name']} {store['address']}"
+    return "https://www.google.com/maps/search/?api=1&query=" + quote_plus(query)
 
 
 def retailer_from_text(text):
@@ -127,40 +117,22 @@ def retailer_from_text(text):
     return "promo"
 
 
+def is_pokemon(text):
+    lower = text.lower()
+    return any(word in lower for word in POKEMON_WORDS)
+
+
 def clean_result_url(url: str) -> str:
-    """Turn search-engine redirect URLs into the underlying retailer URL where possible."""
     url = html.unescape(url)
     if url.startswith("//"):
         url = "https:" + url
-    # DuckDuckGo result URLs can contain uddg=<encoded destination>.
-    m = re.search(r"[?&](?:uddg|url)=([^&]+)", url)
-    if m:
-        candidate = unquote(m.group(1))
-        if candidate.startswith("http"):
-            url = candidate
+    for param in ("uddg", "url"):
+        m = re.search(rf"[?&]{param}=([^&]+)", url)
+        if m:
+            candidate = unquote(m.group(1))
+            if candidate.startswith("http"):
+                return candidate
     return url
-
-
-def product_links_from_html(retailer, html_text):
-    hrefs = re.findall(r'href=[\"\']([^\"\']+)', html_text, flags=re.I)
-    links, seen = [], set()
-    for href in hrefs:
-        full = urljoin(BASE_URLS[retailer], href)
-        low = full.lower()
-        if retailer == "target" and "/p/" not in low:
-            continue
-        if retailer == "walmart" and "/ip/" not in low:
-            continue
-        if retailer == "bestbuy" and "/site/" not in low:
-            continue
-        if retailer == "gamestop" and not any(x in low for x in ("/products/", "/pokemon", "/trading-card")):
-            continue
-        if any(x in low for x in ("searchpage", "/search", "javascript:", "#")):
-            continue
-        if full not in seen:
-            seen.add(full)
-            links.append(full)
-    return links[:12]
 
 
 def retailer_url_is_valid(retailer, url):
@@ -172,128 +144,122 @@ def retailer_url_is_valid(retailer, url):
     if retailer == "walmart":
         return "/ip/" in low
     if retailer == "bestbuy":
-        return "/site/" in low
+        return "/site/" in low or "/product/" in low
     if retailer == "gamestop":
-        return any(x in low for x in ("/products/", "/pokemon", "/trading-card"))
+        return "/products/" in low or "/pokemon" in low or "/trading-card" in low
     return False
 
 
-def fallback_search(http, retailer, keyword):
-    """Discover direct product URLs through public search indexes.
+def extract_retailer_urls(retailer, text):
+    candidates = []
+    hrefs = re.findall(r'href=[\"\']([^\"\']+)', text, flags=re.I)
+    candidates.extend(hrefs)
+    # Retailer pages frequently place product URLs inside JSON instead of hrefs.
+    candidates.extend(re.findall(r'https?://[^\"\'<>\\ ]+', text))
+    if retailer == "walmart":
+        candidates.extend("https://www.walmart.com" + x for x in re.findall(r"/ip/[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=%-]+", text))
+    if retailer == "target":
+        candidates.extend("https://www.target.com" + x for x in re.findall(r"/p/[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=%-]+", text))
+    if retailer == "bestbuy":
+        candidates.extend("https://www.bestbuy.com" + x for x in re.findall(r"/(?:site|product)/[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=%-]+", text))
+    links, seen = [], set()
+    for href in candidates:
+        full = clean_result_url(urljoin(BASE_URLS[retailer], href))
+        full = full.split('"')[0].split("'")[0]
+        if retailer_url_is_valid(retailer, full) and full not in seen:
+            seen.add(full)
+            links.append(full)
+    return links[:20]
 
-    This is deliberately not a proxy to the retailer. It asks a public search
-    engine for already-indexed retailer pages, which avoids treating a retailer's
-    403/timeout as proof that no product exists.
-    """
+
+def fallback_search(http, retailer, keyword):
     query = f'site:{DOMAINS[retailer]} "{keyword}"'
     results = []
-
     endpoints = [
         ("DuckDuckGo", f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"),
         ("Bing", f"https://www.bing.com/search?q={quote_plus(query)}&setlang=en-US"),
     ]
     for engine, endpoint in endpoints:
         try:
-            response = http.get(endpoint, timeout=12)
-            print(f"  fallback {engine} '{keyword}' -> HTTP {response.status_code} ({len(response.text)} bytes)")
-            response.raise_for_status()
-            for href in re.findall(r'href=[\"\']([^\"\']+)', response.text, flags=re.I):
-                url = clean_result_url(href)
-                if retailer_url_is_valid(retailer, url):
-                    results.append(url)
-            # Bing/DDG also sometimes put the URL in visible text rather than href.
-            for url in re.findall(r'https?://[^\"\'<> ]+', response.text):
-                url = clean_result_url(url)
-                if retailer_url_is_valid(retailer, url):
-                    results.append(url)
+            response = http.get(endpoint, timeout=8)
+            print(f"  fallback {engine} -> HTTP {response.status_code} ({len(response.text)} bytes)")
+            if response.status_code >= 400:
+                continue
+            results.extend(extract_retailer_urls(retailer, response.text))
             if results:
                 break
         except Exception as exc:
-            print(f"  fallback {engine} failed {retailer} / {keyword}: {exc}")
-
-    deduped = []
-    seen = set()
-    for url in results:
-        if url not in seen:
-            seen.add(url)
-            deduped.append(url)
-    print(f"  fallback discovered {len(deduped)} direct {retailer} product URL(s)")
-    return deduped[:8]
+            print(f"  fallback {engine} failed: {exc}")
+    return list(dict.fromkeys(results))[:8]
 
 
-def discover_products(http, retailer, keyword):
+def discover_products(http, retailer, keyword, timeout=8):
     links = []
     try:
-        response = http.get(SEARCH_URLS[retailer].format(q=quote_plus(keyword)), timeout=15)
+        response = http.get(SEARCH_URLS[retailer].format(q=quote_plus(keyword)), timeout=timeout)
         print(f"  search {retailer} '{keyword}' -> HTTP {response.status_code} ({len(response.text)} bytes)")
-        response.raise_for_status()
-        links = product_links_from_html(retailer, response.text)
+        if response.status_code < 400:
+            links = extract_retailer_urls(retailer, response.text)
     except Exception as exc:
         print(f"  direct search failed {retailer} / {keyword}: {exc}")
-
     if links:
         return links
-
-    print(f"  no usable direct links from {retailer}; using public-search fallback")
+    print(f"  no usable direct links from {retailer}; public-search fallback")
     return fallback_search(http, retailer, keyword)
 
 
-def check_product_page(http, url):
+def check_product_page(http, url, timeout=8):
     try:
-        response = http.get(url, timeout=12)
+        response = http.get(url, timeout=timeout, allow_redirects=True)
         text = response.text.lower()
+        if response.status_code >= 400:
+            print(f"  product page HTTP {response.status_code}: {url}")
+            return None
     except Exception as exc:
         print(f"  product check unavailable: {exc}")
         return None
 
+    # Availability text wins over generic page words such as shipping/pickup.
+    if any(hint in text for hint in OUT_OF_STOCK_HINTS):
+        if any(hint in text for hint in ("add to cart", "add to bag", "add to basket")):
+            return True
+        return False
     if any(hint in text for hint in IN_STOCK_HINTS):
         return True
-    if any(hint in text for hint in OUT_OF_STOCK_HINTS):
-        return False
     return None
 
 
-def is_pokemon_deal(text):
-    lower = text.lower()
-    return any(word in lower for word in DEAL_WORDS)
+def clean_state(state):
+    """Drop legacy/non-Pokémon state, especially the accidental Nike Slickdeals key."""
+    cleaned = {"schema_version": 2}
+    for key, value in state.items():
+        if key == "schema_version":
+            continue
+        if key.startswith(("slickdeals::", "reddit::")):
+            # Feed entries are intentionally re-seeded after cleanup, but only
+            # Pokémon feed items can ever be written back by this version.
+            continue
+        if "::" not in key:
+            continue
+        retailer, url = key.split("::", 1)
+        if retailer not in SEARCH_URLS:
+            continue
+        if is_pokemon(url) or value.get("pokemon") is True:
+            cleaned[key] = value
+    return cleaned
 
 
-def fetch_rss_items(http, url):
+def recently_alerted(entry, now, hours):
+    if not entry or not entry.get("last_alert"):
+        return False
     try:
-        response = http.get(url, timeout=15)
-        response.raise_for_status()
-        root = ET.fromstring(response.text)
-    except Exception as exc:
-        print(f"  RSS failed {url}: {exc}")
-        return []
-    items = []
-    for item in root.findall(".//item"):
-        title = (item.findtext("title") or "").strip()
-        link = (item.findtext("link") or "").strip()
-        description = (item.findtext("description") or "").strip()
-        if title and link:
-            items.append({"title": title, "url": link, "body": re.sub("<[^>]+>", " ", description)[:500]})
-    return items
+        last = datetime.fromisoformat(entry["last_alert"].replace("Z", "+00:00"))
+        return now - last < timedelta(hours=hours)
+    except Exception:
+        return False
 
 
-def fetch_reddit_deals(http):
-    try:
-        response = http.get(REDDIT_DEALS, timeout=15, headers={**HEADERS, "User-Agent": "pokemon-alert-bot/5.0"})
-        response.raise_for_status()
-        children = response.json().get("data", {}).get("children", [])
-    except Exception as exc:
-        print(f"  reddit deals failed: {exc}")
-        return []
-    items = []
-    for child in children:
-        data = child.get("data", {})
-        title = data.get("title") or ""
-        if title:
-            items.append({"title": title, "url": data.get("url") or f"https://www.reddit.com{data.get('permalink', '')}", "body": (data.get("link_flair_text") or "")[:300]})
-    return items
-
-
-def record_alert(alerts, kind, retailer, title, url, stores, home, radius, ttl_minutes, verified=None):
+def record_alert(alerts, kind, retailer, title, url, stores, home, radius, ttl_minutes, verified, online=True):
     pins = nearby_stores(stores, retailer, home, radius)
     now = datetime.now(timezone.utc)
     entry = {
@@ -304,54 +270,86 @@ def record_alert(alerts, kind, retailer, title, url, stores, home, radius, ttl_m
         "title": title,
         "url": url,
         "verified": verified,
+        "online": online,
         "stores": [{"id": s["id"], "name": s["name"], "lat": s["lat"], "lng": s["lng"]} for s in pins],
     }
     alerts.insert(0, entry)
     return entry, pins
 
 
-def prune_alerts(alerts, history_days=7):
-    cutoff = datetime.now(timezone.utc) - timedelta(days=history_days)
+def send_stock_alert(retailer, title, url, pins, map_url, ping, verified):
+    if verified is True:
+        headline = f"IN STOCK — {retailer.title()}"
+        note = "Online product page is showing an availability/cart signal."
+    else:
+        headline = f"POSSIBLE POKÉMON HIT — {retailer.title()}"
+        note = "Product URL was found but stock could not be verified from the runner. Open the link immediately."
+    lines = [title, note, "Online availability is monitored independently of the local store radius."]
+    if pins:
+        lines.append("Nearby stores:")
+        lines.extend(f"- {p['name']}: {maps_link(p)}" for p in pins)
+    else:
+        lines.append("No monitored local store was within the configured radius; this does not suppress an online alert.")
+    if map_url:
+        lines.append(f"Map: {map_url}")
+    alert(headline, "\n".join(lines), url, ping=ping)
+
+
+def prune_alerts(alerts):
+    cutoff = datetime.now(timezone.utc) - timedelta(days=7)
     kept = []
     for item in alerts:
-        if item.get("kind") == "test":
-            continue
         try:
-            timestamp = datetime.fromisoformat(item["ts"].replace("Z", "+00:00"))
-            if timestamp >= cutoff:
+            ts = datetime.fromisoformat(item["ts"].replace("Z", "+00:00"))
+            if ts >= cutoff and item.get("kind") != "test":
                 kept.append(item)
         except Exception:
             continue
     return kept[:100]
 
 
-def recently_alerted(state_entry, now, hours):
-    if not state_entry or not state_entry.get("last_alert"):
-        return False
+def feed_items(http, url):
     try:
-        last = datetime.fromisoformat(state_entry["last_alert"].replace("Z", "+00:00"))
-        return now - last < timedelta(hours=hours)
-    except Exception:
-        return False
+        response = http.get(url, timeout=8)
+        if response.status_code >= 400:
+            print(f"  feed HTTP {response.status_code}: {url}")
+            return []
+        root = ET.fromstring(response.text)
+    except Exception as exc:
+        print(f"  feed failed: {exc}")
+        return []
+    out = []
+    for item in root.findall(".//item"):
+        title = (item.findtext("title") or "").strip()
+        link = (item.findtext("link") or "").strip()
+        body = re.sub("<[^>]+>", " ", (item.findtext("description") or "")).strip()
+        if title and link:
+            out.append({"title": title, "url": link, "body": body[:600]})
+    return out
 
 
-def send_stock_alert(retailer, keyword, url, pins, map_url, ping, verified):
-    nearby = "\n".join(f"- {p['name']}: {maps_link(p)}" for p in pins) or "No configured nearby store matched this retailer."
-    if verified is True:
-        headline = f"IN STOCK — {retailer.title()}"
-        note = "Stock signal verified from the product page when checked."
-    else:
-        headline = f"POSSIBLE POKÉMON HIT — {retailer.title()}"
-        note = "Product found, but this retailer could not be checked reliably. Open the direct link ASAP to verify stock."
-    body = f"{keyword}\n{note}\n{nearby}"
-    if map_url:
-        body += f"\nMap: {map_url}"
-    alert(headline, body, url, ping=ping)
+def reddit_items(http):
+    try:
+        response = http.get(REDDIT_DEALS, timeout=8, headers={**HEADERS, "User-Agent": "pokemon-alert-bot/6.0"})
+        if response.status_code >= 400:
+            print(f"  reddit HTTP {response.status_code}")
+            return []
+        children = response.json().get("data", {}).get("children", [])
+    except Exception as exc:
+        print(f"  reddit failed: {exc}")
+        return []
+    out = []
+    for child in children:
+        data = child.get("data", {})
+        title = data.get("title") or ""
+        if title:
+            out.append({"title": title, "url": data.get("url") or "", "body": data.get("selftext") or ""})
+    return out
 
 
 def main():
     config = load_json(CONFIG_FILE, {})
-    state = load_json(STATE_FILE, {})
+    state = clean_state(load_json(STATE_FILE, {}))
     store_obj = load_json(STORES_FILE, {"stores": []})
     stores = store_obj.get("stores", [])
     alerts = load_json(ALERTS_FILE, [])
@@ -362,14 +360,16 @@ def main():
     retailers = [r for r in config.get("retailers", []) if r in SEARCH_URLS]
     radius = float(config.get("nearby_radius_miles", 12))
     ttl = int(config.get("alert_ttl_minutes", 30))
+    cooldown = float(config.get("alert_cooldown_hours", 1))
+    timeout = int(config.get("search_timeout_seconds", 8))
     ping = os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")
     map_url = config.get("map_url", "")
     http = session()
-    sent = 0
     now = datetime.now(timezone.utc)
+    sent = 0
 
     print(f"Retailers this run: {retailers}")
-    print(f"Nearby radius: {radius:.1f} miles | live-hit TTL: {ttl} minutes")
+    print(f"Nearby radius: {radius:.1f} miles | online alerts ignore radius | cooldown: {cooldown:g}h")
     print("Price thresholds: DISABLED — availability/restock and qualifying Pokémon feeds only")
     print("Failure policy: FAIL OPEN — a matching direct product URL can alert even when stock cannot be verified")
 
@@ -378,77 +378,71 @@ def main():
         sent += 1
 
     for retailer in retailers:
+        configured = list(dict.fromkeys(config.get("seed_urls", {}).get(retailer, [])))
+        seen_urls = set(configured)
         for keyword in keywords:
             print(f"Checking {retailer} / {keyword}")
-            urls = discover_products(http, retailer, keyword)
-            if not urls:
-                print(f"  NO PRODUCT URL FOUND for {retailer} / {keyword}")
-                continue
+            for url in discover_products(http, retailer, keyword, timeout):
+                if url not in seen_urls:
+                    configured.append(url)
+                    seen_urls.add(url)
 
-            for url in urls:
-                key = f"{retailer}::{url}"
-                previous = state.get(key, {})
-                in_stock = check_product_page(http, url)
-                if in_stock is True:
-                    should_alert = previous.get("in_stock") is not True or recently_alerted(previous, now, 1)
-                    if should_alert:
-                        entry, pins = record_alert(alerts, "stock", retailer, keyword, url, stores, home, radius, ttl, verified=True)
-                        if pins:
-                            send_stock_alert(retailer, keyword, url, pins, map_url, ping, True)
-                            sent += 1
-                elif in_stock is None:
-                    # Fail-open: do not throw away a potentially real hit merely because
-                    # GitHub cannot read a retailer page. Cool down the same URL so one
-                    # inaccessible product cannot spam Discord every five minutes.
-                    if not recently_alerted(previous, now, SEARCH_FALLBACK_COOLDOWN_HOURS):
-                        entry, pins = record_alert(alerts, "candidate", retailer, keyword, url, stores, home, radius, ttl, verified=False)
-                        if pins:
-                            send_stock_alert(retailer, keyword, url, pins, map_url, ping, False)
-                            sent += 1
-                state[key] = {
-                    "in_stock": in_stock,
-                    "last_seen": now.isoformat(),
-                    "last_alert": now.isoformat() if ((in_stock is True and (previous.get("in_stock") is not True or recently_alerted(previous, now, 1))) or (in_stock is None and not recently_alerted(previous, now, SEARCH_FALLBACK_COOLDOWN_HOURS))) else previous.get("last_alert"),
-                }
+        for url in configured:
+            key = f"{retailer}::{url}"
+            previous = state.get(key, {})
+            in_stock = check_product_page(http, url, timeout)
+            title = next((k for k in keywords if is_pokemon(k) and any(part in url.lower() for part in k.lower().split() if len(part) > 4)), retailer.title() + " Pokémon product")
+            should_alert = False
+            if in_stock is True:
+                should_alert = previous.get("in_stock") is not True or recently_alerted(previous, now, cooldown)
+            elif in_stock is None and not recently_alerted(previous, now, max(cooldown, 6)):
+                # Fail-open candidate alert. This is especially important for
+                # Best Buy/GameStop/Walmart anti-bot responses.
+                should_alert = True
+            if should_alert:
+                _, pins = record_alert(alerts, "stock" if in_stock is True else "candidate", retailer, title, url, stores, home, radius, ttl, in_stock, online=True)
+                send_stock_alert(retailer, title, url, pins, map_url, ping, in_stock)
+                sent += 1
+                last_alert = now.isoformat()
+            else:
+                last_alert = previous.get("last_alert")
+            state[key] = {
+                "pokemon": True,
+                "in_stock": in_stock,
+                "last_seen": now.isoformat(),
+                "last_alert": last_alert,
+            }
 
-    seed_feeds = not any(key.startswith(("slickdeals::", "reddit::")) for key in state)
-
+    # Deal/community feeds are strictly Pokémon-filtered. Legacy state is not
+    # allowed to reintroduce arbitrary products into state.json.
     print("Checking Slickdeals frontpage RSS...")
-    for item in fetch_rss_items(http, SLICKDEALS_RSS):
-        if not is_pokemon_deal(item["title"] + " " + item["body"]):
+    for item in feed_items(http, SLICKDEALS_RSS):
+        text = item["title"] + " " + item["body"]
+        if not is_pokemon(text):
             continue
         key = f"slickdeals::{item['url']}"
         if state.get(key):
             continue
-        state[key] = {"seen": True}
-        if seed_feeds:
-            continue
-        retailer = retailer_from_text(item["title"] + " " + item["body"])
-        entry, pins = record_alert(alerts, "promo", retailer, item["title"], item["url"], stores, home, radius, ttl, verified=None)
-        if pins or retailer == "promo":
-            alert("PROMO / DEAL FEED", item["title"], item["url"], ping=ping)
-            sent += 1
+        state[key] = {"seen": True, "pokemon": True, "title": item["title"]}
+        alert("POKÉMON DEAL FEED", item["title"], item["url"], ping=ping)
+        sent += 1
 
     print("Checking r/PokemonTCGDeals...")
-    for item in fetch_reddit_deals(http):
-        if not is_pokemon_deal(item["title"]):
+    for item in reddit_items(http):
+        text = item["title"] + " " + item["body"]
+        if not is_pokemon(text):
             continue
         key = f"reddit::{item['url']}"
         if state.get(key):
             continue
-        state[key] = {"seen": True}
-        if seed_feeds:
-            continue
-        retailer = retailer_from_text(item["title"])
-        entry, pins = record_alert(alerts, "community", retailer, item["title"], item["url"], stores, home, radius, ttl, verified=None)
-        if pins or retailer == "promo":
-            alert("COMMUNITY DEAL", item["title"], item["url"], ping=ping)
-            sent += 1
+        state[key] = {"seen": True, "pokemon": True, "title": item["title"]}
+        alert("POKÉMON COMMUNITY DEAL", item["title"], item["url"], ping=ping)
+        sent += 1
 
     alerts = prune_alerts(alerts)
     save_json(STATE_FILE, state)
     save_json(ALERTS_FILE, alerts)
-    print(f"Done. Alerts sent this run: {sent}. Tracked items: {len(state)}")
+    print(f"Done. Alerts sent this run: {sent}. Tracked Pokémon items: {len(state)}")
     return 0
 
 
