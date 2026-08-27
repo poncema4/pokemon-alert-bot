@@ -5,6 +5,9 @@
   "alert_ttl_minutes": 30,
   "alert_cooldown_hours": 1,
   "search_timeout_seconds": 8,
+  "verified_stock_only": true,
+  "discord_alert_retailers": ["target", "walmart", "bestbuy", "gamestop"],
+  "live_hit_retailers": ["target", "walmart", "bestbuy", "gamestop"],
   "keywords": [
     "pokemon elite trainer box",
     "pokemon booster bundle",
@@ -51,18 +54,16 @@
       "website": "https://www.tcgduckhunter.com/",
       "seed_urls": [],
       "searchable": false,
-      "notes": "Local Pokémon/TCG shop. Official site confirms Pokémon play/events, but no conventional online product catalog was found, so it is mapped without invented inventory alerts."
+      "notes": "Map-only local Pokémon/TCG shop. Never sends Discord alerts."
     },
     {
       "id": "bodega-cards",
       "name": "Bodega Cards",
       "domain": "bodegacards.com",
       "website": "https://www.bodegacards.com/",
-      "seed_urls": [
-        "https://www.bodegacards.com/product/pokemon-mega-evolution-ascended-heroes-mega-box-/E7Z4XL5C7T3YAWHQMWTFOFMY"
-      ],
-      "searchable": true,
-      "notes": "Local trading-card shop with a live online product catalog; explicit product URLs are monitored so online inventory can alert without applying the local radius."
+      "seed_urls": [],
+      "searchable": false,
+      "notes": "Map-only niche shop. Never sends Discord alerts."
     },
     {
       "id": "east-coast-connection",
@@ -70,8 +71,8 @@
       "domain": "eastcoastconnection.net",
       "website": "https://www.eastcoastconnection.net/",
       "seed_urls": [],
-      "searchable": true,
-      "notes": "Lyndhurst card shop with an online catalog and Pokémon category, but the current Pokémon category has no live products; kept on the map and ready for explicit product URLs."
+      "searchable": false,
+      "notes": "Map-only niche shop. Never sends Discord alerts."
     }
   ]
 }
