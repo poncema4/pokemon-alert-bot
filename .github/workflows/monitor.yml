@@ -2,9 +2,9 @@ name: Pokemon Stock Monitor
 
 on:
   schedule:
-    # GitHub's shortest supported schedule interval is 5 minutes.
-    # Offset from the top of the hour to reduce the chance of schedule delays.
-    - cron: "2-57/5 * * * *"
+    # Run every 5 minutes. GitHub Actions can occasionally delay scheduled
+    # jobs, but this is the shortest practical polling interval for this bot.
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       send_test_alert:
