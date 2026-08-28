@@ -10,28 +10,10 @@ SEPARATOR = "\n\n─────────────────────
 MAX_DISCORD_CONTENT = 1900
 
 
-def _chunks(content: str):
-    """Split on alert separators so one product alert is never truncated."""
+def _alerts(content: str):
+    """Return complete alert blocks, one product alert per Discord message."""
     parts = [p.strip() for p in content.split(SEPARATOR) if p.strip()]
-    if not parts:
-        return [content[:MAX_DISCORD_CONTENT]]
-
-    chunks = []
-    current = ""
-    for part in parts:
-        candidate = part if not current else current + SEPARATOR + part
-        if len(candidate) <= MAX_DISCORD_CONTENT:
-            current = candidate
-            continue
-        if current:
-            chunks.append(current)
-        while len(part) > MAX_DISCORD_CONTENT:
-            chunks.append(part[:MAX_DISCORD_CONTENT])
-            part = part[MAX_DISCORD_CONTENT:]
-        current = part
-    if current:
-        chunks.append(current)
-    return chunks
+    return parts or [content.strip()]
 
 
 def alert(title: str, body: str, url: str = "", ping: bool = False):
@@ -43,18 +25,25 @@ def alert(title: str, body: str, url: str = "", ping: bool = False):
     if url:
         content += f"\n{url}"
 
-    chunks = _chunks(content)
-    for index, chunk in enumerate(chunks):
-        if index:
-            chunk = "────────────────────────────────────────\n\n" + chunk
+    # Never combine multiple product alerts into one Discord message. This
+    # keeps every Product URL, timestamp, and separator intact and makes each
+    # notification independently readable/clickable.
+    alerts = _alerts(content)
+    for index, item in enumerate(alerts, start=1):
+        if len(item) > MAX_DISCORD_CONTENT:
+            # Keep the alert intact whenever possible; only truncate an
+            # unexpectedly oversized individual alert as a last resort.
+            item = item[:MAX_DISCORD_CONTENT]
+            print(f"Discord: warning — individual alert {index} exceeded {MAX_DISCORD_CONTENT} chars")
+        chunk = item
         if ping:
             chunk = f"@everyone {chunk}"
         payload = {
-            "content": chunk[:MAX_DISCORD_CONTENT],
+            "content": chunk,
             "allowed_mentions": {"parse": ["everyone"] if ping else []},
         }
         try:
             r = requests.post(DISCORD_WEBHOOK_URL, json=payload, timeout=10)
-            print(f"Discord: HTTP {r.status_code}")
+            print(f"Discord: HTTP {r.status_code} (alert {index}/{len(alerts)})")
         except Exception as e:
             print(f"Discord send failed: {e}")
