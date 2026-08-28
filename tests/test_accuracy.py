@@ -1,4 +1,14 @@
 """Deterministic accuracy tests for retailer product detection."""
+from pathlib import Path
+import sys
+
+# GitHub Actions executes this file as ``python tests/test_accuracy.py``.
+# In that mode Python puts ``tests/`` on sys.path, not the repository root,
+# so explicitly add the project root before importing monitor.py.
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from monitor import extract_structured_availability, is_pokemon, retailer_url_is_valid
 
 
