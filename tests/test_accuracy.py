@@ -15,6 +15,7 @@ from monitor import extract_structured_availability, is_pokemon, retailer_url_is
 def test_retailer_urls():
     assert retailer_url_is_valid("target", "https://www.target.com/p/-/A-123456")
     assert retailer_url_is_valid("walmart", "https://www.walmart.com/ip/123456")
+    assert retailer_url_is_valid("walmart", "https://business.walmart.com/ip/pokemon-destined-rivals/19965460207")
     assert retailer_url_is_valid("bestbuy", "https://www.bestbuy.com/product/example/JJG123")
     assert retailer_url_is_valid("gamestop", "https://www.gamestop.com/toys-games/trading-cards/products/example/123.html")
     assert not retailer_url_is_valid("gamestop", "https://pokemondb.net")
