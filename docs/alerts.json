@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "ts": "2026-08-29T04:06:54.114817+00:00",
+    "detected_at": "2026-08-29T04:06:54.114817+00:00",
+    "posted_at": null,
+    "expires_at": "2026-08-29T04:37:14.621934+00:00",
+    "kind": "unknown",
+    "retailer": "walmart",
+    "title": "Walmart Pok\u00e9mon product",
+    "url": "https://www.walmart.com/ip/20161351456",
+    "verified": false,
+    "stock": null,
+    "online": true,
+    "stores": []
+  }
+]
