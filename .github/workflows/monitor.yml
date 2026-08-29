@@ -45,13 +45,16 @@ jobs:
           SEND_TEST_ALERT: ${{ inputs.send_test_alert }}
         run: |
           python --version
-          python -m py_compile monitor.py notify.py notify_new_listings.py accuracy.py tests/test_accuracy.py
+          python -m py_compile monitor.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py tests/test_accuracy.py
           if [ -n "$DISCORD_WEBHOOK_URL" ]; then
             echo "Discord webhook secret is configured."
           else
             echo "WARNING: DISCORD_WEBHOOK_URL is not configured; alerts will be skipped."
           fi
           python -u monitor.py
+
+      - name: Refresh verified live hits for map
+        run: python -u refresh_live_hits.py
 
       - name: Alert on newly discovered Big 4 listings
         env:
