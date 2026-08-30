@@ -1,9 +1,9 @@
 [
   {
-    "ts": "2026-08-30T10:58:41.448080+00:00",
-    "detected_at": "2026-08-30T10:58:41.448080+00:00",
+    "ts": "2026-08-30T15:16:43.417507+00:00",
+    "detected_at": "2026-08-30T15:16:43.417507+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:13:41.448080+00:00",
+    "expires_at": "2026-08-30T15:31:43.417507+00:00",
     "kind": "stock",
     "retailer": "target",
     "title": "Pok\u00e9mon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box : Target",
@@ -14,10 +14,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:58:41.448080+00:00",
-    "detected_at": "2026-08-30T10:58:41.448080+00:00",
+    "ts": "2026-08-30T15:16:43.417507+00:00",
+    "detected_at": "2026-08-30T15:16:43.417507+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:13:41.448080+00:00",
+    "expires_at": "2026-08-30T15:31:43.417507+00:00",
     "kind": "stock",
     "retailer": "target",
     "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box : Target",
@@ -28,10 +28,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:55:57.989962+00:00",
-    "detected_at": "2026-08-30T10:55:57.989962+00:00",
+    "ts": "2026-08-30T15:13:55.304967+00:00",
+    "detected_at": "2026-08-30T15:13:55.304967+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:13:41.176252+00:00",
+    "expires_at": "2026-08-30T15:31:42.042965+00:00",
     "kind": "unknown",
     "retailer": "gamestop",
     "title": "Gamestop Pok\u00e9mon product",
@@ -42,10 +42,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:55:57.989962+00:00",
-    "detected_at": "2026-08-30T10:55:57.989962+00:00",
+    "ts": "2026-08-30T15:13:55.304967+00:00",
+    "detected_at": "2026-08-30T15:13:55.304967+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:13:40.972441+00:00",
+    "expires_at": "2026-08-30T15:31:41.894829+00:00",
     "kind": "unknown",
     "retailer": "gamestop",
     "title": "Gamestop Pok\u00e9mon product",
@@ -56,10 +56,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:55:57.989962+00:00",
-    "detected_at": "2026-08-30T10:55:57.989962+00:00",
+    "ts": "2026-08-30T15:13:55.304967+00:00",
+    "detected_at": "2026-08-30T15:13:55.304967+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:13:33.682863+00:00",
+    "expires_at": "2026-08-30T15:31:33.523423+00:00",
     "kind": "unknown",
     "retailer": "bestbuy",
     "title": "Bestbuy Pok\u00e9mon product",
@@ -70,10 +70,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:55:57.989962+00:00",
-    "detected_at": "2026-08-30T10:55:57.989962+00:00",
+    "ts": "2026-08-30T15:13:55.304967+00:00",
+    "detected_at": "2026-08-30T15:13:55.304967+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:13:25.306202+00:00",
+    "expires_at": "2026-08-30T15:31:25.334044+00:00",
     "kind": "unknown",
     "retailer": "bestbuy",
     "title": "Bestbuy Pok\u00e9mon product",
@@ -84,10 +84,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:55:57.989962+00:00",
-    "detected_at": "2026-08-30T10:55:57.989962+00:00",
+    "ts": "2026-08-30T15:13:55.304967+00:00",
+    "detected_at": "2026-08-30T15:13:55.304967+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:11:13.431399+00:00",
+    "expires_at": "2026-08-30T15:29:12.906278+00:00",
     "kind": "unknown",
     "retailer": "walmart",
     "title": "Robot or human?",
@@ -98,10 +98,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:55:57.989962+00:00",
-    "detected_at": "2026-08-30T10:55:57.989962+00:00",
+    "ts": "2026-08-30T15:13:55.304967+00:00",
+    "detected_at": "2026-08-30T15:13:55.304967+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:11:12.663535+00:00",
+    "expires_at": "2026-08-30T15:29:12.294500+00:00",
     "kind": "unknown",
     "retailer": "walmart",
     "title": "Walmart Pok\u00e9mon product",
@@ -112,24 +112,24 @@
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:55:57.989962+00:00",
-    "detected_at": "2026-08-30T10:55:57.989962+00:00",
+    "ts": "2026-08-30T15:13:55.304967+00:00",
+    "detected_at": "2026-08-30T15:13:55.304967+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:13:41.448080+00:00",
-    "kind": "stock",
+    "expires_at": "2026-08-30T15:29:11.754248+00:00",
+    "kind": "unknown",
     "retailer": "walmart",
-    "title": "Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com",
+    "title": "Walmart Pok\u00e9mon product",
     "url": "https://www.walmart.com/ip/20161351456",
-    "verified": true,
-    "stock": true,
+    "verified": false,
+    "stock": null,
     "online": true,
     "stores": []
   },
   {
-    "ts": "2026-08-30T10:55:57.989962+00:00",
-    "detected_at": "2026-08-30T10:55:57.989962+00:00",
+    "ts": "2026-08-30T15:13:55.304967+00:00",
+    "detected_at": "2026-08-30T15:13:55.304967+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-30T11:11:11.288485+00:00",
+    "expires_at": "2026-08-30T15:29:11.249941+00:00",
     "kind": "unknown",
     "retailer": "walmart",
     "title": "Walmart Pok\u00e9mon product",
