@@ -1,9 +1,9 @@
 [
   {
-    "ts": "2026-08-31T01:50:10.318452+00:00",
-    "detected_at": "2026-08-31T01:50:10.318452+00:00",
+    "ts": "2026-08-31T07:46:07.815826+00:00",
+    "detected_at": "2026-08-31T07:46:07.815826+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:05:10.318452+00:00",
+    "expires_at": "2026-08-31T08:01:07.815826+00:00",
     "kind": "stock",
     "retailer": "target",
     "title": "Pok\u00e9mon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box : Target",
@@ -14,10 +14,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:50:10.318452+00:00",
-    "detected_at": "2026-08-31T01:50:10.318452+00:00",
+    "ts": "2026-08-31T07:46:07.815826+00:00",
+    "detected_at": "2026-08-31T07:46:07.815826+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:05:10.318452+00:00",
+    "expires_at": "2026-08-31T08:01:07.815826+00:00",
     "kind": "stock",
     "retailer": "target",
     "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box : Target",
@@ -28,10 +28,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:47:19.348538+00:00",
-    "detected_at": "2026-08-31T01:47:19.348538+00:00",
+    "ts": "2026-08-31T07:43:24.732111+00:00",
+    "detected_at": "2026-08-31T07:43:24.732111+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:05:09.989044+00:00",
+    "expires_at": "2026-08-31T08:01:07.586836+00:00",
     "kind": "unknown",
     "retailer": "gamestop",
     "title": "Gamestop Pok\u00e9mon product",
@@ -42,10 +42,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:47:19.348538+00:00",
-    "detected_at": "2026-08-31T01:47:19.348538+00:00",
+    "ts": "2026-08-31T07:43:24.732111+00:00",
+    "detected_at": "2026-08-31T07:43:24.732111+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:05:09.519248+00:00",
+    "expires_at": "2026-08-31T08:01:07.345934+00:00",
     "kind": "unknown",
     "retailer": "gamestop",
     "title": "Gamestop Pok\u00e9mon product",
@@ -56,10 +56,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:47:19.348538+00:00",
-    "detected_at": "2026-08-31T01:47:19.348538+00:00",
+    "ts": "2026-08-31T07:43:24.732111+00:00",
+    "detected_at": "2026-08-31T07:43:24.732111+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:05:01.147709+00:00",
+    "expires_at": "2026-08-31T08:00:59.469686+00:00",
     "kind": "unknown",
     "retailer": "bestbuy",
     "title": "Bestbuy Pok\u00e9mon product",
@@ -70,10 +70,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:47:19.348538+00:00",
-    "detected_at": "2026-08-31T01:47:19.348538+00:00",
+    "ts": "2026-08-31T07:43:24.732111+00:00",
+    "detected_at": "2026-08-31T07:43:24.732111+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:04:52.462169+00:00",
+    "expires_at": "2026-08-31T08:00:51.283416+00:00",
     "kind": "unknown",
     "retailer": "bestbuy",
     "title": "Bestbuy Pok\u00e9mon product",
@@ -84,10 +84,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:47:19.348538+00:00",
-    "detected_at": "2026-08-31T01:47:19.348538+00:00",
+    "ts": "2026-08-31T07:43:24.732111+00:00",
+    "detected_at": "2026-08-31T07:43:24.732111+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:02:40.153926+00:00",
+    "expires_at": "2026-08-31T07:58:39.814418+00:00",
     "kind": "unknown",
     "retailer": "walmart",
     "title": "Robot or human?",
@@ -98,10 +98,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:47:19.348538+00:00",
-    "detected_at": "2026-08-31T01:47:19.348538+00:00",
+    "ts": "2026-08-31T07:43:24.732111+00:00",
+    "detected_at": "2026-08-31T07:43:24.732111+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:02:39.636587+00:00",
+    "expires_at": "2026-08-31T07:58:39.356297+00:00",
     "kind": "unknown",
     "retailer": "walmart",
     "title": "Walmart Pok\u00e9mon product",
@@ -112,10 +112,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:47:19.348538+00:00",
-    "detected_at": "2026-08-31T01:47:19.348538+00:00",
+    "ts": "2026-08-31T07:43:24.732111+00:00",
+    "detected_at": "2026-08-31T07:43:24.732111+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:02:39.064138+00:00",
+    "expires_at": "2026-08-31T07:58:38.748329+00:00",
     "kind": "unknown",
     "retailer": "walmart",
     "title": "Walmart Pok\u00e9mon product",
@@ -126,10 +126,10 @@
     "stores": []
   },
   {
-    "ts": "2026-08-31T01:47:19.348538+00:00",
-    "detected_at": "2026-08-31T01:47:19.348538+00:00",
+    "ts": "2026-08-31T07:43:24.732111+00:00",
+    "detected_at": "2026-08-31T07:43:24.732111+00:00",
     "posted_at": null,
-    "expires_at": "2026-08-31T02:02:38.042555+00:00",
+    "expires_at": "2026-08-31T07:58:38.075493+00:00",
     "kind": "unknown",
     "retailer": "walmart",
     "title": "Walmart Pok\u00e9mon product",
