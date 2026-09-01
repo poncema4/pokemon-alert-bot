@@ -5,7 +5,7 @@
     "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box : Target",
     "in_stock": true,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
     "last_alert": null,
     "http_status": 200
   },
@@ -14,7 +14,7 @@
     "title": "Pok\u00e9mon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box : Target",
     "in_stock": true,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
     "last_alert": null,
     "http_status": 200
   },
@@ -23,17 +23,17 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
-    "last_alert": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
+    "last_alert": "2026-09-01T18:27:29.103783+00:00",
     "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/20161351456": {
     "pokemon": true,
-    "title": "Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com",
-    "in_stock": true,
+    "title": "Walmart Pok\u00e9mon product",
+    "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
-    "last_alert": "2026-08-31T15:30:28.601524+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
+    "last_alert": "2026-09-01T18:27:29.103783+00:00",
     "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/20754418655": {
@@ -41,8 +41,8 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
-    "last_alert": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
+    "last_alert": "2026-09-01T18:27:29.103783+00:00",
     "http_status": 200
   },
   "bestbuy::https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ": {
@@ -50,8 +50,8 @@
     "title": "Bestbuy Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
-    "last_alert": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
+    "last_alert": "2026-09-01T18:27:29.103783+00:00",
     "http_status": null
   },
   "bestbuy::https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45": {
@@ -59,8 +59,8 @@
     "title": "Bestbuy Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
-    "last_alert": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
+    "last_alert": "2026-09-01T18:27:29.103783+00:00",
     "http_status": null
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html": {
@@ -68,8 +68,8 @@
     "title": "Gamestop Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
-    "last_alert": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
+    "last_alert": "2026-09-01T18:27:29.103783+00:00",
     "http_status": 403
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html": {
@@ -77,8 +77,8 @@
     "title": "Gamestop Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
-    "last_alert": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
+    "last_alert": "2026-09-01T18:27:29.103783+00:00",
     "http_status": 403
   },
   "walmart::https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207": {
@@ -86,8 +86,8 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-01T15:06:33.941432+00:00",
-    "last_alert": "2026-09-01T15:06:33.941432+00:00",
+    "last_seen": "2026-09-01T18:27:29.103783+00:00",
+    "last_alert": "2026-09-01T18:27:29.103783+00:00",
     "http_status": 200
   }
 }
