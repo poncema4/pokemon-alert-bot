@@ -1,4 +1,5 @@
-"""Deterministic accuracy tests for retailer product detection."""
+"""Deterministic accuracy tests for retailer product detection and alert state."""
+from datetime import datetime, timezone
 from pathlib import Path
 import sys
 
@@ -9,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from monitor import extract_structured_availability, is_pokemon, retailer_url_is_valid
+from monitor import extract_structured_availability, is_pokemon, recently_stock_alerted, retailer_url_is_valid
 
 
 def test_retailer_urls():
@@ -33,8 +34,20 @@ def test_structured_stock_signals():
     assert extract_structured_availability('<html>unknown</html>') is None
 
 
+def test_unknown_does_not_block_restock_cooldown():
+    now = datetime.now(timezone.utc)
+    # Older state may contain the legacy last_alert field from UNKNOWN checks.
+    # It must not suppress a real restock because only last_stock_alert is used.
+    legacy_unknown = {"last_alert": now.isoformat()}
+    assert recently_stock_alerted(legacy_unknown, now, 1) is False
+
+    verified_recently = {"last_stock_alert": now.isoformat()}
+    assert recently_stock_alerted(verified_recently, now, 1) is True
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
     test_structured_stock_signals()
+    test_unknown_does_not_block_restock_cooldown()
     print("accuracy smoke tests passed")
