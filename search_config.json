@@ -4,6 +4,8 @@
   "nearby_radius_miles": 12,
   "alert_ttl_minutes": 15,
   "alert_cooldown_hours": 1,
+  "discord_alert_unknown": false,
+  "discord_alert_new_unknown": false,
   "search_timeout_seconds": 8,
   "verified_stock_only": true,
   "discord_alert_retailers": ["target", "walmart", "bestbuy", "gamestop"],
