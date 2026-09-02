@@ -1,4 +1,9 @@
-"""Discord alerts for newly discovered Big 4 product listings."""
+"""Discord alerts for newly discovered Big 4 product listings.
+
+New listings are still tracked in state.json, but Discord only receives a
+new-listing notification when the retailer page verifies the item is in stock.
+This prevents blocked/unknown discovery results from becoming notification spam.
+"""
 from __future__ import annotations
 
 import json
@@ -11,9 +16,7 @@ from notify import alert
 
 ROOT = Path(__file__).parent
 STATE_FILE = ROOT / "state.json"
-MAP_URL = "https://poncema4.github.io/pokemon-alert-bot/"
 BIG4 = {"target", "walmart", "bestbuy", "gamestop"}
-SEPARATOR = "\n\n────────────────────────────────────────\n\n"
 
 
 def load(path: Path, default):
@@ -39,20 +42,10 @@ def format_et(value):
         return value
 
 
-def status(entry):
-    stock = entry.get("in_stock")
-    if stock is True:
-        return "IN STOCK"
-    if stock is False:
-        return "OUT OF STOCK"
-    return "AVAILABILITY UNKNOWN"
-
-
 def main():
     current = load(STATE_FILE, {})
     previous = previous_state()
     sent = 0
-    messages = []
 
     for key, entry in current.items():
         if key == "schema_version" or not isinstance(entry, dict) or "::" not in key:
@@ -61,29 +54,32 @@ def main():
         if retailer not in BIG4 or key in previous or entry.get("pokemon") is not True:
             continue
 
+        # A new listing is useful to us internally even when stock is unknown,
+        # but it should not wake Discord unless stock is actually verified.
+        if entry.get("in_stock") is not True:
+            continue
+
         detected = entry.get("last_seen") or datetime.now(timezone.utc).isoformat()
         posted = entry.get("posted_at")
         title = entry.get("title") or f"{retailer.title()} Pokémon product"
-        body = [
+        lines = [
             f"**{title}**",
-            f"Status: **{status(entry)}**",
-            "New Pokémon product listing detected on the retailer site.",
-            "Stock can change quickly. Refresh the product page before assuming it is unavailable.",
+            "New Pokémon product listing with verified stock.",
+            f"Detected: {format_et(detected)}",
+            f"Map: [Open map](https://poncema4.github.io/pokemon-alert-bot/)",
+            f"Product: [Open product page]({url})",
         ]
         if posted:
-            body.append(f"Time Posted: {format_et(posted)}")
-        else:
-            body.append("Time Posted: Not published by the retailer.")
-        body.append(f"Detected: {format_et(detected)}")
-        body.append(f"Map: {MAP_URL}")
-        body.append(f"Product: {url}")
-        messages.append(f"**NEW LISTING — {retailer.title()}**\n" + "\n".join(body))
+            lines.insert(2, f"Time Posted: {format_et(posted)}")
 
-    if messages and os.environ.get("DISCORD_WEBHOOK_URL"):
-        alert("NEW LISTINGS", SEPARATOR.join(messages), ping=os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes"))
-        sent = len(messages)
+        alert(
+            f"🆕🟢 NEW + IN STOCK — {retailer.title()}",
+            "\n".join(lines),
+            ping=os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes"),
+        )
+        sent += 1
 
-    print(f"New Big 4 listing alerts sent: {sent}")
+    print(f"New verified Big 4 listing alerts sent: {sent}")
 
 
 if __name__ == "__main__":
