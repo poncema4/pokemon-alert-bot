@@ -9,9 +9,8 @@ Alert policy:
   3. AVAILABILITY UNKNOWN — tracked internally for accuracy, never sent to Discord
      by default. A 403/429/timeout is UNKNOWN, never IN STOCK.
 
-This deliberately separates accuracy from notification noise: UNKNOWN results
-remain in state.json and can improve future transition detection, while Discord
-only wakes the user when the bot has a verified stock signal.
+UNKNOWN states are deliberately separated from the verified-stock cooldown so a
+blocked check can never suppress a later real restock alert.
 """
 from __future__ import annotations
 
@@ -222,21 +221,11 @@ def check_product_page(http, retailer, url, timeout):
         response = http.get(url, timeout=timeout, allow_redirects=True)
         if response.status_code >= 400:
             print(f"  product page HTTP {response.status_code}: {url}")
-            return {
-                "stock": None,
-                "title": f"{retailer.title()} Pokémon product",
-                "posted_at": None,
-                "http_status": response.status_code,
-            }
+            return {"stock": None, "title": f"{retailer.title()} Pokémon product", "posted_at": None, "http_status": response.status_code}
         text = response.text
     except Exception as exc:
         print(f"  product check unavailable: {exc}")
-        return {
-            "stock": None,
-            "title": f"{retailer.title()} Pokémon product",
-            "posted_at": None,
-            "http_status": None,
-        }
+        return {"stock": None, "title": f"{retailer.title()} Pokémon product", "posted_at": None, "http_status": None}
     low = text.lower()
     structured = extract_structured_availability(text)
     if structured is not None:
@@ -247,12 +236,7 @@ def check_product_page(http, retailer, url, timeout):
         stock = True
     else:
         stock = None
-    return {
-        "stock": stock,
-        "title": extract_title(text, retailer),
-        "posted_at": extract_posted_time(text),
-        "http_status": response.status_code,
-    }
+    return {"stock": stock, "title": extract_title(text, retailer), "posted_at": extract_posted_time(text), "http_status": response.status_code}
 
 
 def clean_state(state):
@@ -261,18 +245,16 @@ def clean_state(state):
         if key == "schema_version" or not isinstance(value, dict) or "::" not in key:
             continue
         source, url = key.split("::", 1)
-        if source in SEARCH_URLS and retailer_url_is_valid(source, url) and (
-            value.get("pokemon") is True or is_pokemon(url + " " + value.get("title", ""))
-        ):
+        if source in SEARCH_URLS and retailer_url_is_valid(source, url) and (value.get("pokemon") is True or is_pokemon(url + " " + value.get("title", ""))):
             cleaned[key] = value
     return cleaned
 
 
-def recently_alerted(entry, now, hours):
-    if not entry or not entry.get("last_alert"):
+def recently_stock_alerted(entry, now, hours):
+    if not entry or not entry.get("last_stock_alert"):
         return False
     try:
-        return now - datetime.fromisoformat(entry["last_alert"].replace("Z", "+00:00")) < timedelta(hours=hours)
+        return now - datetime.fromisoformat(entry["last_stock_alert"].replace("Z", "+00:00")) < timedelta(hours=hours)
     except Exception:
         return False
 
@@ -295,8 +277,6 @@ def send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at
         f"Map: [Open map]({map_url})",
         f"Product: [Open product page]({url})",
     ]
-    # Stock alerts are intentionally the only Discord alerts. Keep one product
-    # per message and allow @everyone only for verified stock.
     alert(f"🟢 IN STOCK — {retailer.title()}", "\n".join(lines), ping=ping)
 
 
@@ -328,13 +308,15 @@ def main():
     timeout = int(config.get("search_timeout_seconds", 8))
     ping = os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")
     map_url = config.get("map_url", "")
+    alert_unknown = bool(config.get("discord_alert_unknown", False))
     http = requests.Session()
     http.headers.update(HEADERS)
     now = datetime.now(timezone.utc)
     sent = {"stock": 0, "unknown": 0}
     print(f"Retailers this run: {retailers}")
     print("Discord/live hits: BIG 4 ONLY (Target, Walmart, Best Buy, GameStop)")
-    print("403/429/timeout policy: UNKNOWN internally; never IN STOCK and never Discord-pinged")
+    print(f"UNKNOWN Discord alerts: {'ON' if alert_unknown else 'OFF'}")
+    print("403/429/timeout: UNKNOWN internally, never IN STOCK")
     print("Niche shops: MAP ONLY — no Discord alerts")
 
     for retailer in retailers:
@@ -357,25 +339,28 @@ def main():
             http_status = result.get("http_status")
             title = result["title"] if is_pokemon(result["title"] + " " + url) else f"{retailer.title()} Pokémon product"
             posted_at = result.get("posted_at")
-            last_alert = previous.get("last_alert")
             kind = None
 
-            # First discovery is handled by notify_new_listings.py, which also
-            # requires verified stock before notifying. This prevents duplicate
-            # NEW + IN STOCK messages for the same item.
-            if previous and in_stock is True and previous.get("in_stock") is not True and not recently_alerted(previous, now, cooldown):
+            if previous and in_stock is True and previous.get("in_stock") is not True and not recently_stock_alerted(previous, now, cooldown):
                 kind = "stock"
             elif previous and in_stock is None:
-                # UNKNOWN is intentionally retained in state for accuracy and
-                # future transition detection, but never sent to Discord.
                 sent["unknown"] += 1
+                if alert_unknown:
+                    # Kept as an opt-in diagnostic mode; disabled in production
+                    # so blocked retailers do not spam Discord.
+                    kind = "unknown"
 
             if kind:
                 detected_at = now.isoformat()
-                record_alert(alerts, retailer, kind, title, url, True, posted_at, detected_at, in_stock)
-                send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at)
-                sent[kind] += 1
-                last_alert = detected_at
+                record_alert(alerts, retailer, kind, title, url, kind == "stock", posted_at, detected_at, in_stock)
+                send_alert(retailer, kind, title, url, map_url, ping if kind == "stock" else False, posted_at, detected_at)
+                if kind == "stock":
+                    sent["stock"] += 1
+                    last_stock_alert = detected_at
+                else:
+                    last_stock_alert = previous.get("last_stock_alert")
+            else:
+                last_stock_alert = previous.get("last_stock_alert")
 
             state[key] = {
                 "pokemon": True,
@@ -383,7 +368,7 @@ def main():
                 "in_stock": in_stock,
                 "posted_at": posted_at,
                 "last_seen": now.isoformat(),
-                "last_alert": last_alert,
+                "last_stock_alert": last_stock_alert,
                 "http_status": http_status,
             }
 
@@ -391,7 +376,7 @@ def main():
     alerts = [a for a in alerts if not a.get("expires_at") or a.get("expires_at") > now.isoformat()]
     save_json(STATE_FILE, state)
     save_json(ALERTS_FILE, alerts[:100])
-    print(f"Done. Verified Discord alerts sent this run: {sent['stock']}. UNKNOWN states tracked silently: {sent['unknown']}. Tracked items: {len(state)-1}")
+    print(f"Done. Verified Discord alerts sent this run: {sent['stock']}. UNKNOWN checks tracked silently: {sent['unknown']}. Tracked items: {len(state)-1}")
 
 
 if __name__ == "__main__":
