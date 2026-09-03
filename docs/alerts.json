@@ -1,9 +1,9 @@
 [
   {
-    "ts": "2026-09-03T05:49:48.660655+00:00",
-    "detected_at": "2026-09-03T05:49:48.660655+00:00",
+    "ts": "2026-09-03T10:11:31.505623+00:00",
+    "detected_at": "2026-09-03T10:11:31.505623+00:00",
     "posted_at": null,
-    "expires_at": "2026-09-03T06:04:48.660655+00:00",
+    "expires_at": "2026-09-03T10:26:31.505623+00:00",
     "kind": "stock",
     "retailer": "target",
     "title": "Pok\u00e9mon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box : Target",
@@ -14,10 +14,10 @@
     "stores": []
   },
   {
-    "ts": "2026-09-03T05:49:48.660655+00:00",
-    "detected_at": "2026-09-03T05:49:48.660655+00:00",
+    "ts": "2026-09-03T10:11:31.505623+00:00",
+    "detected_at": "2026-09-03T10:11:31.505623+00:00",
     "posted_at": null,
-    "expires_at": "2026-09-03T06:04:48.660655+00:00",
+    "expires_at": "2026-09-03T10:26:31.505623+00:00",
     "kind": "stock",
     "retailer": "target",
     "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box : Target",
