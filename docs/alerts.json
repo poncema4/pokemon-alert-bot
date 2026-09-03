@@ -1,23 +1,9 @@
 [
   {
-    "ts": "2026-09-03T01:11:33.559853+00:00",
-    "detected_at": "2026-09-03T01:11:33.559853+00:00",
+    "ts": "2026-09-03T05:49:48.660655+00:00",
+    "detected_at": "2026-09-03T05:49:48.660655+00:00",
     "posted_at": null,
-    "expires_at": "2026-09-03T01:26:33.559853+00:00",
-    "kind": "stock",
-    "retailer": "walmart",
-    "title": "Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com",
-    "url": "https://www.walmart.com/ip/20161351456",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "stores": []
-  },
-  {
-    "ts": "2026-09-03T01:11:33.559853+00:00",
-    "detected_at": "2026-09-03T01:11:33.559853+00:00",
-    "posted_at": null,
-    "expires_at": "2026-09-03T01:26:33.559853+00:00",
+    "expires_at": "2026-09-03T06:04:48.660655+00:00",
     "kind": "stock",
     "retailer": "target",
     "title": "Pok\u00e9mon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box : Target",
@@ -28,10 +14,10 @@
     "stores": []
   },
   {
-    "ts": "2026-09-03T01:11:33.559853+00:00",
-    "detected_at": "2026-09-03T01:11:33.559853+00:00",
+    "ts": "2026-09-03T05:49:48.660655+00:00",
+    "detected_at": "2026-09-03T05:49:48.660655+00:00",
     "posted_at": null,
-    "expires_at": "2026-09-03T01:26:33.559853+00:00",
+    "expires_at": "2026-09-03T06:04:48.660655+00:00",
     "kind": "stock",
     "retailer": "target",
     "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box : Target",
