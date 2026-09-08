@@ -2,9 +2,6 @@ name: Pokemon Stock Monitor
 
 on:
   schedule:
-    # Every 5 minutes, offset by 2 minutes to reduce contention at the top of
-    # the hour. GitHub Actions supports 5-minute scheduling but may still delay
-    # scheduled jobs during platform load.
     - cron: "2/5 * * * *"
   workflow_dispatch:
     inputs:
@@ -27,18 +24,16 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v6
-
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: "pip"
-
       - name: Install dependencies
         run: pip install -r requirements.txt
-
       - name: Run accuracy smoke tests
         run: python -u tests/test_accuracy.py
-
+      - name: Normalize missed first-stock alerts
+        run: python -u bootstrap_stock_alerts.py
       - name: Run stock check
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
@@ -46,23 +41,20 @@ jobs:
           SEND_TEST_ALERT: ${{ inputs.send_test_alert }}
         run: |
           python --version
-          python -m py_compile monitor.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py tests/test_accuracy.py
+          python -m py_compile monitor.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py tests/test_accuracy.py
           if [ -n "$DISCORD_WEBHOOK_URL" ]; then
             echo "Discord webhook secret is configured."
           else
             echo "WARNING: DISCORD_WEBHOOK_URL is not configured; alerts will be skipped."
           fi
           python -u monitor.py
-
       - name: Refresh verified live hits for map
         run: python -u refresh_live_hits.py
-
       - name: Alert on newly discovered Big 4 listings
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_PING: ${{ secrets.DISCORD_PING }}
         run: python -u notify_new_listings.py
-
       - name: Save state and map pings
         run: |
           git config user.name "Pokémon Alert Bot"
