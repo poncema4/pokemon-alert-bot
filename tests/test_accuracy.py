@@ -1,4 +1,4 @@
-"""Deterministic tests for retailer detection, alert safety, and route integrity."""
+"""Deterministic tests for retailer detection, alert safety, route integrity, and 30th coverage."""
 from datetime import datetime, timezone
 from pathlib import Path
 import json
@@ -50,13 +50,35 @@ def test_route_integrity():
     assert end_match, "route terminal node missing"
     assert route_match, "route node list missing"
     ids = re.findall(r"'([^']+)'", route_match.group(1))
-    ids.append(end_match.group(1))
-    assert ids[-1] == "walmart-kearny"
+    assert ids[-1] == end_match.group(1) == "walmart-kearny"
     assert len(ids) == len(set(ids))
     assert all(i in store_ids for i in ids)
+    assert len(ids) == 11
     assert "South Orange" not in route
     assert "exactPriority" not in route
     assert "withinIds" not in route
+    assert "Open Route 1" in route and "Open Route 2" in route
+    assert "Could not load the store list" in route
+
+
+def test_30th_complete_coverage():
+    data = json.loads((ROOT / "docs" / "30th_prices.json").read_text(encoding="utf-8"))
+    guide = (ROOT / "docs" / "30th.html").read_text(encoding="utf-8")
+    products = data["products"]
+    ids = {p["id"] for p in products}
+    required = {
+        "etb", "pc-etb", "poster", "tech-lucario", "tech-exeggutor",
+        "greninja-box", "sylveon-box", "knockout", "blister", "mini-tins",
+        "binder", "booster-bundle", "battle-espeon", "battle-umbreon",
+        "day-upc", "night-upc", "ditto", "mew-figure", "mewtwo-figure",
+        "tin-sylveon", "tin-greninja",
+    }
+    assert len(products) == 21
+    assert ids == required
+    assert guide.count("full announced 30th Celebration lineup") == 1
+    assert "Full buying list" in guide
+    assert "tracked variants" in guide
+    assert all(p["target_buy"] and p["max_buy"] is not None and p["score"] for p in products)
 
 
 if __name__ == "__main__":
@@ -65,4 +87,5 @@ if __name__ == "__main__":
     test_structured_stock_signals()
     test_unknown_does_not_block_restock_cooldown()
     test_route_integrity()
-    print("accuracy and route integrity tests passed")
+    test_30th_complete_coverage()
+    print("accuracy, route integrity, and 30th coverage tests passed")
