@@ -1,0 +1,30 @@
+name: Refresh 30th Celebration Prices
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Refresh TCGplayer prices
+        run: python -u update_30th_prices.py
+      - name: Commit refreshed prices
+        run: |
+          git config user.name "Pokémon Alert Bot"
+          git config user.email "pokemon-alert-bot@users.noreply.github.com"
+          git add docs/30th_prices.json
+          git diff --cached --quiet || git commit -m "Refresh 30th Celebration TCGplayer prices [skip ci]"
+          git push
