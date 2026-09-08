@@ -1,11 +1,10 @@
-"""Deterministic accuracy tests for retailer product detection and alert state."""
+"""Deterministic tests for retailer detection, alert safety, and route integrity."""
 from datetime import datetime, timezone
 from pathlib import Path
+import json
+import re
 import sys
 
-# GitHub Actions executes this file as ``python tests/test_accuracy.py``.
-# In that mode Python puts ``tests/`` on sys.path, not the repository root,
-# so explicitly add the project root before importing monitor.py.
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -36,13 +35,25 @@ def test_structured_stock_signals():
 
 def test_unknown_does_not_block_restock_cooldown():
     now = datetime.now(timezone.utc)
-    # Older state may contain the legacy last_alert field from UNKNOWN checks.
-    # It must not suppress a real restock because only last_stock_alert is used.
     legacy_unknown = {"last_alert": now.isoformat()}
     assert recently_stock_alerted(legacy_unknown, now, 1) is False
-
     verified_recently = {"last_stock_alert": now.isoformat()}
     assert recently_stock_alerted(verified_recently, now, 1) is True
+
+
+def test_route_integrity():
+    route = (ROOT / "docs" / "route.html").read_text(encoding="utf-8")
+    stores = json.loads((ROOT / "docs" / "stores.json").read_text(encoding="utf-8"))["stores"]
+    store_ids = {s["id"] for s in stores}
+    match = re.search(r"const ROUTE_IDS=\[(.*?)\];", route)
+    assert match, "route node list missing"
+    ids = re.findall(r"'([^']+)'", match.group(1))
+    assert ids[-1] == "walmart-kearny"
+    assert len(ids) == len(set(ids))
+    assert all(i in store_ids for i in ids)
+    assert "South Orange" not in route
+    assert "exactPriority" not in route
+    assert "withinIds" not in route
 
 
 if __name__ == "__main__":
@@ -50,4 +61,5 @@ if __name__ == "__main__":
     test_pokemon_detection()
     test_structured_stock_signals()
     test_unknown_does_not_block_restock_cooldown()
-    print("accuracy smoke tests passed")
+    test_route_integrity()
+    print("accuracy and route integrity tests passed")
