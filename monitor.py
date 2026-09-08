@@ -6,11 +6,11 @@ GameStop. Niche shops remain map-only.
 Alert policy:
   1. IN STOCK — verified availability signal on an already-known listing.
   2. NEW LISTING — handled separately, but only notified when stock is verified.
-  3. AVAILABILITY UNKNOWN — tracked internally for accuracy, never sent to Discord
-     by default. A 403/429/timeout is UNKNOWN, never IN STOCK.
+  3. AVAILABILITY UNKNOWN — tracked internally for accuracy, never sent to Discord.
 
-UNKNOWN states are deliberately separated from the verified-stock cooldown so a
-blocked check can never suppress a later real restock alert.
+A 403/429/timeout is UNKNOWN, never IN STOCK. UNKNOWN states are deliberately
+separated from the verified-stock cooldown so a blocked check can never suppress
+a later real restock alert.
 """
 from __future__ import annotations
 
@@ -24,6 +24,11 @@ from urllib.parse import quote_plus, unquote, urljoin, urlparse
 
 import requests
 from notify import alert
+
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:  # pragma: no cover - Python 3.11 in Actions always has zoneinfo
+    ZoneInfo = None
 
 ROOT = Path(__file__).parent
 STATE_FILE = ROOT / "state.json"
@@ -76,7 +81,7 @@ def load_json(path, default):
 
 def save_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
 def is_pokemon(text):
@@ -262,6 +267,8 @@ def recently_stock_alerted(entry, now, hours):
 def format_et(value):
     try:
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if ZoneInfo:
+            return dt.astimezone(ZoneInfo("America/New_York")).strftime("%B %-d, %Y %-I:%M %p %Z")
         return dt.astimezone(timezone(timedelta(hours=-4))).strftime("%B %-d, %Y %-I:%M %p EDT")
     except Exception:
         return value
@@ -308,14 +315,13 @@ def main():
     timeout = int(config.get("search_timeout_seconds", 8))
     ping = os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")
     map_url = config.get("map_url", "")
-    alert_unknown = bool(config.get("discord_alert_unknown", False))
     http = requests.Session()
     http.headers.update(HEADERS)
     now = datetime.now(timezone.utc)
     sent = {"stock": 0, "unknown": 0}
     print(f"Retailers this run: {retailers}")
     print("Discord/live hits: BIG 4 ONLY (Target, Walmart, Best Buy, GameStop)")
-    print(f"UNKNOWN Discord alerts: {'ON' if alert_unknown else 'OFF'}")
+    print("UNKNOWN Discord alerts: OFF (hard safety rule)")
     print("403/429/timeout: UNKNOWN internally, never IN STOCK")
     print("Niche shops: MAP ONLY — no Discord alerts")
 
@@ -345,20 +351,13 @@ def main():
                 kind = "stock"
             elif previous and in_stock is None:
                 sent["unknown"] += 1
-                if alert_unknown:
-                    # Kept as an opt-in diagnostic mode; disabled in production
-                    # so blocked retailers do not spam Discord.
-                    kind = "unknown"
 
-            if kind:
+            if kind == "stock":
                 detected_at = now.isoformat()
-                record_alert(alerts, retailer, kind, title, url, kind == "stock", posted_at, detected_at, in_stock)
-                send_alert(retailer, kind, title, url, map_url, ping if kind == "stock" else False, posted_at, detected_at)
-                if kind == "stock":
-                    sent["stock"] += 1
-                    last_stock_alert = detected_at
-                else:
-                    last_stock_alert = previous.get("last_stock_alert")
+                record_alert(alerts, retailer, kind, title, url, True, posted_at, detected_at, True)
+                send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at)
+                sent["stock"] += 1
+                last_stock_alert = detected_at
             else:
                 last_stock_alert = previous.get("last_stock_alert")
 
