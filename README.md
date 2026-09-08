@@ -7,8 +7,8 @@ Personal North Jersey Pokémon TCG monitor. It watches Target, Walmart, Best Buy
 ## Production rules
 
 - **Big 4 only:** Target, Walmart, Best Buy, GameStop can generate Discord alerts and live-hit pins.
-- **UNKNOWN is never IN STOCK:** HTTP 403/429, timeout, bot-check pages, missing signals and other unverifiable results are stored as `null`/UNKNOWN and never generate a Discord stock alert.
-- **Unknown never wakes Discord:** `discord_alert_unknown` remains an explicit safety setting, but the monitor also hard-enforces that UNKNOWN cannot be sent.
+- **UNKNOWN is never IN STOCK:** HTTP 403/429, timeout, bot-check pages, missing signals and other unverifiable results are stored as UNKNOWN and never generate a Discord stock alert.
+- **Unknown never wakes Discord:** the safety rule is enforced in code, not just by configuration.
 - **NEW LISTING is verified-only:** a newly discovered URL is tracked immediately, but Discord is notified only if that first observation is verified in stock.
 - **Niche stores are map-only:** they remain useful for route planning and local context without becoming alert sources.
 - **No fake timestamps:** `posted_at` is populated only when retailer metadata exposes a usable timestamp; otherwise it stays null.
@@ -26,19 +26,15 @@ There is no production UNKNOWN Discord alert. That behavior is intentional and e
 
 ## Accuracy
 
-`tests/test_accuracy.py` covers:
-
-- retailer URL validation
-- Pokémon-product detection
-- structured `InStock` / `OutOfStock` parsing
-- protection against UNKNOWN interfering with stock cooldowns
-- route-node integrity and required terminal node
+`tests/test_accuracy.py` covers retailer URL validation, Pokémon-product detection, structured stock parsing, protection against UNKNOWN interfering with stock cooldowns, and route-node integrity.
 
 `accuracy.py` calculates precision, recall, F1, accuracy and detection latency from independent human observations. Human labels belong in `data/ground_truth.json`; the bot's own prediction is not ground truth.
 
 ## Website
 
-GitHub Pages serves the `docs/` directory. The site has three main views:
+GitHub Pages serves the `docs/` directory. The repository already has the GitHub Pages deployment integration enabled; website changes under `docs/` automatically trigger the Pages build/deployment. There is intentionally **no duplicate Pages workflow** in this repository.
+
+The site has three main views:
 
 - `docs/index.html` — live North Jersey map and verified online hits
 - `docs/route.html` — school-day store sweep
@@ -64,7 +60,7 @@ The current locked order is:
 10. GameStop Kearny
 11. **Walmart Kearny — END**
 
-This keeps the useful northern stops together, moves progressively south, and finishes at Walmart Kearny. Paramus, North Bergen, Jersey City, West New York, Hoboken and other side-trip locations remain in `stores.json` but are not automatically inserted into the default school-day sweep just because they are nearby. A future change should promote a side trip only if it actually reduces travel/time for the user's trip.
+This keeps the useful northern stops together, moves progressively south, and finishes at Walmart Kearny. Paramus, North Bergen, Jersey City, West New York, Hoboken and other side-trip locations remain in `stores.json` but are not automatically inserted into the default school-day sweep just because they are nearby. A future change should promote a side trip only if it actually improves the real trip.
 
 The route page can use the device's current coordinates as its origin. Google Maps remains responsible for actual road routing, traffic, one-way streets and closures.
 
@@ -82,8 +78,8 @@ The route page can use the device's current coordinates as its origin. Google Ma
 ### 30th prices
 `.github/workflows/30th-prices.yml` runs hourly at minute 17 plus manual dispatch and updates the existing price JSON rather than creating timestamped copies.
 
-### Pages deployment
-`docs/` is deployed by the Pages workflow so website changes committed to `main` publish through the same repository instead of requiring manual file copying.
+### Pages
+GitHub's existing Pages integration publishes `docs/` after site changes. Do not add another Pages workflow unless the Pages configuration itself changes.
 
 ## Repository layout
 
@@ -91,8 +87,7 @@ The route page can use the device's current coordinates as its origin. Google Ma
 pokemon-alert-bot/
 ├── .github/workflows/
 │   ├── monitor.yml
-│   ├── 30th-prices.yml
-│   └── pages.yml
+│   └── 30th-prices.yml
 ├── data/
 │   ├── README.md
 │   └── ground_truth.json
