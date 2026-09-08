@@ -1,0 +1,27 @@
+{
+  "source": "TCGplayer",
+  "updated_at": "2026-09-07T00:00:00Z",
+  "status": "presale_snapshot",
+  "note": "30th Celebration has not fully released yet. TCGplayer presale market values can be distorted by very low sales volume. Use target_buy as the decision price; do not treat one-listing card prices as established market value.",
+  "products": [
+    {"id":"night-upc","name":"30th Celebration Ultra-Premium Collection — Night","release":"2026-11-06","msrp":179.99,"packs":30,"market":664.74,"target_buy":"$180–$225","max_buy":275,"verdict":"BUY ≤ $225; wait above $275","promo":"2 exclusive Night-themed promos; exact post-release promo market not established","score":9.8},
+    {"id":"day-upc","name":"30th Celebration Ultra-Premium Collection — Day","release":"2026-11-06","msrp":179.99,"packs":30,"market":611.80,"target_buy":"$180–$225","max_buy":250,"verdict":"BUY ≤ $225; wait above $250","promo":"2 exclusive Day-themed promos; exact post-release promo market not established","score":9.7},
+    {"id":"pc-etb","name":"30th Celebration Pokémon Center Elite Trainer Box","release":"2026-09-16","msrp":59.99,"packs":11,"market":498.60,"target_buy":"$60–$100","max_buy":125,"verdict":"BUY at retail; strong buy ≤ $100","promo":"2 Nidorina promos; 1 Pokémon Center stamped","score":9.6},
+    {"id":"etb","name":"30th Celebration Elite Trainer Box","release":"2026-09-16","msrp":49.99,"packs":9,"market":184.70,"target_buy":"$50–$65","max_buy":75,"verdict":"BUY ≤ $65; pass above $75","promo":"1 full-art Nidorina promo","score":9.3},
+    {"id":"ditto","name":"30th Celebration Ditto Premium Collection","release":"2026-11-06","msrp":39.99,"packs":8,"market":197.52,"target_buy":"$40–$50","max_buy":60,"verdict":"BUY ≤ $50; pass above $60","promo":"1 Ditto promo + acrylic display","score":9.0},
+    {"id":"mew-figure","name":"30th Celebration Figure Collection — Mew","release":"2026-11-06","msrp":29.99,"packs":5,"market":125.41,"target_buy":"$30–$40","max_buy":45,"verdict":"BUY at retail; pass above $45","promo":"Mew promo(s) + figure","score":8.4},
+    {"id":"mewtwo-figure","name":"30th Celebration Figure Collection — Mewtwo","release":"2026-11-06","msrp":29.99,"packs":5,"market":97.16,"target_buy":"$30–$40","max_buy":45,"verdict":"BUY at retail; pass above $45","promo":"Mewtwo promo(s) + figure","score":8.2},
+    {"id":"booster-bundle","name":"30th Celebration Booster Bundle","release":"2026-10-02","msrp":26.94,"packs":6,"market":90.77,"target_buy":"$27–$35","max_buy":40,"verdict":"Best pure pack-value buy at retail","promo":"None","score":8.1}
+  ],
+  "hits": [
+    {"rank":1,"name":"Mew ex — 158/128","rarity":"Futuristic Rare","tcg_value":"$3,333 presale ask / not established","note":"Only one listing in the TCGplayer price-guide snapshot; NOT a reliable market value yet."},
+    {"rank":2,"name":"Mewtwo ex — 157/128","rarity":"Futuristic Rare","tcg_value":"$1,000 presale market snapshot","note":"Very low sales volume; treat as a ceiling indicator, not guaranteed value."},
+    {"rank":3,"name":"Pikachu ex — 150/128","rarity":"Special Illustration Rare","tcg_value":"$2,000 presale ask / market unavailable","note":"Only one listing in the snapshot; post-release sales are needed before assigning a real market value."},
+    {"rank":4,"name":"30th Celebration Classic Collection hits","rarity":"Classic Collection","tcg_value":"Varies by card","note":"Every 30th pack also contains a Classic Collection-style hit slot; individual values should be refreshed after release."}
+  ],
+  "method": {
+    "sealed_market": "TCGplayer market price from the ME: 30th Celebration sealed-product search.",
+    "target_buy": "Conservative buy range based on MSRP, pack count, promo/exclusive value, chase ceiling, current presale premium, and risk of post-release price compression.",
+    "hit_values": "Presale observations are explicitly labeled when sales volume is too low to establish a market price."
+  }
+}
