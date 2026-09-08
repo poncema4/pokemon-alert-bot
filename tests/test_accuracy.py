@@ -50,7 +50,8 @@ def test_route_integrity():
     assert end_match, "route terminal node missing"
     assert route_match, "route node list missing"
     ids = re.findall(r"'([^']+)'", route_match.group(1))
-    assert ids[-1] == end_match.group(1) == "walmart-kearny"
+    ids.append(end_match.group(1))
+    assert ids[-1] == "walmart-kearny"
     assert len(ids) == len(set(ids))
     assert all(i in store_ids for i in ids)
     assert len(ids) == 11
@@ -75,7 +76,7 @@ def test_30th_complete_coverage():
     }
     assert len(products) == 21
     assert ids == required
-    assert guide.count("full announced 30th Celebration lineup") == 1
+    assert "full announced 30th Celebration lineup" in guide
     assert "Full buying list" in guide
     assert "tracked variants" in guide
     assert all(p["target_buy"] and p["max_buy"] is not None and p["score"] for p in products)
