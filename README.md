@@ -1,180 +1,129 @@
 # Pokémon TCG Stock & Listing Alert Bot
 
-A personal Pokémon TCG monitor for North Jersey. It watches the **Big 4 retailers** for online Pokémon product listings and availability, sends clean Discord alerts, and powers a live map with nearby stores and niche-shop context.
+Personal North Jersey Pokémon TCG monitor. It watches Target, Walmart, Best Buy and GameStop for online Pokémon listings/stock, sends verified Discord alerts, maintains a short-lived live-hit map, and provides a school-day store route.
 
-> **Important:** This is an alerting system. It does not buy products, bypass retailer protections, or guarantee that a product will still be purchasable after an alert. Retailer pages can change between the bot's check and your click.
+> The bot does not buy products, bypass retailer protections, or guarantee stock after an alert. Retailer inventory can change between detection and your click.
 
-## Core rules
+## Production rules
 
-### Discord + live-hit rules
+- **Big 4 only:** Target, Walmart, Best Buy, GameStop can generate Discord alerts and live-hit pins.
+- **UNKNOWN is never IN STOCK:** HTTP 403/429, timeout, bot-check pages, missing signals and other unverifiable results are stored as `null`/UNKNOWN and never generate a Discord stock alert.
+- **Unknown never wakes Discord:** `discord_alert_unknown` remains an explicit safety setting, but the monitor also hard-enforces that UNKNOWN cannot be sent.
+- **NEW LISTING is verified-only:** a newly discovered URL is tracked immediately, but Discord is notified only if that first observation is verified in stock.
+- **Niche stores are map-only:** they remain useful for route planning and local context without becoming alert sources.
+- **No fake timestamps:** `posted_at` is populated only when retailer metadata exposes a usable timestamp; otherwise it stays null.
+- **Stock cooldown is separate from UNKNOWN:** blocked checks cannot suppress a later real restock.
 
-Only these four retailers can generate Discord alerts or live-hit pins:
+## Discord alerts
 
-1. **Target**
-2. **Walmart**
-3. **Best Buy**
-4. **GameStop**
+### IN STOCK
+Sent only for an already-known listing that transitions to a verified positive availability signal. The alert contains the product, detection time, map link and direct product link.
 
-Niche stores are **map-only**. They can appear on the map and can provide product links when an online shop is found, but they do **not** generate Discord notifications.
+### NEW + IN STOCK
+Sent only when a newly discovered Big 4 URL is verified in stock on its first observation. Unknown/out-of-stock discoveries are tracked silently.
 
-Slickdeals, Reddit and other discovery sources are supporting sources only; they are not treated as a fifth retailer.
+There is no production UNKNOWN Discord alert. That behavior is intentional and enforced in code.
 
-### Three alert types
+## Accuracy
 
-#### 1. `IN STOCK — Retailer`
+`tests/test_accuracy.py` covers:
 
-Used for an **already-known** product when the page provides a positive availability signal such as `InStock`, `Add to Cart`, shipping availability, or another supported cart signal.
+- retailer URL validation
+- Pokémon-product detection
+- structured `InStock` / `OutOfStock` parsing
+- protection against UNKNOWN interfering with stock cooldowns
+- route-node integrity and required terminal node
 
-Example:
+`accuracy.py` calculates precision, recall, F1, accuracy and detection latency from independent human observations. Human labels belong in `data/ground_truth.json`; the bot's own prediction is not ground truth.
 
-```text
-@everyone
-IN STOCK — Target
+## Website
 
-Pokémon Destined Rivals Elite Trainer Box
-The retailer page is showing a verified availability/cart signal.
-Refresh the product page yourself because stock can change or be hidden by retailer anti-bot systems.
+GitHub Pages serves the `docs/` directory. The site has three main views:
 
-Time Posted: August 27, 2026 12:42 PM EDT
-Detected: August 27, 2026 12:44 PM EDT
-Map: https://poncema4.github.io/pokemon-alert-bot/
-Product: https://www.target.com/...
-```
+- `docs/index.html` — live North Jersey map and verified online hits
+- `docs/route.html` — school-day store sweep
+- `docs/30th.html` — 30th Celebration investment/rip guide
 
-#### 2. `NEW LISTING — Retailer`
+The website reads `stores.json`, `alerts.json` and `30th_prices.json` directly, with cache-busting query parameters so fresh commits are picked up quickly.
 
-Used the **first time the bot discovers a Big 4 product URL**. It fires even if the current stock state is `IN STOCK`, `OUT OF STOCK`, or `AVAILABILITY UNKNOWN`.
+## Route design
 
-This is intentionally the most important discovery alert because a product can appear, disappear, and reappear quickly.
+The default school-day route is deliberately **not DFS**. Each store is a graph node and every node pair has a coordinate-based edge weight. The route is a constrained weighted-graph sweep designed around the real trip rather than a generic nearest-neighbor sort.
 
-The message includes the current status, the retailer-published time when one is actually exposed by the page, the bot detection time, the map, and the direct product URL.
+The current locked order is:
 
-#### 3. `AVAILABILITY UNKNOWN — Retailer`
+1. Walmart Secaucus
+2. Best Buy Secaucus
+3. Best Buy American Dream
+4. CardVault by Tom Brady — American Dream
+5. Target Clifton
+6. GameStop Lyndhurst
+7. TCGDUCKHUNTER — Lyndhurst
+8. East Coast Connection — Lyndhurst
+9. Target Kearny
+10. GameStop Kearny
+11. **Walmart Kearny — END**
 
-Used when an **existing** product was previously measurable but the current page no longer gives a reliable stock signal. This can happen because a retailer blocks the runner, changes its page, or hides inventory behind JavaScript/session state.
+This keeps the useful northern stops together, moves progressively south, and finishes at Walmart Kearny. Paramus, North Bergen, Jersey City, West New York, Hoboken and other side-trip locations remain in `stores.json` but are not automatically inserted into the default school-day sweep just because they are nearby. A future change should promote a side trip only if it actually reduces travel/time for the user's trip.
 
-This is **not** treated as proof of being out of stock. It means exactly what it says: refresh the product page yourself.
+The route page can use the device's current coordinates as its origin. Google Maps remains responsible for actual road routing, traffic, one-way streets and closures.
 
-## Alert formatting
+## 30th Celebration price guide
 
-Each alert contains only the useful navigation links:
+`docs/30th_prices.json` contains the ranked sealed products, MSRP, current TCGplayer snapshot, target buy range, absolute max, pack count, promo/exclusive notes and chase-card ceiling. Presale/low-volume values are explicitly labeled rather than treated as established market prices.
 
-- **Map:** the Pokémon alert map
-- **Product:** the direct retailer product page
+`update_30th_prices.py` refreshes that existing JSON file conservatively. If TCGplayer cannot be parsed, the last good values are preserved. `.github/workflows/30th-prices.yml` runs the refresh hourly.
 
-The Discord alert does **not** dump a list of Target/Kearny/Clifton/Paramus map URLs. Local store details belong on the map.
+## GitHub Actions
 
-Multiple new listings in the same run are separated by a clear divider so they do not look like one giant alert.
+### Stock monitor
+`.github/workflows/monitor.yml` runs every five minutes (`2/5 * * * *`) plus manual dispatch. The job runs tests first, normalizes missed first-stock alerts, checks retailers, refreshes verified live hits, processes new listings, then commits runtime state.
 
-## Time Posted vs. Detected
+### 30th prices
+`.github/workflows/30th-prices.yml` runs hourly at minute 17 plus manual dispatch and updates the existing price JSON rather than creating timestamped copies.
 
-The bot records two different timestamps:
+### Pages deployment
+`docs/` is deployed by the Pages workflow so website changes committed to `main` publish through the same repository instead of requiring manual file copying.
 
-- **Time Posted:** a timestamp extracted from retailer page metadata when the retailer actually exposes one.
-- **Detected:** when this bot observed the listing during its monitor run.
-
-These are deliberately not treated as the same thing. Many retail product pages do **not** expose a reliable public publication timestamp. In that case the alert says `Time Posted: Not published by the retailer` rather than inventing a timestamp.
-
-The difference between the two is the useful detection-latency measurement when both timestamps exist.
-
-## Accuracy testing
-
-The bot now uses a **data-first accuracy workflow**. We are not training an ML model on the bot's own guesses.
-
-### What you verify
-
-When you receive a Big 4 alert, check the direct product page yourself and record the actual result:
-
-- Was it actually purchasable?
-- Was it out of stock?
-- Did a refresh make it appear?
-- Was the bot blocked or unable to determine stock?
-- When did you personally verify it?
-
-Those observations are stored in `data/ground_truth.json`.
-
-### You can send verification through ChatGPT
-
-You do **not** need to edit JSON manually. Send a message such as:
-
-```text
-Verify this alert:
-Walmart — Destined Rivals ETB
-Product: https://www.walmart.com/...
-Alert time: 1:03 PM EDT
-I clicked at 1:04 PM and it was actually in stock and I could add it to cart.
-```
-
-Then the observation can be normalized into the ground-truth dataset.
-
-The important rule is that the label must come from what **you actually saw**, not from the bot's prediction.
-
-### Metrics
-
-`accuracy.py` supports measuring:
-
-- Precision
-- Recall
-- F1
-- Accuracy
-- True positives
-- False positives
-- False negatives
-- True negatives
-- Detection latency when posted and detected timestamps are available
-
-Once enough independent observations have been collected, we can evaluate whether an ML classifier would improve ranking/confidence. Until then, deterministic retailer rules remain in control of notifications.
-
-## Clean-start state
-
-The runtime state was intentionally reset for the current accuracy baseline:
-
-- `state.json` contains only the schema version.
-- `docs/alerts.json` is empty.
-- `data/ground_truth.json` starts with zero observations.
-
-That means old Discord alerts and old bot state are not being used as evidence for the new accuracy measurements.
-
-## Repository organization
+## Repository layout
 
 ```text
 pokemon-alert-bot/
-├── .github/
-│   └── workflows/
-│       └── monitor.yml          # Scheduled GitHub Actions monitor
+├── .github/workflows/
+│   ├── monitor.yml
+│   ├── 30th-prices.yml
+│   └── pages.yml
 ├── data/
-│   ├── ground_truth.json        # Human-verified accuracy observations
-│   └── README.md                # How to label observations
+│   ├── README.md
+│   └── ground_truth.json
 ├── docs/
-│   ├── index.html               # Live map
-│   ├── stores.json              # Store/location data
-│   └── alerts.json              # Short-lived map alert feed
-├── tests/
-│   └── test_accuracy.py         # Deterministic detection/URL tests
-├── accuracy.py                  # Accuracy metrics and latency helpers
-├── monitor.py                   # Retailer discovery + stock classification
-├── notify.py                    # Discord webhook helper
-├── notify_new_listings.py       # First-discovery Big 4 alerts
-├── run_loop.py                  # Optional local fast loop
-├── search_config.json            # Retailers, keywords and monitor settings
-├── state.json                   # Runtime state (intentionally at root for Actions compatibility)
+│   ├── index.html
+│   ├── route.html
+│   ├── 30th.html
+│   ├── stores.json
+│   ├── alerts.json
+│   ├── 30th_prices.json
+│   └── favicon.svg
+├── tests/test_accuracy.py
+├── accuracy.py
+├── bootstrap_stock_alerts.py
+├── monitor.py
+├── notify.py
+├── notify_new_listings.py
+├── refresh_live_hits.py
+├── update_30th_prices.py
+├── run_loop.py
+├── search_config.json
+├── state.json
 ├── requirements.txt
 └── README.md
 ```
 
-The runtime files `state.json` and `search_config.json` intentionally remain at the repository root so the existing GitHub Actions workflow and map pipeline continue to work without fragile path changes.
+Files are updated in place. New files should be created only when they represent a genuinely new component that cannot cleanly live in an existing file; do not create duplicate versions, timestamped copies or parallel implementations.
 
-## GitHub Actions cadence
+## Discord setup
 
-The monitor requests a run every five minutes, offset away from the exact top of the hour. GitHub documents five minutes as the shortest supported scheduled-workflow interval and warns that scheduled runs can be delayed during periods of high Actions load. citeturn0search0turn0search1
-
-The workflow also runs the deterministic accuracy tests before the stock monitor. If the tests fail, the monitor job does not proceed.
-
-## Setup
-
-### Discord
-
-Create a Discord webhook and save it as the repository secret:
+Set the repository secret:
 
 ```text
 DISCORD_WEBHOOK_URL
@@ -186,28 +135,4 @@ Optional:
 DISCORD_PING=true
 ```
 
-### GitHub Actions
-
-The workflow is under `.github/workflows/monitor.yml` and supports both its scheduled run and a manual `workflow_dispatch` run.
-
-### Map
-
-GitHub Pages should deploy the `docs/` directory from `main`.
-
-Map:
-
-```text
-https://poncema4.github.io/pokemon-alert-bot/
-```
-
-## What a successful clean-start cycle looks like
-
-1. Monitor discovers a Big 4 product URL.
-2. State records it.
-3. `NEW LISTING` is sent with the current stock status.
-4. Later checks continue measuring the same URL.
-5. If it becomes verified in stock, `IN STOCK` is sent.
-6. If stock becomes unverifiable after previously being known, `AVAILABILITY UNKNOWN` is sent.
-7. Niche shops remain visible on the map but never enter Discord.
-8. You verify the alert manually and provide the result for the ground-truth dataset.
-9. Accuracy metrics are calculated from those independent labels.
+The production monitor will never send an UNKNOWN alert even if a retailer blocks the runner.
