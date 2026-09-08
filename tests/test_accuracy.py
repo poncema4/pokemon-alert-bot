@@ -45,9 +45,12 @@ def test_route_integrity():
     route = (ROOT / "docs" / "route.html").read_text(encoding="utf-8")
     stores = json.loads((ROOT / "docs" / "stores.json").read_text(encoding="utf-8"))["stores"]
     store_ids = {s["id"] for s in stores}
-    match = re.search(r"const ROUTE_IDS=\[(.*?)\];", route)
-    assert match, "route node list missing"
-    ids = re.findall(r"'([^']+)'", match.group(1))
+    end_match = re.search(r"const END_ID='([^']+)'", route)
+    route_match = re.search(r"const ROUTE_IDS=\[(.*?)\];", route)
+    assert end_match, "route terminal node missing"
+    assert route_match, "route node list missing"
+    ids = re.findall(r"'([^']+)'", route_match.group(1))
+    ids.append(end_match.group(1))
     assert ids[-1] == "walmart-kearny"
     assert len(ids) == len(set(ids))
     assert all(i in store_ids for i in ids)
