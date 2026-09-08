@@ -1,6 +1,14 @@
 name: Pokemon Stock Monitor
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "*.py"
+      - "tests/**"
+      - "search_config.json"
+      - "requirements.txt"
+      - ".github/workflows/**"
   schedule:
     - cron: "2/5 * * * *"
   workflow_dispatch:
@@ -19,7 +27,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run deterministic tests
+        run: python -u tests/test_accuracy.py
+      - name: Compile production Python
+        run: python -m py_compile monitor.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py update_30th_prices.py tests/test_accuracy.py
+
   check-stock:
+    if: github.event_name != 'push'
+    needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -30,8 +56,6 @@ jobs:
           cache: "pip"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Run accuracy smoke tests
-        run: python -u tests/test_accuracy.py
       - name: Normalize missed first-stock alerts
         run: python -u bootstrap_stock_alerts.py
       - name: Run stock check
@@ -41,7 +65,6 @@ jobs:
           SEND_TEST_ALERT: ${{ inputs.send_test_alert }}
         run: |
           python --version
-          python -m py_compile monitor.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py tests/test_accuracy.py
           if [ -n "$DISCORD_WEBHOOK_URL" ]; then
             echo "Discord webhook secret is configured."
           else
