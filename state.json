@@ -5,7 +5,7 @@
     "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box : Target",
     "in_stock": true,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": "2026-09-08T05:57:08.163500+00:00",
     "http_status": 200
   },
@@ -14,7 +14,7 @@
     "title": "Pok\u00e9mon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box : Target",
     "in_stock": true,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": "2026-09-08T05:57:08.163500+00:00",
     "http_status": 200
   },
@@ -23,16 +23,16 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": "2026-09-10T23:04:02.376435+00:00",
     "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/20161351456": {
     "pokemon": true,
-    "title": "Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com",
-    "in_stock": true,
+    "title": "Walmart Pok\u00e9mon product",
+    "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": "2026-09-12T00:35:06.923772+00:00",
     "http_status": 200
   },
@@ -41,7 +41,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -50,7 +50,7 @@
     "title": "Bestbuy Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": null
   },
@@ -59,7 +59,7 @@
     "title": "Bestbuy Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": null
   },
@@ -68,7 +68,7 @@
     "title": "Gamestop Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 403
   },
@@ -77,17 +77,17 @@
     "title": "Gamestop Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 403
   },
   "walmart::https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207": {
     "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
+    "title": "Pokemon Trading Card Games Scarlet & Violet Destined Rivals Elite Trainer Box - Walmart Business Supplies",
+    "in_stock": true,
     "posted_at": null,
-    "last_seen": "2026-09-12T00:35:06.923772+00:00",
-    "last_stock_alert": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": "2026-09-12T04:59:41.188670+00:00",
     "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Scarlet-Violet-Destined-Rivals-Pok-mon-Center-Elite-Trainer-Box/15718673510?conditionGroupCode=4&classType=REGULAR&from=/search": {
@@ -95,7 +95,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -113,7 +113,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -122,7 +122,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -131,7 +131,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -140,7 +140,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T20:58:26.167361+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -149,7 +149,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -158,7 +158,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -176,7 +176,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -185,7 +185,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -194,7 +194,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -203,7 +203,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -212,7 +212,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -221,7 +221,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -230,7 +230,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -239,7 +239,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -248,7 +248,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T20:58:26.167361+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -257,7 +257,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -266,7 +266,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -284,7 +284,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -293,7 +293,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -311,7 +311,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -329,7 +329,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -338,7 +338,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -347,7 +347,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -365,7 +365,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -374,7 +374,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -392,7 +392,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -401,7 +401,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -410,7 +410,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -419,7 +419,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -437,7 +437,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -446,7 +446,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -473,7 +473,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -482,7 +482,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -491,7 +491,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -500,7 +500,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -509,7 +509,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T11:08:59.493387+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -527,7 +527,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -536,7 +536,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -545,7 +545,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -554,7 +554,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -572,7 +572,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -581,7 +581,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -590,7 +590,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -599,7 +599,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -608,7 +608,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -617,7 +617,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -626,7 +626,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -635,7 +635,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -644,7 +644,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -653,7 +653,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -662,7 +662,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -671,7 +671,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -680,7 +680,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -689,7 +689,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -716,7 +716,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -725,7 +725,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -734,7 +734,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -743,7 +743,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -752,7 +752,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -761,7 +761,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -770,7 +770,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -779,7 +779,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -788,7 +788,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -806,7 +806,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -815,7 +815,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T11:08:59.493387+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -824,7 +824,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T11:08:59.493387+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -842,7 +842,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -860,7 +860,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -869,7 +869,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -878,7 +878,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -887,7 +887,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -896,7 +896,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -905,7 +905,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -914,7 +914,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -923,7 +923,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -932,7 +932,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -941,7 +941,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -950,7 +950,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -968,7 +968,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -977,7 +977,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -986,7 +986,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -995,7 +995,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1004,7 +1004,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1013,7 +1013,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1022,7 +1022,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1031,7 +1031,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1040,7 +1040,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1049,7 +1049,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1067,7 +1067,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1076,7 +1076,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1085,7 +1085,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1094,7 +1094,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1103,7 +1103,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1112,7 +1112,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1121,7 +1121,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1130,7 +1130,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1148,7 +1148,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1157,7 +1157,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1166,7 +1166,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1175,7 +1175,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1184,7 +1184,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1193,7 +1193,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1202,7 +1202,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1220,7 +1220,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1229,7 +1229,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1238,7 +1238,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1247,7 +1247,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1256,7 +1256,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1265,7 +1265,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1274,7 +1274,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1283,7 +1283,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1292,7 +1292,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1301,7 +1301,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1310,7 +1310,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1319,7 +1319,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1328,7 +1328,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1337,7 +1337,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1346,7 +1346,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1355,7 +1355,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1364,7 +1364,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1373,7 +1373,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1382,7 +1382,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1391,7 +1391,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1400,7 +1400,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1409,7 +1409,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1418,7 +1418,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1436,7 +1436,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1445,7 +1445,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1454,7 +1454,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1472,7 +1472,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1481,7 +1481,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1499,7 +1499,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1508,7 +1508,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1517,7 +1517,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1526,7 +1526,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T11:08:59.493387+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1535,7 +1535,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1544,7 +1544,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1553,7 +1553,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1571,7 +1571,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1580,7 +1580,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T11:08:59.493387+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1589,7 +1589,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1598,7 +1598,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1607,7 +1607,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1616,7 +1616,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1625,7 +1625,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1634,7 +1634,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1643,7 +1643,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1652,7 +1652,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1661,7 +1661,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1670,7 +1670,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1679,7 +1679,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1688,7 +1688,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1697,7 +1697,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T11:08:59.493387+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1706,7 +1706,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1715,7 +1715,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1724,7 +1724,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1733,7 +1733,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1742,7 +1742,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1751,7 +1751,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1760,7 +1760,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1769,7 +1769,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1778,7 +1778,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1787,7 +1787,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1805,7 +1805,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1814,7 +1814,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1823,7 +1823,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1832,7 +1832,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1841,7 +1841,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1850,7 +1850,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1859,7 +1859,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1868,7 +1868,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1877,7 +1877,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1886,7 +1886,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1895,7 +1895,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1904,7 +1904,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1913,7 +1913,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1922,7 +1922,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1931,7 +1931,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1940,7 +1940,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1949,7 +1949,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1958,7 +1958,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1967,7 +1967,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1976,7 +1976,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1985,7 +1985,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1994,7 +1994,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2012,7 +2012,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2030,7 +2030,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2039,7 +2039,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2057,7 +2057,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-10T11:08:59.493387+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2066,7 +2066,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2084,7 +2084,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2093,7 +2093,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2102,7 +2102,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2111,7 +2111,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2120,7 +2120,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2129,7 +2129,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2138,7 +2138,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2147,7 +2147,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2156,7 +2156,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2165,7 +2165,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2174,7 +2174,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2192,7 +2192,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2201,7 +2201,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2210,7 +2210,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2237,7 +2237,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2246,7 +2246,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2255,7 +2255,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2264,7 +2264,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2273,7 +2273,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2282,7 +2282,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2291,7 +2291,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2300,7 +2300,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2309,7 +2309,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2318,7 +2318,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2327,7 +2327,7 @@
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2336,7 +2336,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2345,7 +2345,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2363,7 +2363,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2381,7 +2381,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2390,7 +2390,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2399,7 +2399,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2408,7 +2408,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2417,7 +2417,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2426,7 +2426,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2444,7 +2444,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2453,7 +2453,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2472,6 +2472,168 @@
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-09-11T22:32:16.266685+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-Scarlet-and-Violet-8-5-Prismatic-Evolutions-Elite-Trainer-Box/13816151308?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Pitch-Black-Booster-Bundle/20243261734?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-Mask-of-Change-Booster-Pack-JAPANESE/6165204746": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Pitch-Black-Booster-Box-ME05/20140716298?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Chaos-Rising-Booster-Box/19939024731?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-8-5-Prismatic-Evolutions-Poster-Box/14091452016?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Cards-SV-8-5-Prismatic-Evolutions-Tech-Sticker-Collection/14191660941?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Graded-2025-Graded-Pokemon-Phantasmal-Flames-Mega-Charizard-X-ex-Holo-CGC-9-130-094/20709157521?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Ascended-Heroes-Mini-Tin-Display-10-Units-2-of-Each/18952152504?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Mega-Darkrai-EX-Secret-Rare-Holo-2026-Pokemon-Pitch-Black-116-84-English/20958011938?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Celebrations-Collection-Elite-Trainer-Box/576376488": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Poster-Collection/20671207153?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Knock-Out-Collection/20638470037?conditionGroupCode=4&classType=REGULAR&from=/search": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Poster-Collection/20671207153": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
+    "last_stock_alert": null,
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-M4-Mega-Ninja-Spinner-Booster-Box-Korean-Language-30-Packs/20208919737": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-09-12T04:59:41.188670+00:00",
     "last_stock_alert": null,
     "http_status": 200
   }
