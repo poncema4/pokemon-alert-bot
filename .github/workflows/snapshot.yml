@@ -1,0 +1,26 @@
+name: Snapshot retailer pages
+
+# Manual: saves the pages the bot really receives from GitHub's runner so detection can be tested on real samples.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - run: python -u tools/snapshot.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: retailer-snapshots
+          path: snapshots/
+          retention-days: 14
