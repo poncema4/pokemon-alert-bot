@@ -84,6 +84,20 @@ Each cycle checks the seed and recently readable listings, refreshes the live-hi
 
 Secrets: `DISCORD_WEBHOOK_URL` (required for alerts), `DISCORD_PING=true` (optional, adds `@everyone`).
 
+## Alerts from the stores' own emails (Target, Walmart, Pokémon Center and the rest)
+
+Some stores cannot be read by a bot at all (Target and Walmart put up captchas, Pokémon Center blocks automated visitors), and the bot will not try to get past that. They can still tell **you**: every one of them emails you when a sold-out item comes back if you ask. `integrations/gmail_to_discord.gs` is a small Google Apps Script that runs in your own Gmail and posts those emails to the same Discord channel, with an `@everyone` ping, within about a minute. It is a second source, not PokePing's own check: the store decides when its email goes out, so it can be late.
+
+One-time setup (about 10 minutes):
+
+1. **Ask each store to email you.** On a sold-out product page tap Target's "Notify me when it's back", Walmart's "Get in-stock alert", GameStop's "Notify Me" (and Best Buy's in-stock alert where the page offers one). For Pokémon Center, subscribe to its emails (restock, queue and early-access mail). Do it for the boxes you want.
+2. **Label them in Gmail.** Settings > Filters > Create a new filter, "From": `target.com OR walmart.com OR bestbuy.com OR gamestop.com OR pokemoncenter.com OR pokemon.com`, then **Apply the label** `PokePing` (create it) and tick "Never send it to Spam".
+3. **Add the script.** Open script.google.com, New project, paste the whole of `integrations/gmail_to_discord.gs`.
+4. **Give it the webhook.** Project Settings > Script properties > add `DISCORD_WEBHOOK_URL` with the same Discord webhook PokePing uses (keep it private).
+5. **Test, then start it.** Run `sendTestToDiscord` once (a TEST message appears in Discord), then run `installTrigger` once and approve the permissions. It now checks every minute.
+
+What it forwards: unread emails labelled `PokePing`, from one of the five stores' own domains (a look-alike domain is ignored), that talk about stock (back in stock, available, restock, queue, waiting room), less than a day old. Each is forwarded once and then marked read. A subject can never ping anyone by itself. `node tests/web/gmail_forwarder.test.js` tests this logic.
+
 ## Repository layout
 
 ```text

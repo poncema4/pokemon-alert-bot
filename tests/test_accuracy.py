@@ -2340,6 +2340,17 @@ def test_every_tool_script_can_be_imported_the_way_its_workflow_runs_it():
         assert run.returncode == 0, f"tools/{tool.name} cannot be imported:\n{run.stderr[-600:]}"
 
 
+def test_ci_runs_the_email_forwarder_tests_and_the_readme_explains_the_setup():
+    workflow = (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
+    assert "node tests/web/gmail_forwarder.test.js" in workflow, "CI must run the email forwarder tests"
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    for needle in ("integrations/gmail_to_discord.gs", "DISCORD_WEBHOOK_URL", "sendTestToDiscord", "installTrigger", "Apply the label", "PokePing"):
+        assert needle in readme, f"README must explain the email forwarder setup: missing {needle}"
+    script = (ROOT / "integrations" / "gmail_to_discord.gs").read_text(encoding="utf-8")
+    for fn in ("function checkRestockEmails", "function installTrigger", "function sendTestToDiscord", "function buildPayload"):
+        assert fn in script, fn
+
+
 def test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued():
     sys.path.insert(0, str(ROOT / "tools"))
     import ensure_watcher
@@ -2514,6 +2525,7 @@ if __name__ == "__main__":
     test_page_assets_are_versioned_so_a_browser_never_mixes_releases()
     test_ci_runs_the_end_to_end_test()
     test_every_tool_script_can_be_imported_the_way_its_workflow_runs_it()
+    test_ci_runs_the_email_forwarder_tests_and_the_readme_explains_the_setup()
     test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued()
     test_the_watcher_never_shares_a_concurrency_group_with_test_runs()
     test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
