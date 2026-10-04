@@ -67,3 +67,5 @@
   .hit { min-height: 64px; padding: 12px 8px 12px 10px; }
   .hit .near, .hit .name { padding: 4px 0; }
 }
+.tag.unknown { color: var(--muted); }
+.state-unknown { color: var(--muted); font-weight: 700; }
