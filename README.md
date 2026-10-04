@@ -41,9 +41,9 @@ Measured from GitHub's runner. The map's status lamps show the live state and ex
 | Retailer | Reading? | Why |
 | --- | --- | --- |
 | GameStop | yes | its page carries its own availability flag |
-| Walmart | sometimes | redirects automated visitors to a bot wall; read whenever it lets the bot in |
+| Walmart | sometimes | redirects automated visitors to a robot check ("Robot or human?"); read whenever it lets the bot in |
 | Target | no | server page shows a disabled placeholder; real stock comes from a captcha-protected API |
-| Best Buy | no | the connection from the runner times out |
+| Best Buy | spotty | read in a real browser; its bot defence serves an empty page about half the time (an empty page is "unknown", never "in stock"), and only the store's own offers count, not marketplace resellers |
 | Pokémon Center | no | 403 or a robot check |
 
 A retailer that cannot be read looks exactly like "nothing in stock", so each run records per-retailer counts in `docs/health.json`. After 24 hours unreadable the bot posts one **BLIND SPOT** notice, and one **RECOVERED** notice when it can read again. Listings never readable for 7 days are pruned (seed URLs stay).
@@ -64,7 +64,7 @@ Home is hard-set in `docs/stores.json`. Store pins come from each store's own Op
 
 ## How it runs
 
-`.github/workflows/monitor.yml` runs the tests, then one long-lived watcher job (`bot/monitor_loop.py`, about 55 minutes) that starts its own successor. GitHub's cron is best effort (measured median gap between scheduled runs was 239 minutes), so the job polls inside itself every 60 seconds and the 30-minute cron is only a safety net.
+`.github/workflows/monitor.yml` runs the tests, then one long-lived watcher job (`bot/monitor_loop.py`, about 55 minutes) that starts its own successor. GitHub's cron is best effort (measured median gap between scheduled runs was 239 minutes), so the job polls inside itself every 30 seconds and the 30-minute cron is only a safety net.
 
 The watcher runs in its own concurrency group (`pokeping-watcher`), separate from the test runs on push and PR. GitHub keeps only one *pending* run per group, so when they shared one, every merge to `main` replaced the watcher's queued handover and the chain broke until the next cron run (the data went stale after each merge).
 
