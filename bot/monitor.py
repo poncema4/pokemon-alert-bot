@@ -511,7 +511,10 @@ def main(discover=True, cycle=0):
             key = f"{retailer}::{url}"
             previous = state.get(key, {})
             via_browser = BROWSER is not None and retailer in browser_retailers
-            period = (browser_hot_every if is_hot(url) else browser_slow_every) if via_browser else (1 if is_hot(url) else slow_every)
+            # Something in stock is "hot" whatever it is: it must be re-read often so it stays on Live online (hidden after 5 minutes without a
+            # check) and so a sell-out shows quickly. Calm out-of-stock pages keep the slow rhythm.
+            hot_now = is_hot(url) or previous.get("in_stock") is True
+            period = (browser_hot_every if hot_now else browser_slow_every) if via_browser else (1 if hot_now else slow_every)
             if cycle % period != 0:
                 return  # a calmer listing, or a browser-read page: checked on its own rhythm
             if time.monotonic() - started > budget:

@@ -54,6 +54,10 @@ jobs:
         env:
           POKEPING_REQUIRE_BROWSER: "1"
         run: python -u tests/test_accuracy.py
+      - name: Run the end-to-end test (restock -> Discord -> website)
+        env:
+          POKEPING_REQUIRE_BROWSER: "1"
+        run: python -u tests/test_end_to_end.py
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
