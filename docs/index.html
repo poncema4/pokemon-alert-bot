@@ -30,6 +30,12 @@
       </section>
       <section aria-labelledby="near-title">
         <div class="rail-head"><h2 id="near-title">Stores near you</h2><button class="btn" id="locate" type="button">Use my location</button></div>
+        <form class="home" id="home-form">
+          <label for="home-input" class="sr-only">Your home address</label>
+          <input id="home-input" type="text" autocomplete="street-address" placeholder="Set your home: street, town">
+          <button class="btn" type="submit">Set home</button>
+        </form>
+        <p class="muted" id="home-note"></p><button class="btn" id="home-clear" type="button" hidden>Use the town centre instead</button>
         <div class="chips" id="chips" role="group" aria-label="Filter stores"></div>
         <div id="stores"></div>
       </section>

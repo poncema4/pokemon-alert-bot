@@ -76,5 +76,39 @@
     return /^https?:\/\//i.test(url || "") ? url : "#";
   }
 
-  return { RETAILERS, LABELS, STALE_MINUTES, miles, ago, retailerState, isLive, openNow, nearestStore, directionsUrl, escapeHtml, safeUrl };
+  /* Home is private: the repo and the site are public, so the exact spot lives only in this browser (localStorage).
+     The default in stores.json is just the town. Valid homes are inside the North Jersey / NYC box. */
+  const HOME_KEY = "restock-radar-home";
+  const BOX = { south: 40.4, north: 41.2, west: -74.5, east: -73.6 };
+
+  function validPoint(lat, lng) {
+    return Number.isFinite(lat) && Number.isFinite(lng) && lat > BOX.south && lat < BOX.north && lng > BOX.west && lng < BOX.east;
+  }
+
+  /* "?home=40.79,-74.12" -> [lat, lng], or null when missing, malformed or outside the region. */
+  function parseHomeParam(search) {
+    const m = /[?&]home=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/.exec(search || "");
+    if (!m) return null;
+    const lat = Number(m[1]), lng = Number(m[2]);
+    return validPoint(lat, lng) ? [lat, lng] : null;
+  }
+
+  function loadHome(storage, fallback) {
+    try {
+      const saved = JSON.parse(storage.getItem(HOME_KEY));
+      if (saved && validPoint(saved.lat, saved.lng)) return { lat: saved.lat, lng: saved.lng, custom: true };
+    } catch (e) { /* no storage (private mode) or bad JSON: use the default */ }
+    return { lat: fallback[0], lng: fallback[1], custom: false };
+  }
+
+  function saveHome(storage, lat, lng) {
+    if (!validPoint(lat, lng)) return false;
+    try { storage.setItem(HOME_KEY, JSON.stringify({ lat, lng })); return true; } catch (e) { return false; }
+  }
+
+  function clearHome(storage) {
+    try { storage.removeItem(HOME_KEY); } catch (e) { /* nothing to clear */ }
+  }
+
+  return { HOME_KEY, validPoint, parseHomeParam, loadHome, saveHome, clearHome, RETAILERS, LABELS, STALE_MINUTES, miles, ago, retailerState, isLive, openNow, nearestStore, directionsUrl, escapeHtml, safeUrl };
 });
