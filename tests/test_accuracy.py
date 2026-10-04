@@ -14,6 +14,7 @@ from datetime import timedelta
 import monitor
 import monitor_loop
 import notify_new_listings
+import update_30th_prices as prices_mod
 from monitor import classify_response, extract_structured_availability, is_pokemon, recently_stock_alerted, retailer_url_is_valid, should_prune, update_health
 
 
@@ -320,6 +321,36 @@ def test_loop_scheduling():
     assert len(commits) == 1, "nothing meaningful changed, so only the final commit attempt runs"
 
 
+def test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure():
+    import notify_new_listings as nn
+    import refresh_live_hits as rl
+    order = []
+    real = (monitor.main, rl.main, nn.main, prices_mod.main)
+    monitor.main = lambda discover=True: order.append(("stock", discover))
+    rl.main = lambda: order.append("hits")
+    nn.main = lambda: order.append("new")
+    state = {"fail": False}
+
+    def price_main():
+        order.append("prices")
+        if state["fail"]:
+            raise RuntimeError("tcgplayer down")
+
+    prices_mod.main = price_main
+    try:
+        monitor_loop.run_cycle(0)
+        assert order == ["prices", ("stock", True), "hits", "new"], order
+        order.clear()
+        monitor_loop.run_cycle(1)
+        assert "prices" not in order and ("stock", False) in order, "prices refresh only every PRICE_EVERY cycles, and the fast pass skips discovery"
+        order.clear()
+        state["fail"] = True
+        monitor_loop.run_cycle(monitor_loop.PRICE_EVERY)
+        assert order == ["prices", ("stock", monitor_loop.PRICE_EVERY % monitor_loop.DISCOVER_EVERY == 0), "hits", "new"], "a failing price refresh must not stop the stock checks"
+    finally:
+        monitor.main, rl.main, nn.main, prices_mod.main = real
+
+
 def test_loop_commits_on_meaningful_change_only():
     clock = _Clock()
     commits = []
@@ -417,6 +448,143 @@ def test_main_marks_new_listings_and_leaves_legacy_ones_alone():
     assert after[f"target::{legacy}"]["first_seen"] == "2026-10-01T00:00:00+00:00"
 
 
+def _fixture(name):
+    return json.loads((ROOT / "tests" / "fixtures" / name).read_text(encoding="utf-8"))
+
+
+def _guide():
+    return json.loads((ROOT / "docs" / "30th_prices.json").read_text(encoding="utf-8"))
+
+
+def test_every_guide_product_has_a_tcgplayer_mapping():
+    ids = {p["id"] for p in _guide()["products"]}
+    assert ids == set(prices_mod.PRODUCT_IDS), (ids ^ set(prices_mod.PRODUCT_IDS))
+    sealed = prices_mod.sealed_prices(_fixture("tcg_sealed.json"))
+    for guide_id, tcg_ids in prices_mod.PRODUCT_IDS.items():
+        assert all(i in sealed for i in tcg_ids), f"{guide_id} maps to a TCGplayer id that is not in the captured response"
+
+
+def test_each_mapping_points_at_the_product_it_claims():
+    # Independent expectations, written out by hand from TCGplayer's product names (not derived from the code).
+    expected = {
+        "night-upc": "Ultra-Premium Collection [Night]", "day-upc": "Ultra-Premium Collection [Day]",
+        "pc-etb": "Pokemon Center Elite Trainer Box", "etb": "30th Celebration Elite Trainer Box",
+        "ditto": "Ditto Premium Collection", "booster-bundle": "30th Celebration Booster Bundle",
+        "poster": "Poster Collection", "binder": "Binder Collection", "mew-figure": "Figure Collection [Mew]",
+        "mewtwo-figure": "Figure Collection [Mewtwo]", "greninja-box": "Greninja ex Box", "sylveon-box": "Sylveon ex Box",
+        "tech-lucario": "Tech Sticker Collection [Lucario]", "tech-exeggutor": "Tech Sticker Collection [Alolan Exeggutor]",
+        "knockout": "Knock Out Collection", "blister": "2-Pack Blister", "battle-espeon": "Battle Deck [Espeon ex]",
+        "battle-umbreon": "Battle Deck [Umbreon ex]", "tin-sylveon": "ex Tin [Sylveon ex] (Retail Version)",
+        "tin-greninja": "ex Tin [Greninja ex] (Retail Version)",
+    }
+    names = {int(r["productId"]): r["productName"] for r in prices_mod.rows(_fixture("tcg_sealed.json"))}
+    for guide_id, fragment in expected.items():
+        (tcg_id,) = prices_mod.PRODUCT_IDS[guide_id]
+        assert fragment in names[tcg_id], f"{guide_id} -> {names[tcg_id]!r}, expected it to contain {fragment!r}"
+        assert names[tcg_id].count("Case") == 0, f"{guide_id} must not point at a sealed case"
+    assert len(prices_mod.PRODUCT_IDS["mini-tins"]) == 10 and all("Mini Tin [" in names[i] and "Display" not in names[i] for i in prices_mod.PRODUCT_IDS["mini-tins"])
+
+
+def test_bad_prices_and_unsorted_rows_are_handled():
+    rows = [{"productId": 1, "productName": "a", "marketPrice": 0, "totalListings": 5},
+            {"productId": 2, "productName": "b", "marketPrice": None, "totalListings": 5},
+            {"productId": 3, "productName": "c", "marketPrice": 12.345, "totalListings": 7}]
+    assert prices_mod.sealed_prices({"results": [{"results": rows}]}) == {3: {"market": 12.35, "low": None, "listings": 7}}, "zero and missing prices are not prices"
+    cards = [{"productId": i, "productName": f"card{i}", "marketPrice": p, "rarityName": "R", "totalListings": 1} for i, p in enumerate([5, 90, 0, 40, 70])]
+    ranked = prices_mod.chase_cards({"results": [{"results": cards}]}, limit=3)
+    assert [c["market"] for c in ranked] == [90, 70, 40] and [c["rank"] for c in ranked] == [1, 2, 3], "sorted by price whatever order the API returns"
+
+
+def test_prices_are_matched_by_product_id_and_stamped():
+    data = _guide()
+    for p in data["products"]:
+        p["market"] = 1.0  # prove the update replaces stale values
+        p.pop("market_updated_at", None)
+    now = datetime(2026, 10, 4, 16, 0, tzinfo=timezone.utc)
+    updated, flagged, missing = prices_mod.apply_prices(data, prices_mod.sealed_prices(_fixture("tcg_sealed.json")), now)
+    # old values of 1.0 are far outside the jump guard, so nothing may update when the guard is working...
+    assert flagged and not updated
+    data = _guide()
+    updated, flagged, missing = prices_mod.apply_prices(data, prices_mod.sealed_prices(_fixture("tcg_sealed.json")), now)
+    assert len(updated) == 21 and not flagged and not missing
+    by_id = {p["id"]: p for p in data["products"]}
+    assert by_id["etb"]["market"] == 157.09 and by_id["etb"]["listings"] == 310
+    assert by_id["pc-etb"]["market"] == 305.49, "the Pokémon Center ETB must not be confused with the regular ETB"
+    assert by_id["battle-umbreon"]["market"] == 69.69
+    assert by_id["mini-tins"]["market"] == 34.1, "mini tins use the median of the ten designs"
+    assert all(p["market_updated_at"] == now.isoformat() and p["market_source"] == "tcgplayer" for p in data["products"])
+
+
+def test_a_glitchy_jump_is_ignored_and_flagged():
+    data = _guide()
+    etb = next(p for p in data["products"] if p["id"] == "etb")
+    etb["market"] = 20.0  # live price 157.09 is 7.8x this
+    stamp = etb.get("market_updated_at")
+    updated, flagged, _ = prices_mod.apply_prices(data, prices_mod.sealed_prices(_fixture("tcg_sealed.json")), datetime(2026, 10, 4, tzinfo=timezone.utc))
+    assert "etb" in flagged and "etb" not in updated
+    assert etb["market"] == 20.0 and etb.get("market_updated_at") == stamp and "ignored" in etb["market_flag"]
+
+
+def test_refresh_failure_keeps_prices_and_says_stale():
+    data = _guide()
+    before = json.dumps(data["products"], sort_keys=True)
+    updated_at = data["updated_at"]
+
+    def boom(body):
+        raise RuntimeError("HTTP 500")
+
+    out = prices_mod.refresh(data, fetch=boom, now=datetime(2026, 10, 5, tzinfo=timezone.utc))
+    assert out["status"] == "stale" and "HTTP 500" in out["last_error"]
+    assert json.dumps(out["products"], sort_keys=True) == before, "prior prices must survive a failed refresh"
+    assert out["updated_at"] == updated_at, "updated_at may only move when prices really refreshed"
+    assert out["checked_at"].startswith("2026-10-05")
+
+
+def test_thin_response_is_stale_not_live():
+    data = _guide()
+    updated_at = data["updated_at"]
+    hits = json.dumps(data["hits"], sort_keys=True)
+    thin = {"results": [{"totalResults": 1, "results": _fixture("tcg_sealed.json")["results"][0]["results"][:3]}]}
+    out = prices_mod.refresh(data, fetch=lambda body: thin, now=datetime(2026, 10, 5, tzinfo=timezone.utc))
+    assert out["status"] == "stale" and "refreshed" in out["last_error"]
+    assert out["updated_at"] == updated_at and json.dumps(out["hits"], sort_keys=True) == hits
+
+
+def test_full_refresh_is_live_with_real_chase_cards():
+    data = _guide()
+    now = datetime(2026, 10, 5, 12, 0, tzinfo=timezone.utc)
+
+    def fake(body):
+        return _fixture("tcg_cards.json") if body["filters"]["term"]["productTypeName"] == ["Cards"] else _fixture("tcg_sealed.json")
+
+    out = prices_mod.refresh(data, fetch=fake, now=now)
+    assert out["status"] == "live" and out["updated_at"] == now.isoformat() and "last_error" not in out
+    assert out["refresh"]["updated"] == 21
+    assert [h["rank"] for h in out["hits"]] == list(range(1, len(out["hits"]) + 1))
+    assert out["hits"][0]["name"] == "Mew - R/RGB" and out["hits"][0]["market"] == 6000.27
+    assert all(a["market"] >= b["market"] for a, b in zip(out["hits"], out["hits"][1:])), "chase list is sorted by real price"
+
+
+def test_paging_collects_every_row():
+    calls = []
+
+    def fake(body):
+        offset = body["from"]
+        calls.append((offset, body["size"]))
+        page = [{"productId": i, "productName": f"p{i}", "marketPrice": 1.0} for i in range(offset, min(offset + body["size"], 120))]
+        return {"results": [{"totalResults": 120, "results": page}]}
+
+    payload = prices_mod.fetch_all(fake, "Sealed Products")
+    assert calls == [(0, 50), (50, 50), (100, 50)] and len(prices_mod.rows(payload)) == 120
+    assert max(size for _, size in calls) <= prices_mod.PAGE_SIZE
+
+
+def test_committed_guide_carries_per_product_freshness():
+    data = _guide()
+    assert data["status"] in ("live", "stale") and "checked_at" in data
+    assert all(p.get("market_source") == "tcgplayer" and p.get("market_updated_at") for p in data["products"]), "every price needs a source and a timestamp"
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -433,7 +601,18 @@ if __name__ == "__main__":
     test_main_stops_probing_a_wall_but_keeps_reading_the_rest()
     test_main_target_placeholder_never_becomes_stock()
     test_main_alert_wording_follows_signal_strength()
+    test_every_guide_product_has_a_tcgplayer_mapping()
+    test_each_mapping_points_at_the_product_it_claims()
+    test_bad_prices_and_unsorted_rows_are_handled()
+    test_prices_are_matched_by_product_id_and_stamped()
+    test_a_glitchy_jump_is_ignored_and_flagged()
+    test_refresh_failure_keeps_prices_and_says_stale()
+    test_thin_response_is_stale_not_live()
+    test_full_refresh_is_live_with_real_chase_cards()
+    test_paging_collects_every_row()
+    test_committed_guide_carries_per_product_freshness()
     test_loop_scheduling()
+    test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()
     test_signature_ignores_last_seen()
     test_fast_pass_does_not_search_and_rechecks_known_listings()

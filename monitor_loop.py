@@ -24,7 +24,8 @@ CYCLE_SECONDS = float(os.environ.get("MONITOR_CYCLE_SECONDS", "60"))
 RUNTIME_SECONDS = float(os.environ.get("MONITOR_RUNTIME_SECONDS", "3300"))
 DISCOVER_EVERY = int(os.environ.get("MONITOR_DISCOVER_EVERY", "10"))
 COMMIT_EVERY = float(os.environ.get("MONITOR_COMMIT_EVERY", "300"))
-TRACKED = ("state.json", "docs/alerts.json", "docs/health.json")
+PRICE_EVERY = int(os.environ.get("MONITOR_PRICE_EVERY", "20"))  # cycles between 30th price refreshes (about 20 minutes)
+TRACKED = ("state.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json")
 
 
 def signature():
@@ -36,13 +37,20 @@ def signature():
             return {}
     state = {k: ({f: v for f, v in e.items() if f != "last_seen"} if isinstance(e, dict) else e) for k, e in load("state.json").items()}
     health = {r: {f: v for f, v in e.items() if f != "last_run"} for r, e in load("docs/health.json").items()}
-    return json.dumps([state, load("docs/alerts.json"), health], sort_keys=True), json.dumps(load("docs/alerts.json"), sort_keys=True)
+    prices = {k: v for k, v in load("docs/30th_prices.json").items() if k not in ("checked_at",)}
+    return json.dumps([state, load("docs/alerts.json"), health, prices], sort_keys=True), json.dumps(load("docs/alerts.json"), sort_keys=True)
 
 
 def run_cycle(number):
     import monitor
     import notify_new_listings
     import refresh_live_hits
+    if number % PRICE_EVERY == 0:
+        try:
+            import update_30th_prices
+            update_30th_prices.main()
+        except Exception as exc:  # prices must never stop stock checks
+            print(f"30th price refresh failed: {exc}")
     monitor.main(discover=number % DISCOVER_EVERY == 0)
     refresh_live_hits.main()
     notify_new_listings.main()
