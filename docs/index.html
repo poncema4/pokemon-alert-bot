@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Pokémon Restock Radar — North Jersey</title>
-  <link rel="icon" href="favicon.svg">
+  <title>PokePing · Map</title>
+  <meta name="description" content="PokePing watches Target, Walmart, Best Buy, GameStop and Pokémon Center for Pokémon TCG restocks near North Arlington, NJ.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -13,7 +14,7 @@
 </head>
 <body class="map-page">
   <header class="topbar">
-    <div class="brand">Restock Radar</div>
+    <a class="brand" href="index.html"><img src="favicon.svg" alt="" width="28" height="28"><span>PokePing</span></a>
     <div class="lamps" id="lamps" aria-label="Which retailers the bot can currently read"></div>
     <nav class="nav" aria-label="Pages">
       <a href="index.html" aria-current="page">Map</a>
@@ -27,15 +28,11 @@
       <section aria-labelledby="live-title">
         <div class="rail-head"><h2 id="live-title">Live online</h2><span id="checked" class="muted"></span></div>
         <div id="live"></div>
+        <details class="coverage"><summary>What the bot can and cannot see</summary><ul id="coverage"></ul></details>
       </section>
       <section aria-labelledby="near-title">
-        <div class="rail-head"><h2 id="near-title">Stores near you</h2><button class="btn" id="locate" type="button">Use my location</button></div>
-        <form class="home" id="home-form">
-          <label for="home-input" class="sr-only">Your home address</label>
-          <input id="home-input" type="text" autocomplete="street-address" placeholder="Set your home: street, town">
-          <button class="btn" type="submit">Set home</button>
-        </form>
-        <p class="muted" id="home-note"></p><button class="btn" id="home-clear" type="button" hidden>Use the town centre instead</button>
+        <div class="rail-head"><h2 id="near-title">Stores near home</h2><button class="btn" id="locate" type="button">Use my location</button></div>
+        <p class="muted" id="origin-note"></p>
         <div class="chips" id="chips" role="group" aria-label="Filter stores"></div>
         <div id="stores"></div>
       </section>

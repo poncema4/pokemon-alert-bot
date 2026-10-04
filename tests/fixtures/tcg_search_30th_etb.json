@@ -1,0 +1,81 @@
+{
+ "results": [
+  {
+   "totalResults": 219,
+   "results": [
+    {
+     "productId": 704143.0,
+     "productName": "30th Celebration Elite Trainer Box",
+     "marketPrice": 156.9192,
+     "lowestPrice": 139.99,
+     "totalListings": 311.0,
+     "setName": "ME: 30th Celebration",
+     "productTypeName": null
+    },
+    {
+     "productId": 709036.0,
+     "productName": "30th Celebration Elite Trainer Box Case",
+     "marketPrice": 1677.6,
+     "lowestPrice": 1639.95,
+     "totalListings": 27.0,
+     "setName": "ME: 30th Celebration",
+     "productTypeName": null
+    },
+    {
+     "productId": 704144.0,
+     "productName": "30th Celebration Pokemon Center Elite Trainer Box",
+     "marketPrice": 304.5084,
+     "lowestPrice": 129.79,
+     "totalListings": 152.0,
+     "setName": "ME: 30th Celebration",
+     "productTypeName": null
+    },
+    {
+     "productId": 709037.0,
+     "productName": "30th Celebration ex Box Case",
+     "marketPrice": 353.54,
+     "lowestPrice": 314.0,
+     "totalListings": 17.0,
+     "setName": "ME: 30th Celebration",
+     "productTypeName": null
+    },
+    {
+     "productId": 704155.0,
+     "productName": "30th Celebration Sylveon ex Box",
+     "marketPrice": 63.35,
+     "lowestPrice": 55.0,
+     "totalListings": 76.0,
+     "setName": "ME: 30th Celebration",
+     "productTypeName": null
+    },
+    {
+     "productId": 242811.0,
+     "productName": "Celebrations Elite Trainer Box",
+     "marketPrice": 356.56,
+     "lowestPrice": 339.99,
+     "totalListings": 85.0,
+     "setName": "Celebrations",
+     "productTypeName": null
+    },
+    {
+     "productId": 704168.0,
+     "productName": "30th Celebration Greninja ex Box",
+     "marketPrice": 59.57,
+     "lowestPrice": 55.0,
+     "totalListings": 62.0,
+     "setName": "ME: 30th Celebration",
+     "productTypeName": null
+    },
+    {
+     "productId": 692947.0,
+     "productName": "Pitch Black Elite Trainer Box",
+     "marketPrice": 75.58,
+     "lowestPrice": 25.0,
+     "totalListings": 213.0,
+     "setName": "ME05: Pitch Black",
+     "productTypeName": null
+    }
+   ]
+  }
+ ]
+}

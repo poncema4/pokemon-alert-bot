@@ -1,0 +1,53 @@
+/* 30th guide page. Colours and type come from site.css. */
+.content { max-width: 1100px; margin: 0 auto; padding: 18px 16px 40px; }
+.intro h1 { font-size: 2rem; }
+.intro p { color: var(--muted); margin: 6px 0 0; max-width: 62ch; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
+.stat b { display: block; font-family: var(--display); font-size: 1.5rem; line-height: 1.1; }
+.stat span { color: var(--muted); font-size: .78rem; }
+.section { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+.section h2 { font-size: 1.3rem; }
+.muted { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.controls input, .controls select { min-height: 40px; background: var(--ink); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 0 11px; font: inherit; font-size: .9rem; }
+.controls input { flex: 1; min-width: 190px; }
+.chip { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 6px 14px; font: inherit; font-size: .85rem; cursor: pointer; min-height: 40px; }
+.chip.active { color: var(--ink); background: var(--text); border-color: var(--text); font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.product { background: var(--ink); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; }
+.product.best { border-color: var(--live); }
+.top { display: flex; gap: 10px; align-items: flex-start; }
+.rank { min-width: 34px; height: 34px; border-radius: 8px; background: var(--panel-2); display: grid; place-items: center; font-family: var(--display); font-weight: 700; color: var(--live); }
+.product h3 { font-size: 1.1rem; line-height: 1.2; }
+.variant { color: var(--muted); font-size: .8rem; margin-top: 2px; }
+.score { margin-left: auto; font-family: var(--display); font-size: 1.1rem; color: var(--live); white-space: nowrap; }
+.badges { display: flex; flex-wrap: wrap; gap: 5px; margin: 9px 0; }
+.badge { border: 1px solid var(--line); color: var(--muted); border-radius: 999px; padding: 2px 9px; font-size: .74rem; }
+.prices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 8px 0; }
+.price { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 8px; }
+.price span { display: block; color: var(--muted); font-size: .7rem; }
+.price b { font-size: .92rem; }
+.price small { color: var(--muted); font-weight: 400; font-size: .72rem; }
+.target b { color: var(--live); }
+.good { color: var(--ok); font-weight: 700; }
+.warn { color: var(--blind); font-weight: 700; }
+.promo, .why { font-size: .82rem; margin: 6px 0 0; }
+.why { color: var(--muted); }
+.empty { padding: 30px; text-align: center; color: var(--muted); }
+.hits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.hit { background: var(--ink); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
+.hit b { display: block; font-family: var(--display); font-size: 1.05rem; }
+.hit strong { display: block; color: var(--live); margin: 2px 0; }
+.hit span, .sub { color: var(--muted); font-size: .8rem; }
+.footer { color: var(--muted); font-size: .78rem; margin: 14px 2px 0; }
+
+@media (max-width: 800px) {
+  .content { padding: 12px 12px 24px; }
+  .intro h1 { font-size: 1.6rem; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .grid, .hits { grid-template-columns: 1fr; }
+  .prices { grid-template-columns: repeat(2, 1fr); }
+  .controls select, .controls input { width: 100%; font-size: 16px; }
+  .controls input { flex-basis: 100%; }
+}

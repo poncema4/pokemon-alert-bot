@@ -36,6 +36,16 @@
     return { state: "ok", note: "checked " + ago(h.last_run, now) };
   }
 
+  const STATE_WORDS = { ok: "reading", blind: "can't read", stale: "offline", unknown: "no data" };
+
+  /* The status lamps shown in every page's top bar (one per retailer). Pure: returns HTML. */
+  function lampsHtml(health, now) {
+    return RETAILERS.map((r) => {
+      const s = retailerState(health, r, now);
+      return '<span class="lamp" data-state="' + s.state + '" title="' + escapeHtml(LABELS[r] + ": " + COVERAGE_NOTES[r]) + '"><i></i>' + escapeHtml(LABELS[r]) + " <small>" + STATE_WORDS[s.state] + "</small></span>";
+    }).join("");
+  }
+
   function isLive(alert, now) {
     return !!alert && alert.verified === true && alert.kind === "stock" && !!alert.expires_at
       && Date.parse(alert.expires_at) > (now || Date.now()) && RETAILERS.indexOf(alert.retailer) !== -1;
@@ -76,39 +86,14 @@
     return /^https?:\/\//i.test(url || "") ? url : "#";
   }
 
-  /* Home is private: the repo and the site are public, so the exact spot lives only in this browser (localStorage).
-     The default in stores.json is just the town. Valid homes are inside the North Jersey / NYC box. */
-  const HOME_KEY = "restock-radar-home";
-  const BOX = { south: 40.4, north: 41.2, west: -74.5, east: -73.6 };
+  /* Why each retailer is, or is not, readable by the bot (measured 2026-10-04 from GitHub's runner). */
+  const COVERAGE_NOTES = {
+    target: "Target's page loads a placeholder; the real stock comes from a captcha-protected API the bot cannot use.",
+    walmart: "Walmart sometimes redirects automated visitors to a bot wall; it is read whenever it lets the bot in.",
+    bestbuy: "Best Buy never answers automated requests (the connection times out).",
+    gamestop: "GameStop's page includes its own availability flag, so this one is read directly.",
+    pokemoncenter: "Pokémon Center blocks automated visitors (403 or a robot check).",
+  };
 
-  function validPoint(lat, lng) {
-    return Number.isFinite(lat) && Number.isFinite(lng) && lat > BOX.south && lat < BOX.north && lng > BOX.west && lng < BOX.east;
-  }
-
-  /* "?home=40.79,-74.12" -> [lat, lng], or null when missing, malformed or outside the region. */
-  function parseHomeParam(search) {
-    const m = /[?&]home=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/.exec(search || "");
-    if (!m) return null;
-    const lat = Number(m[1]), lng = Number(m[2]);
-    return validPoint(lat, lng) ? [lat, lng] : null;
-  }
-
-  function loadHome(storage, fallback) {
-    try {
-      const saved = JSON.parse(storage.getItem(HOME_KEY));
-      if (saved && validPoint(saved.lat, saved.lng)) return { lat: saved.lat, lng: saved.lng, custom: true };
-    } catch (e) { /* no storage (private mode) or bad JSON: use the default */ }
-    return { lat: fallback[0], lng: fallback[1], custom: false };
-  }
-
-  function saveHome(storage, lat, lng) {
-    if (!validPoint(lat, lng)) return false;
-    try { storage.setItem(HOME_KEY, JSON.stringify({ lat, lng })); return true; } catch (e) { return false; }
-  }
-
-  function clearHome(storage) {
-    try { storage.removeItem(HOME_KEY); } catch (e) { /* nothing to clear */ }
-  }
-
-  return { HOME_KEY, validPoint, parseHomeParam, loadHome, saveHome, clearHome, RETAILERS, LABELS, STALE_MINUTES, miles, ago, retailerState, isLive, openNow, nearestStore, directionsUrl, escapeHtml, safeUrl };
+  return { STATE_WORDS, lampsHtml, COVERAGE_NOTES, RETAILERS, LABELS, STALE_MINUTES, miles, ago, retailerState, isLive, openNow, nearestStore, directionsUrl, escapeHtml, safeUrl };
 });

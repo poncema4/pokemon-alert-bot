@@ -16,10 +16,10 @@ from update_30th_prices import ENDPOINT, HEADERS
 LOW_RATIO = 0.90   # at least 10% under market: a deal
 HIGH_RATIO = 1.10  # more than 10% over market: pricey
 RETAIL_TOLERANCE = 1.02
-CACHE_HOURS = 6
+CACHE_MINUTES = 10  # an alert needs the price as it is now, so a cached price is trusted for minutes, not hours
 NOISE = (
-    r"pok[eé]mon trading card game\s*:?", r"pok[eé]mon tcg\s*:?", r"\|\s*gamestop", r":\s*target\b", r"-\s*best buy", r"\|\s*walmart",
-    r"\bmega evolution\b\s*[-—:]?", r"scarlet\s*(&|and)\s*violet\s*[-—:]?", r"\bpok[eé]mon\b", r"[\[\]()®™:]",
+    r"pok[eé]mon trading card games?\s*:?", r"pok[eé]mon tcg\s*:?", r"[|:\-]\s*gamestop\b", r":\s*target\b", r"[|:\-]\s*best buy", r"[|:\-]\s*walmart(\.com| business supplies)?",
+    r"\bwalmart\.com\b", r"\bmega evolution\b\s*\d*\s*[-—:]?", r"scarlet\s*(&|and)\s*violet\s*\d*\s*[-—:]?", r"\bsv\d+\b", r"\bpok[eé]mon\b", r"\btcg\b", r"[\[\]()®™:]",
 )
 DEFAULT_EXCLUDE = ("case", "pokemon center", "exclusive", "display")
 RETAILER_NAMES = {"target": "Target", "walmart": "Walmart", "bestbuy": "Best Buy", "gamestop": "GameStop", "pokemoncenter": "Pokémon Center"}
@@ -29,7 +29,12 @@ def clean_title(title):
     out = re.sub(r"pok[eé]mon center", "pkmcenter", (title or "").lower(), flags=re.I)  # keep "Pokémon Center": it names a different product
     for pattern in NOISE:
         out = re.sub(pattern, " ", out, flags=re.I)
-    return re.sub(r"\s+", " ", out).replace("pkmcenter", "pokemon center").strip()
+    out = re.sub(r"\s+", " ", out).replace("pkmcenter", "pokemon center").strip(" -—|")
+    if "elite trainer box" in out:  # retailers append the abbreviation: "... Elite Trainer Box ETB"
+        out = re.sub(r"\betb\b", "", out).strip()
+    else:
+        out = re.sub(r"\betb\b", "elite trainer box", out)
+    return re.sub(r"\s+", " ", out).strip()
 
 
 def build_query(title, url, config):
@@ -63,9 +68,15 @@ def fetch_query(query):
         "listingSearch": {"context": {"cart": {}}, "filters": {"term": {"sellerStatus": "Live", "channelId": 0}, "range": {"quantity": {"gte": 1}, "directInventory": {"gte": 1}}, "exclude": {"channelExclusion": 0}}},
         "context": {"cart": {}, "shippingCountry": "US", "userProfile": {}}, "settings": {"useFuzzySearch": True, "didYouMean": {}}, "sort": {},
     }
-    response = requests.post(ENDPOINT.replace("q=&", "q=" + requests.utils.quote(query) + "&"), json=body, headers=HEADERS, timeout=8)
-    response.raise_for_status()
-    return response.json()
+    last = None
+    for attempt in range(2):  # one retry: a transient connection error must not cost an alert its price comparison
+        try:
+            response = requests.post(ENDPOINT.replace("q=&", "q=" + requests.utils.quote(query) + "&"), json=body, headers=HEADERS, timeout=8)
+            response.raise_for_status()
+            return response.json()
+        except Exception as exc:
+            last = exc
+    raise last
 
 
 def lookup(query, include, exclude, fetch=None, now=None):
@@ -83,7 +94,7 @@ def market_for(config, cache, title, url, fetch=None, now=None):
     now = now or datetime.now(timezone.utc)
     key, query, include, exclude = build_query(title, url, config)
     entry = cache.get(key)
-    if entry and now - datetime.fromisoformat(entry["updated_at"]) < timedelta(hours=CACHE_HOURS):
+    if entry and now - datetime.fromisoformat(entry["updated_at"]) < timedelta(minutes=CACHE_MINUTES):
         return entry
     try:
         fresh = lookup(query, include, exclude, fetch, now)

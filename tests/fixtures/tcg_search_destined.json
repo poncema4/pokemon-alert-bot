@@ -1,0 +1,81 @@
+{
+ "results": [
+  {
+   "totalResults": 228,
+   "results": [
+    {
+     "productId": 628398.0,
+     "productName": "Destined Rivals Elite Trainer Box Case",
+     "marketPrice": 1215.88,
+     "lowestPrice": 1200.0,
+     "totalListings": 42.0,
+     "setName": "SV10: Destined Rivals",
+     "productTypeName": null
+    },
+    {
+     "productId": 624676.0,
+     "productName": "Destined Rivals Elite Trainer Box",
+     "marketPrice": 117.42,
+     "lowestPrice": 104.99,
+     "totalListings": 195.0,
+     "setName": "SV10: Destined Rivals",
+     "productTypeName": null
+    },
+    {
+     "productId": 624675.0,
+     "productName": "Destined Rivals Pokemon Center Elite Trainer Box (Exclusive)",
+     "marketPrice": 424.74,
+     "lowestPrice": 420.0,
+     "totalListings": 51.0,
+     "setName": "SV10: Destined Rivals",
+     "productTypeName": null
+    },
+    {
+     "productId": 242811.0,
+     "productName": "Celebrations Elite Trainer Box",
+     "marketPrice": 356.56,
+     "lowestPrice": 339.99,
+     "totalListings": 85.0,
+     "setName": "Celebrations",
+     "productTypeName": null
+    },
+    {
+     "productId": 692947.0,
+     "productName": "Pitch Black Elite Trainer Box",
+     "marketPrice": 75.58,
+     "lowestPrice": 25.0,
+     "totalListings": 213.0,
+     "setName": "ME05: Pitch Black",
+     "productTypeName": null
+    },
+    {
+     "productId": 668496.0,
+     "productName": "Ascended Heroes Elite Trainer Box",
+     "marketPrice": 159.96,
+     "lowestPrice": 139.0,
+     "totalListings": 214.0,
+     "setName": "ME: Ascended Heroes",
+     "productTypeName": null
+    },
+    {
+     "productId": 97762.0,
+     "productName": "Elite Trainer Box [Groudon]",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "XY - Primal Clash",
+     "productTypeName": null
+    },
+    {
+     "productId": 97763.0,
+     "productName": "Elite Trainer Box [Kyogre]",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "XY - Primal Clash",
+     "productTypeName": null
+    }
+   ]
+  }
+ ]
+}

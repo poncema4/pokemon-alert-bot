@@ -63,29 +63,15 @@ assert.strictEqual(C.safeUrl("javascript:alert(1)"), "#");
 assert.strictEqual(C.safeUrl("https://www.target.com/p/-/A-1"), "https://www.target.com/p/-/A-1");
 assert.strictEqual(C.directionsUrl({ address: "200 Passaic Ave, Kearny" }).includes("destination=200%20Passaic%20Ave%2C%20Kearny"), true);
 
-// private home: stored only in the browser, validated, never trusted blindly
-const memory = () => { const m = {}; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); }, removeItem: (k) => { delete m[k]; } }; };
-const TOWN = [40.7884, -74.1332];
-assert.deepStrictEqual(C.parseHomeParam("?home=40.7968,-74.1255"), [40.7968, -74.1255]);
-assert.deepStrictEqual(C.parseHomeParam("?x=1&home=40.7968,-74.1255"), [40.7968, -74.1255]);
-assert.strictEqual(C.parseHomeParam("?home=40.7968"), null, "needs both numbers");
-assert.strictEqual(C.parseHomeParam("?home=abc,def"), null);
-assert.strictEqual(C.parseHomeParam("?home=34.05,-118.24"), null, "Los Angeles is outside the region");
-assert.strictEqual(C.parseHomeParam(""), null);
-let homeStore = memory();
-assert.deepStrictEqual(C.loadHome(homeStore, TOWN), { lat: 40.7884, lng: -74.1332, custom: false }, "default is the town");
-assert.strictEqual(C.saveHome(homeStore, 40.7968, -74.1255), true);
-assert.deepStrictEqual(C.loadHome(homeStore, TOWN), { lat: 40.7968, lng: -74.1255, custom: true });
-assert.strictEqual(C.saveHome(homeStore, 10, 10), false, "an out-of-region home is refused");
-assert.deepStrictEqual(C.loadHome(homeStore, TOWN).lat, 40.7968, "a refused save keeps the old home");
-C.clearHome(homeStore);
-assert.strictEqual(C.loadHome(homeStore, TOWN).custom, false);
-homeStore.setItem(C.HOME_KEY, "{not json");
-assert.strictEqual(C.loadHome(homeStore, TOWN).custom, false, "corrupt storage falls back to the default");
-homeStore.setItem(C.HOME_KEY, JSON.stringify({ lat: 1, lng: 2 }));
-assert.strictEqual(C.loadHome(homeStore, TOWN).custom, false, "a saved home outside the region is ignored");
-const broken = { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("blocked"); }, removeItem() { throw new Error("blocked"); } };
-assert.strictEqual(C.loadHome(broken, TOWN).custom, false, "blocked storage must not break the page");
-assert.strictEqual(C.saveHome(broken, 40.79, -74.12), false);
+// coverage notes explain every retailer the page shows a lamp for
+C.RETAILERS.forEach((r) => assert.ok(C.COVERAGE_NOTES[r] && C.COVERAGE_NOTES[r].length > 20, "missing coverage note for " + r));
+
+// lamps: plain words, one per retailer, nothing alarming like "blind"
+const lamps = C.lampsHtml(health, NOW);
+assert.strictEqual((lamps.match(/class="lamp"/g) || []).length, C.RETAILERS.length);
+assert.ok(lamps.includes("<small>reading</small>") && lamps.includes("<small>can't read</small>") && lamps.includes("<small>offline</small>"));
+assert.ok(!/blind/i.test(lamps.replace(/<[^>]*>/g, " ")), "the word blind must not appear as visible text in the status lamps");
+assert.ok(lamps.includes('data-state="ok"') && lamps.includes('title="Target: '), "each lamp explains itself on hover");
+assert.deepStrictEqual(Object.keys(C.STATE_WORDS).sort(), ["blind", "ok", "stale", "unknown"]);
 
 console.log("web helper tests passed");

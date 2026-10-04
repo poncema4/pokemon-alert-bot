@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 import requests
 
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
-BOT_NAME = "Poképing"
+BOT_NAME = "PokePing"
 COLORS = {"good": 0x2BD4A0, "fair": 0xFFD23F, "high": 0xF2A33A, "unknown": 0x8FA1B8, "blind": 0xE4352B, "ok": 0x2BD4A0}
 LIMITS = {"title": 256, "description": 4096, "field_name": 256, "field_value": 1024, "footer": 2048, "total": 6000, "fields": 25}
 PROOF = {

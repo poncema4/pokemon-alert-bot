@@ -79,35 +79,122 @@ def test_store_pins_are_geocoded_and_plausible():
         assert 40.4 < lat < 41.2 and -74.5 < lng < -73.6, f"{store['id']} is outside the North Jersey / NYC area"
         # Hand-rounded pins like 40.76,-74.158 are what put markers hundreds of feet off the building.
         assert all(abs(round(v, 3) - v) > 1e-9 for v in (lat, lng)), f"{store['id']} has a rounded pin"
-        assert store.get("pin_source", "").startswith("nominatim:"), f"{store['id']} pin was not verified against its address"
+        assert store.get("pin_source", "").startswith(("nominatim:", "osm-poi:")), f"{store['id']} pin was not verified against OpenStreetMap"
     assert len({s["id"] for s in stores}) == len(stores)
+    by_id = {s["id"]: s for s in stores}
+
+    def feet(a, b):
+        import math
+        p = math.radians
+        x = math.sin(p(b[0] - a[0]) / 2) ** 2 + math.cos(p(a[0])) * math.cos(p(b[0])) * math.sin(p(b[1] - a[1]) / 2) ** 2
+        return 2 * 3958.8 * math.asin(math.sqrt(x)) * 5280
+    # GameStop Kearny's street address geocodes onto the Taco Bell next door; the pin must sit on the GameStop's own OpenStreetMap record.
+    gamestop = (by_id["gamestop-kearny"]["lat"], by_id["gamestop-kearny"]["lng"])
+    assert feet(gamestop, (40.748610, -74.135150)) < 60, "GameStop Kearny must sit on the GameStop record"
+    assert feet(gamestop, (40.749201, -74.134908)) > 150, "...and not on the Taco Bell the address resolves to"
+    for chain in ("target", "walmart", "bestbuy", "gamestop"):
+        for store in stores:
+            if store["retailer"] == chain and store["id"] != "gamestop-lyndhurst":
+                assert store["pin_source"].startswith("osm-poi:"), f"{store['id']} should use the chain's own OpenStreetMap record"
 
 
-def test_pages_share_the_site_assets_and_have_no_broken_local_links():
+def _page_html(name):
+    return (ROOT / "docs" / name).read_text(encoding="utf-8")
+
+
+PAGES = {"index.html": ("PokePing · Map", "Map"), "route.html": ("PokePing · Route", "Route"), "30th.html": ("PokePing · 30th guide", "30th guide")}
+
+
+def test_pages_share_one_shell_and_have_no_broken_local_links():
     docs = ROOT / "docs"
-    for page in ("index.html", "route.html", "30th.html"):
-        html = (docs / page).read_text(encoding="utf-8")
+    headers = []
+    for page, (title, label) in PAGES.items():
+        html = _page_html(page)
         for ref in re.findall(r'(?:href|src)="((?!https?:|#|mailto:|data:)[^"+\']+)"', html):  # skip hrefs built inside inline scripts
-            target = docs / ref.split("?")[0].split("#")[0]
-            assert target.exists(), f"{page} links to missing local file {ref}"
-        assert "<title>" in html and 'name="viewport"' in html, page
-        for other in {"index.html", "route.html", "30th.html"} - {page}:
-            assert f'href="{other}"' in html, f"{page} does not link to {other}"
-    css = (docs / "css" / "map.css").read_text(encoding="utf-8")
-    closed = re.search(r"\.tag\.closed\s*\{([^}]*)\}", css).group(1)
-    assert "var(--alert)" in closed and "muted" not in closed and "opacity" not in closed, "a closed store must be red, never grey or dimmed"
-    assert "state-closed" in (docs / "js" / "map.js").read_text(encoding="utf-8"), "the popup must also say Closed in red"
-    site = (docs / "css" / "site.css").read_text(encoding="utf-8")
+            assert (docs / ref.split("?")[0].split("#")[0]).exists(), f"{page} links to missing local file {ref}"
+        assert f"<title>{title}</title>" in html, f"{page} title must be {title!r}: short, same name, only the page changes"
+        assert 'rel="icon" href="favicon.svg"' in html, f"{page} needs the pokéball tab icon"
+        assert 'name="viewport"' in html and 'name="description"' in html and "css/site.css" in html
+        header = re.search(r'<header class="topbar">.*?</header>', html, re.S).group(0)
+        assert header.count('aria-current="page"') == 1 and f'aria-current="page">{label}</a>' in header, f"{page} must mark only itself as current"
+        assert '<a class="brand" href="index.html"><img src="favicon.svg"' in header and "<span>PokePing</span>" in header
+        assert 'id="lamps"' in header, f"{page}: the status lamps belong in the top bar of every page"
+        headers.append(re.sub(r"\s+", "", header.replace(' aria-current="page"', "")))
+    assert len(set(headers)) == 1, "the header and nav must be identical on every page"
+    forbidden = ("Set your home", "Set home", "town centre", "restock-radar-home", "localStorage", "Restock Radar")
+    for page in list(PAGES) + ["js/map.js", "js/common.js", "css/map.css"]:
+        text = _page_html(page)
+        assert not [w for w in forbidden if w in text], f"{page} still mentions removed UI: {[w for w in forbidden if w in text]}"
+
+
+def test_the_name_is_always_PokePing():
+    """One spelling everywhere: PokePing (two capital P's). Only the repository name stays pokemon-alert-bot."""
+    wrong = re.compile(r"(?i)pok[eé]\s?ping(?<!PokePing)")
+    checked = 0
+    for path in list((ROOT / "docs").rglob("*")) + list(ROOT.glob("*.py")) + list(ROOT.glob("*.md")) + list((ROOT / "tools").glob("*.py")) + list((ROOT / ".github").rglob("*.yml")):
+        if path.suffix not in (".html", ".js", ".css", ".py", ".md", ".yml", ".json", ".svg") or not path.is_file() or "fixtures" in path.parts:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for m in wrong.finditer(text):
+            assert False, f"{path.relative_to(ROOT)} spells the name {m.group(0)!r}; it must be PokePing"
+        checked += 1
+    assert checked > 10
+    assert notify.BOT_NAME == "PokePing"
+    for page, (title, _label) in PAGES.items():
+        assert title.startswith("PokePing"), page
+        assert "<span>PokePing</span>" in _page_html(page)
+    assert "Restock Radar" not in _page_html("index.html") and "Pokémon Restock Radar" not in _page_html("index.html"), "the long old name is gone"
+    assert notify.stock_embed(_card())["embeds"][0]["footer"]["text"].startswith("PokePing ·")
+
+
+def test_home_is_hard_set_and_distances_use_it():
+    home = json.loads((ROOT / "docs" / "stores.json").read_text(encoding="utf-8"))["home"]
+    stores = {s["id"]: s for s in json.loads((ROOT / "docs" / "stores.json").read_text(encoding="utf-8"))["stores"]}
+
+    def miles(a, b, c, d):
+        import math
+        p = math.radians
+        x = math.sin(p(c - a) / 2) ** 2 + math.cos(p(a)) * math.cos(p(c)) * math.sin(p(d - b) / 2) ** 2
+        return 2 * 3958.8 * math.asin(math.sqrt(x))
+    assert miles(home["lat"], home["lng"], 40.797211, -74.125219) < 0.02, "home must be the geocoded address point"
+    assert home["pin_source"].startswith("us-census-geocoder:") and home["name"] == "Home"
+    # Independent distances (computed by hand from the pins): the nearest stores are the Lyndhurst shops, Target Kearny is farther.
+    assert 0.8 < miles(home["lat"], home["lng"], stores["east-coast-connection"]["lat"], stores["east-coast-connection"]["lng"]) < 1.1
+    assert 2.6 < miles(home["lat"], home["lng"], stores["target-kearny"]["lat"], stores["target-kearny"]["lng"]) < 3.2
+    assert "40.7884" not in (ROOT / "docs" / "js" / "map.js").read_text(encoding="utf-8") + _page_html("route.html"), "the old town-centre pin must be gone everywhere"
+
+
+def test_phone_rules_on_every_page():
+    site = (ROOT / "docs" / "css" / "site.css").read_text(encoding="utf-8")
     phone_site = site[site.index("@media (max-width: 800px)"):]
     assert "position: fixed" in phone_site and "bottom: 0" in phone_site, "phones need the bottom tab bar"
     assert "min-height: 44px" in phone_site, "tap targets must be at least 44 px on phones"
+    css = (ROOT / "docs" / "css" / "map.css").read_text(encoding="utf-8")
+    closed = re.search(r"\.tag\.closed\s*\{([^}]*)\}", css).group(1)
+    assert "var(--alert)" in closed and "muted" not in closed and "opacity" not in closed, "a closed store must be red, never grey or dimmed"
+    assert "state-closed" in (ROOT / "docs" / "js" / "map.js").read_text(encoding="utf-8"), "the popup must also say Closed in red"
+    assert re.search(r"\.rail\s*\{[^}]*position:\s*relative", css), "the rail must contain its .sr-only labels or the whole page scrolls on phones"
     phone_map = css[css.index("@media (max-width: 800px)"):]
-    assert re.search(r"\.rail\s*\{[^}]*position:\s*relative", css), "the rail must contain its .sr-only label or the whole page scrolls on phones"
-    assert "font-size: 16px" in phone_map, "inputs under 16 px make iOS zoom the page on focus"
-    assert "min-height: 64px" in phone_map and "overflow-x: auto" in phone_map
-    index = (docs / "index.html").read_text(encoding="utf-8")
-    for needed in ('id="lamps"', 'id="live"', 'id="stores"', 'id="map"', "js/common.js", "js/map.js"):
-        assert needed in index, f"index.html lost {needed}"
+    assert "min-height: 64px" in phone_map and "overflow-x: auto" in phone_map and ".hit { min-height: 64px" in phone_map and ".store { min-height: 64px" in phone_map, "live rows and store rows share one size"
+    guide = (ROOT / "docs" / "css" / "guide.css").read_text(encoding="utf-8")
+    assert "font-size: 16px" in guide[guide.index("@media (max-width: 800px)"):], "inputs under 16 px make iOS zoom the page on focus"
+    route_css = (ROOT / "docs" / "css" / "route.css").read_text(encoding="utf-8")
+    assert re.search(r"\.status-text\.closed\s*\{[^}]*background:\s*var\(--alert\)", route_css) and re.search(r"\.closed-stat b\s*\{[^}]*color:\s*#ff6b61", route_css), "closed stops on the route page are solid red too"
+    assert "grid-template-columns: repeat(2, 1fr)" in route_css[route_css.index("@media (max-width: 800px)"):]
+
+
+def test_every_page_script_is_valid_javascript():
+    import shutil
+    import subprocess
+    if not shutil.which("node"):
+        return  # CI has node; a laptop without it skips this one check
+    for page in ("route.html", "30th.html"):
+        script = re.search(r"<script>\n(.*?)</script>", _page_html(page), re.S).group(1)
+        result = subprocess.run(["node", "--check", "-"], input=script, capture_output=True, text=True)
+        assert result.returncode == 0, f"{page} inline script has a syntax error: {result.stderr[:200]}"
+    for js in ("common.js", "map.js"):
+        result = subprocess.run(["node", "--check", str(ROOT / "docs" / "js" / js)], capture_output=True, text=True)
+        assert result.returncode == 0, f"{js}: {result.stderr[:200]}"
 
 
 def test_30th_complete_coverage():
@@ -124,9 +211,9 @@ def test_30th_complete_coverage():
     }
     assert len(products) == 21
     assert ids == required
-    assert "full announced 30th Celebration lineup" in guide
-    assert "Full buying list" in guide
-    assert "tracked variants" in guide
+    for needed in ("Buying list", "Chase cards", "tracked variants", 'id="products"', 'id="hits"', 'id="wave"', 'id="updated"'):
+        assert needed in guide, f"30th.html lost {needed}"
+    assert 'value="2026-' not in guide, "release waves come from the data, never hard-coded"
     assert all(p["target_buy"] and p["max_buy"] is not None and p["score"] for p in products)
 
 
@@ -714,6 +801,62 @@ def test_advisor_query_building():
     assert center["productName"].startswith("Pitch Black Pokemon Center Elite Trainer Box") and center["marketPrice"] == 119.43
 
 
+def test_real_retailer_titles_find_their_tcgplayer_product():
+    # Titles exactly as the retailers print them (captured from state.json on 2026-10-04); expected values written by hand.
+    cases = [
+        ("Pokemon Trading Card Game Scarlet & Violet 10 Destined Rivals Elite Trainer Box - Walmart.com", "destined rivals elite trainer box", "tcg_search_destined.json", 117.42),
+        ("Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com", "pitch black elite trainer box", "tcg_search_pitch_black.json", 75.58),
+        ("Pokemon TCG 30th Celebration Elite Trainer Box ETB - Walmart.com", "30th celebration elite trainer box", "tcg_search_30th_etb.json", 156.92),
+        ("Pokemon Trading Card Games Scarlet & Violet Destined Rivals Elite Trainer Box - Walmart Business Supplies", "destined rivals elite trainer box", "tcg_search_destined.json", 117.42),
+        ("Pokemon Trading Card Game: 30th Celebration Elite Trainer Box | GameStop", "30th celebration elite trainer box", "tcg_search_30th_etb.json", 156.92),
+        ("Pokémon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box : Target", "pitch black elite trainer box", "tcg_search_pitch_black.json", 75.58),
+    ]
+    for title, expected_query, fixture, market in cases:
+        assert advisor.clean_title(title) == expected_query, (title, advisor.clean_title(title))
+        key, query, include, exclude = advisor.build_query(title, "https://x.example/p/1", {})
+        found = advisor.lookup(query, include, exclude, fetch=lambda q, f=fixture: _fixture(f))
+        assert found and found["market"] == market, (title, found)
+    assert advisor.clean_title("Pokemon TCG 30th Celebration Elite Trainer Box ETB - Walmart.com") == "30th celebration elite trainer box", "a trailing ETB must not become a required extra word"
+    assert advisor.clean_title("Pokémon TCG: Phantasmal Flames ETB") == "phantasmal flames elite trainer box", "ETB alone means Elite Trainer Box"
+
+
+def test_fetch_query_retries_once():
+    attempts = []
+
+    class Resp:
+        def __init__(self, ok):
+            self.ok = ok
+        def raise_for_status(self):
+            if not self.ok:
+                raise RuntimeError("503")
+        def json(self):
+            return {"results": [{"results": []}]}
+
+    real = advisor.requests.post
+    try:
+        responses = iter([RuntimeError("connection reset"), Resp(True)])
+        def post(*a, **k):
+            attempts.append(1)
+            r = next(responses)
+            if isinstance(r, Exception):
+                raise r
+            return r
+        advisor.requests.post = post
+        assert advisor.fetch_query("x") == {"results": [{"results": []}]} and len(attempts) == 2, "one transient failure is retried"
+        attempts.clear()
+        def always(*a, **k):
+            attempts.append(1)
+            raise RuntimeError("down")
+        advisor.requests.post = always
+        try:
+            advisor.fetch_query("x")
+            raise AssertionError("expected the failure to surface after the retry")
+        except RuntimeError:
+            assert len(attempts) == 2, "exactly two attempts, then the error surfaces (market_for turns it into 'no price')"
+    finally:
+        advisor.requests.post = real
+
+
 def test_advisor_picks_the_right_tcgplayer_product():
     rows = _fixture("tcg_search_pitch_black.json")["results"][0]["results"]
     row = advisor.pick(rows, ["pitch black", "elite trainer box"], ["case", "pokemon center", "exclusive", "display"])
@@ -736,10 +879,10 @@ def test_advisor_cache_and_failure_behaviour():
     cache = {}
     first = advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=fetch, now=now)
     assert first["market"] == 75.58 and len(calls) == 1 and "pitch-black-etb" in cache
-    advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=fetch, now=now + timedelta(hours=5))
-    assert len(calls) == 1, "a cache entry under 6 hours old needs no network call"
-    advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=fetch, now=now + timedelta(hours=7))
-    assert len(calls) == 2, "an old entry is refreshed"
+    advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=fetch, now=now + timedelta(minutes=9))
+    assert len(calls) == 1, "a cache entry under 10 minutes old needs no network call"
+    advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=fetch, now=now + timedelta(minutes=11))
+    assert len(calls) == 2, "an entry older than 10 minutes is refreshed: an alert shows the price as it is now"
 
     def boom(query):
         raise RuntimeError("down")
@@ -854,7 +997,11 @@ if __name__ == "__main__":
     test_unknown_does_not_block_restock_cooldown()
     test_route_integrity()
     test_store_pins_are_geocoded_and_plausible()
-    test_pages_share_the_site_assets_and_have_no_broken_local_links()
+    test_pages_share_one_shell_and_have_no_broken_local_links()
+    test_the_name_is_always_PokePing()
+    test_home_is_hard_set_and_distances_use_it()
+    test_phone_rules_on_every_page()
+    test_every_page_script_is_valid_javascript()
     test_30th_complete_coverage()
     test_classify_response()
     test_health_blind_spot_and_recovery()
@@ -878,6 +1025,8 @@ if __name__ == "__main__":
     test_paging_collects_every_row()
     test_committed_guide_carries_per_product_freshness()
     test_advisor_query_building()
+    test_real_retailer_titles_find_their_tcgplayer_product()
+    test_fetch_query_retries_once()
     test_advisor_picks_the_right_tcgplayer_product()
     test_advisor_cache_and_failure_behaviour()
     test_price_verdicts()
