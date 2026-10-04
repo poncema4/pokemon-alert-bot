@@ -79,6 +79,25 @@ def test_store_pins_are_geocoded_and_plausible():
     assert len({s["id"] for s in stores}) == len(stores)
 
 
+def test_pages_share_the_site_assets_and_have_no_broken_local_links():
+    docs = ROOT / "docs"
+    for page in ("index.html", "route.html", "30th.html"):
+        html = (docs / page).read_text(encoding="utf-8")
+        for ref in re.findall(r'(?:href|src)="((?!https?:|#|mailto:|data:)[^"+\']+)"', html):  # skip hrefs built inside inline scripts
+            target = docs / ref.split("?")[0].split("#")[0]
+            assert target.exists(), f"{page} links to missing local file {ref}"
+        assert "<title>" in html and 'name="viewport"' in html, page
+        for other in {"index.html", "route.html", "30th.html"} - {page}:
+            assert f'href="{other}"' in html, f"{page} does not link to {other}"
+    css = (docs / "css" / "map.css").read_text(encoding="utf-8")
+    closed = re.search(r"\.tag\.closed\s*\{([^}]*)\}", css).group(1)
+    assert "var(--alert)" in closed and "muted" not in closed and "opacity" not in closed, "a closed store must be red, never grey or dimmed"
+    assert "state-closed" in (docs / "js" / "map.js").read_text(encoding="utf-8"), "the popup must also say Closed in red"
+    index = (docs / "index.html").read_text(encoding="utf-8")
+    for needed in ('id="lamps"', 'id="live"', 'id="stores"', 'id="map"', "js/common.js", "js/map.js"):
+        assert needed in index, f"index.html lost {needed}"
+
+
 def test_30th_complete_coverage():
     data = json.loads((ROOT / "docs" / "30th_prices.json").read_text(encoding="utf-8"))
     guide = (ROOT / "docs" / "30th.html").read_text(encoding="utf-8")
@@ -373,6 +392,7 @@ if __name__ == "__main__":
     test_unknown_does_not_block_restock_cooldown()
     test_route_integrity()
     test_store_pins_are_geocoded_and_plausible()
+    test_pages_share_the_site_assets_and_have_no_broken_local_links()
     test_30th_complete_coverage()
     test_classify_response()
     test_health_blind_spot_and_recovery()

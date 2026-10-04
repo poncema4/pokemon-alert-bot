@@ -6,6 +6,7 @@ on:
     paths:
       - "*.py"
       - "tests/**"
+      - "docs/**/*.js"
       - "search_config.json"
       - "requirements.txt"
       - ".github/workflows/**"
@@ -13,6 +14,7 @@ on:
     paths:
       - "*.py"
       - "tests/**"
+      - "docs/**"
       - "search_config.json"
       - "requirements.txt"
       - ".github/workflows/**"
@@ -48,6 +50,11 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run deterministic tests
         run: python -u tests/test_accuracy.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Run web helper tests
+        run: node tests/web/common.test.js
       - name: Compile production Python
         run: python -m py_compile monitor.py monitor_loop.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py update_30th_prices.py tests/test_accuracy.py
 
