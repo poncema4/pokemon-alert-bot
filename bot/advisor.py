@@ -170,7 +170,7 @@ def eastern(iso):
         return iso
 
 
-def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, msrp, market, ping=False, now=None):
+def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, msrp, market, ping=False, now=None, confirmed=False):
     """Everything the Discord embed needs, as a plain dict (see notify.stock_embed)."""
     now = now or datetime.now(timezone.utc)
     return {
@@ -180,6 +180,7 @@ def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, 
         "market_url": f"https://www.tcgplayer.com/product/{market['product_id']}" if market else "",
         "verdict": verdict(price, msrp, market["market"] if market else None),
         "cart_url": CART_URLS.get(retailer, ""),
+        "confirmed": confirmed,
     }
 
 

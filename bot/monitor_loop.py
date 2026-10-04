@@ -20,12 +20,12 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]  # repo root (this file lives in bot/)
-CYCLE_SECONDS = float(os.environ.get("MONITOR_CYCLE_SECONDS", "60"))
+CYCLE_SECONDS = float(os.environ.get("MONITOR_CYCLE_SECONDS", "30"))
 RUNTIME_SECONDS = float(os.environ.get("MONITOR_RUNTIME_SECONDS", "3300"))
-DISCOVER_EVERY = int(os.environ.get("MONITOR_DISCOVER_EVERY", "10"))
+DISCOVER_EVERY = int(os.environ.get("MONITOR_DISCOVER_EVERY", "20"))  # about every 10 minutes at a 30 s cycle
 COMMIT_EVERY = float(os.environ.get("MONITOR_COMMIT_EVERY", "300"))
-PRICE_EVERY = int(os.environ.get("MONITOR_PRICE_EVERY", "20"))  # cycles between 30th price refreshes (about 20 minutes)
-MARKET_EVERY = int(os.environ.get("MONITOR_MARKET_EVERY", "10"))  # cycles between TCGplayer market refreshes for tracked listings
+PRICE_EVERY = int(os.environ.get("MONITOR_PRICE_EVERY", "40"))  # cycles between 30th price refreshes (about 20 minutes)
+MARKET_EVERY = int(os.environ.get("MONITOR_MARKET_EVERY", "20"))  # cycles between TCGplayer market refreshes for tracked listings
 TRACKED = ("data/state.json", "data/gamestop_pids.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json", "docs/market.json", "docs/coverage.json")
 
 
@@ -59,7 +59,7 @@ def run_cycle(number):
             refresh_market()
         except Exception as exc:  # the advisor is a nicety: it must never stop stock checks
             print(f"market refresh failed: {exc}")
-    monitor.main(discover=number % DISCOVER_EVERY == 0)
+    monitor.main(discover=number % DISCOVER_EVERY == 0, cycle=number)
     try:
         import coverage
         coverage.main()

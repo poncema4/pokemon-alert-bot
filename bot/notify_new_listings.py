@@ -77,7 +77,7 @@ def main():
         config = load(CONFIG_FILE, {})
         market = advisor.market_for(config, market_cache, title, url)
         send_card(advisor.build_card(retailer, "new", title, url, config.get("map_url", ""), detected, entry.get("signal"), entry.get("price"), entry.get("msrp"), market,
-                                     ping=os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")))
+                                     confirmed=bool(entry.get("confirmed")), ping=os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")))
         sent += 1
 
     if overflow:

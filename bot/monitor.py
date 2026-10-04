@@ -15,6 +15,7 @@ a later real restock alert.
 from __future__ import annotations
 
 import html
+import time
 import json
 import os
 import re
@@ -38,6 +39,7 @@ CONFIG_FILE = ROOT / "config" / "search_config.json"
 ALERTS_FILE = ROOT / "docs/alerts.json"
 MARKET_FILE = ROOT / "docs/market.json"
 PIDS_FILE = ROOT / "data" / "gamestop_pids.json"
+CONFIRM_DELAY = 2.0  # seconds between the first in-stock reading and the confirming one
 
 SEARCH_URLS = {
     "target": "https://www.target.com/s?searchTerm={q}",
@@ -426,8 +428,11 @@ def known_urls(state, retailer, exclude, now, cap=30):
     return [url for _, url in sorted(rows, reverse=True)[:cap]]
 
 
-def main(discover=True):
-    """One monitoring pass. discover=False is the fast pass: only seed + known listings, no searches."""
+def main(discover=True, cycle=0):
+    """One monitoring pass. discover=False is the fast pass: only seed + known listings, no searches.
+
+    Hot listings (config hot_matches: the 30th products) are checked every cycle; the rest every slow_every-th cycle.
+    Before a listing is reported in stock it is read a second time a moment later, and both readings must agree."""
     config = load_json(CONFIG_FILE, {})
     state = clean_state(load_json(STATE_FILE, {}))
     alerts = load_json(ALERTS_FILE, [])
@@ -435,6 +440,9 @@ def main(discover=True):
     retailers = [r for r in config.get("retailers", []) if r in SEARCH_URLS]
     cooldown = float(config.get("alert_cooldown_hours", 1))
     timeout = int(config.get("search_timeout_seconds", 8))
+    hot = [h.lower() for h in config.get("hot_matches", [])]
+    slow_every = max(1, int(config.get("slow_every", 3))) if hot else 1  # the slow rhythm only exists when something is hot
+    is_hot = lambda url: any(h in url.lower() for h in hot)
     ping = os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")
     map_url = config.get("map_url", "")
     http = requests.Session()
@@ -461,7 +469,19 @@ def main(discover=True):
             nonlocal streak
             key = f"{retailer}::{url}"
             previous = state.get(key, {})
+            if not is_hot(url) and cycle % slow_every != 0:
+                return  # a calmer listing: checked on the slower rhythm
             result = check_product_page(http, retailer, url, timeout)
+            confirmed = previous.get("confirmed") if previous.get("in_stock") is True else None
+            if result["stock"] is True and previous.get("in_stock") is not True:
+                # Coming into stock: read it again a moment later. An alert that is out of stock by the time you click is worse than none.
+                time.sleep(CONFIRM_DELAY)
+                again = check_product_page(http, retailer, url, timeout)
+                if again["stock"] is True:
+                    confirmed = True
+                else:
+                    print(f"  not confirmed by a second reading ({again['stock']}, {again['reason']}): {url}")
+                    result, confirmed = again, None
             in_stock = result["stock"]
             reason = result["reason"]
             counts["checked"] += 1
@@ -495,7 +515,7 @@ def main(discover=True):
                 detected_at = now.isoformat()
                 record_alert(alerts, retailer, kind, title, url, True, posted_at, detected_at, True)
                 market = advisor.market_for(config, market_cache, title, url)
-                send_card(advisor.build_card(retailer, kind, title, url, map_url, detected_at, result.get("signal"), price, msrp, market, ping))
+                send_card(advisor.build_card(retailer, kind, title, url, map_url, detected_at, result.get("signal"), price, msrp, market, ping, confirmed=bool(confirmed)))
                 sent["stock"] += 1
                 last_stock_alert = detected_at
             else:
@@ -506,6 +526,7 @@ def main(discover=True):
                 "title": title,
                 "in_stock": in_stock,
                 "in_stock_since": in_stock_since,
+                "confirmed": confirmed,
                 "posted_at": posted_at,
                 "first_seen": first_seen,
                 "new_announced": new_announced,
