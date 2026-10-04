@@ -25,7 +25,8 @@ RUNTIME_SECONDS = float(os.environ.get("MONITOR_RUNTIME_SECONDS", "3300"))
 DISCOVER_EVERY = int(os.environ.get("MONITOR_DISCOVER_EVERY", "10"))
 COMMIT_EVERY = float(os.environ.get("MONITOR_COMMIT_EVERY", "300"))
 PRICE_EVERY = int(os.environ.get("MONITOR_PRICE_EVERY", "20"))  # cycles between 30th price refreshes (about 20 minutes)
-TRACKED = ("state.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json")
+MARKET_EVERY = int(os.environ.get("MONITOR_MARKET_EVERY", "20"))  # cycles between TCGplayer market refreshes for tracked listings
+TRACKED = ("state.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json", "docs/market.json")
 
 
 def signature():
@@ -38,7 +39,8 @@ def signature():
     state = {k: ({f: v for f, v in e.items() if f != "last_seen"} if isinstance(e, dict) else e) for k, e in load("state.json").items()}
     health = {r: {f: v for f, v in e.items() if f != "last_run"} for r, e in load("docs/health.json").items()}
     prices = {k: v for k, v in load("docs/30th_prices.json").items() if k not in ("checked_at",)}
-    return json.dumps([state, load("docs/alerts.json"), health, prices], sort_keys=True), json.dumps(load("docs/alerts.json"), sort_keys=True)
+    market = {k: {f: v for f, v in e.items() if f != "updated_at"} for k, e in load("docs/market.json").items()}
+    return json.dumps([state, load("docs/alerts.json"), health, prices, market], sort_keys=True), json.dumps(load("docs/alerts.json"), sort_keys=True)
 
 
 def run_cycle(number):
@@ -51,9 +53,27 @@ def run_cycle(number):
             update_30th_prices.main()
         except Exception as exc:  # prices must never stop stock checks
             print(f"30th price refresh failed: {exc}")
+    if number % MARKET_EVERY == 1 % MARKET_EVERY:
+        try:
+            refresh_market()
+        except Exception as exc:  # the advisor is a nicety: it must never stop stock checks
+            print(f"market refresh failed: {exc}")
     monitor.main(discover=number % DISCOVER_EVERY == 0)
     refresh_live_hits.main()
     notify_new_listings.main()
+
+
+def refresh_market():
+    """Refresh the cached TCGplayer market price of every listing the bot tracks (seed URLs plus readable discoveries)."""
+    import advisor
+    import monitor
+    config = monitor.load_json(monitor.CONFIG_FILE, {})
+    state = monitor.load_json(monitor.STATE_FILE, {})
+    cache = monitor.load_json(monitor.MARKET_FILE, {})
+    items = [(entry.get("title", ""), key.split("::", 1)[1]) for key, entry in state.items() if isinstance(entry, dict) and "::" in key and entry.get("last_ok")]
+    refreshed = advisor.refresh_cache(config, cache, items)
+    monitor.save_json(monitor.MARKET_FILE, cache)
+    print(f"market prices refreshed: {refreshed} of {len(items)} tracked listings")
 
 
 def commit_and_push():

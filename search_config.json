@@ -113,5 +113,33 @@
       "msrp": 143.64,
       "name": "Booster Box"
     }
+  ],
+  "market_rules": [
+    {
+      "id": "30th-etb",
+      "match": "30th-celebration-elite-trainer-box",
+      "query": "30th Celebration Elite Trainer Box",
+      "include": [
+        "30th celebration",
+        "elite trainer box"
+      ],
+      "exclude": [
+        "case",
+        "pokemon center"
+      ]
+    },
+    {
+      "id": "pitch-black-etb",
+      "match": "pitch-black-elite-trainer-box",
+      "query": "Pitch Black Elite Trainer Box",
+      "include": [
+        "pitch black",
+        "elite trainer box"
+      ],
+      "exclude": [
+        "case",
+        "pokemon center"
+      ]
+    }
   ]
 }

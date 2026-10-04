@@ -11,7 +11,8 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-from notify import alert
+import advisor
+from notify import send_card
 
 try:
     from zoneinfo import ZoneInfo
@@ -20,6 +21,8 @@ except ImportError:  # pragma: no cover - Python 3.11 in Actions always has zone
 
 ROOT = Path(__file__).parent
 STATE_FILE = ROOT / "state.json"
+CONFIG_FILE = ROOT / "search_config.json"
+MARKET_FILE = ROOT / "docs/market.json"
 BIG4 = {"target", "walmart", "bestbuy", "gamestop"}
 
 
@@ -47,6 +50,7 @@ def main():
     brand-new listing), so it does not depend on git history and survives batched commits.
     """
     current = load(STATE_FILE, {})
+    market_cache = load(MARKET_FILE, {})
     sent = 0
     changed = False
 
@@ -64,29 +68,17 @@ def main():
             continue
 
         detected = entry.get("last_seen") or datetime.now(timezone.utc).isoformat()
-        posted = entry.get("posted_at")
         title = entry.get("title") or f"{retailer.title()} Pokémon product"
-        lines = [
-            f"**{title}**",
-            "New Pokémon product listing with verified stock."
-            if entry.get("signal") != "text"
-            else "New Pokémon product listing, likely in stock (cart wording only, no structured data). Confirm on the page.",
-            f"Detected: {format_et(detected)}",
-            "Map: [Open map](https://poncema4.github.io/pokemon-alert-bot/)",
-            f"Product: [Open product page]({url})",
-        ]
-        if posted:
-            lines.insert(2, f"Time Posted: {format_et(posted)}")
-
-        alert(
-            f"🆕🟢 NEW + IN STOCK — {retailer.title()}",
-            "\n".join(lines),
-            ping=os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes"),
-        )
+        config = load(CONFIG_FILE, {})
+        market = advisor.market_for(config, market_cache, title, url)
+        send_card(advisor.build_card(retailer, "new", title, url, config.get("map_url", ""), detected, entry.get("signal"), entry.get("price"), entry.get("msrp"), market,
+                                     ping=os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")))
         sent += 1
 
     if changed:
         STATE_FILE.write_text(json.dumps(current, indent=2) + "\n", encoding="utf-8")
+        MARKET_FILE.parent.mkdir(parents=True, exist_ok=True)
+        MARKET_FILE.write_text(json.dumps(market_cache, indent=2) + "\n", encoding="utf-8")
     print(f"New verified Big 4 listing alerts sent: {sent}")
 
 

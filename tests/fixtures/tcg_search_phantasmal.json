@@ -1,0 +1,81 @@
+{
+ "results": [
+  {
+   "totalResults": 219,
+   "results": [
+    {
+     "productId": 654136.0,
+     "productName": "Phantasmal Flames Elite Trainer Box",
+     "marketPrice": 151.75,
+     "lowestPrice": 91.97,
+     "totalListings": 70.0,
+     "setName": "ME02: Phantasmal Flames",
+     "productTypeName": null
+    },
+    {
+     "productId": 654135.0,
+     "productName": "Phantasmal Flames Pokemon Center Elite Trainer Box (Exclusive)",
+     "marketPrice": 285.7,
+     "lowestPrice": 272.98,
+     "totalListings": 71.0,
+     "setName": "ME02: Phantasmal Flames",
+     "productTypeName": null
+    },
+    {
+     "productId": 654170.0,
+     "productName": "Phantasmal Flames Elite Trainer Box Case",
+     "marketPrice": 1470.73,
+     "lowestPrice": 1599.0,
+     "totalListings": 10.0,
+     "setName": "ME02: Phantasmal Flames",
+     "productTypeName": null
+    },
+    {
+     "productId": 501264.0,
+     "productName": "Obsidian Flames Elite Trainer Box",
+     "marketPrice": 275.31,
+     "lowestPrice": 39.99,
+     "totalListings": 60.0,
+     "setName": "SV03: Obsidian Flames",
+     "productTypeName": null
+    },
+    {
+     "productId": 501265.0,
+     "productName": "Obsidian Flames Elite Trainer Box Case",
+     "marketPrice": 2849.57,
+     "lowestPrice": 3196.0,
+     "totalListings": 5.0,
+     "setName": "SV03: Obsidian Flames",
+     "productTypeName": null
+    },
+    {
+     "productId": 501266.0,
+     "productName": "Obsidian Flames Pokemon Center Elite Trainer Box (Exclusive)",
+     "marketPrice": 632.79,
+     "lowestPrice": 620.0,
+     "totalListings": 33.0,
+     "setName": "SV03: Obsidian Flames",
+     "productTypeName": null
+    },
+    {
+     "productId": 618341.0,
+     "productName": "Obsidian Flames Pokemon Center Elite Trainer Box Case (Exclusive)",
+     "marketPrice": null,
+     "lowestPrice": 3200.0,
+     "totalListings": 5.0,
+     "setName": "SV03: Obsidian Flames",
+     "productTypeName": null
+    },
+    {
+     "productId": 97762.0,
+     "productName": "Elite Trainer Box [Groudon]",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "XY - Primal Clash",
+     "productTypeName": null
+    }
+   ]
+  }
+ ]
+}

@@ -13,6 +13,8 @@ from datetime import timedelta
 
 import monitor
 import monitor_loop
+import advisor
+import notify
 import notify_new_listings
 import refresh_live_hits
 import update_30th_prices as prices_mod
@@ -205,16 +207,28 @@ class _FakeSession:
         return _Resp(404, url, "")
 
 
+def _fake_tcg_search(query):
+    """Offline stand-in for the TCGplayer search: answers from captured real responses."""
+    q = query.lower()
+    if "pitch black" in q:
+        return _fixture("tcg_search_pitch_black.json")
+    if "phantasmal" in q:
+        return _fixture("tcg_search_phantasmal.json")
+    return {"results": [{"totalResults": 0, "results": []}]}
+
+
 def _run_main(tmp, config, state, answers, discovered=(), discover=True):
-    monitor.STATE_FILE, monitor.ALERTS_FILE, monitor.HEALTH_FILE = tmp / "state.json", tmp / "alerts.json", tmp / "health.json"
+    monitor.STATE_FILE, monitor.ALERTS_FILE, monitor.HEALTH_FILE, monitor.MARKET_FILE = tmp / "state.json", tmp / "alerts.json", tmp / "health.json", tmp / "market.json"
     monitor.CONFIG_FILE = tmp / "config.json"
     monitor.CONFIG_FILE.write_text(json.dumps(config), encoding="utf-8")
     monitor.STATE_FILE.write_text(json.dumps(state), encoding="utf-8")
     session = _FakeSession(answers)
-    sent = []
-    real_session, real_alert, real_discover = monitor.requests.Session, monitor.alert, monitor.discover_products
+    sent = []  # stock alerts arrive as card dicts, notices as (title, body) tuples
+    real_session, real_alert, real_card, real_discover, real_fetch = monitor.requests.Session, monitor.alert, monitor.send_card, monitor.discover_products, advisor.fetch_query
     monitor.requests.Session = lambda: session
-    monitor.alert = lambda title, body, ping=False: sent.append((title, body))
+    monitor.alert = lambda title, body, ping=False, tone="blind": sent.append((title, body))
+    monitor.send_card = lambda card: sent.append(card)
+    advisor.fetch_query = _fake_tcg_search
     def fake_discover(http, retailer, keyword, timeout):
         session.discover_calls += 1
         return list(discovered)
@@ -223,7 +237,7 @@ def _run_main(tmp, config, state, answers, discovered=(), discover=True):
     try:
         monitor.main(discover=discover)
     finally:
-        monitor.requests.Session, monitor.alert, monitor.discover_products = real_session, real_alert, real_discover
+        monitor.requests.Session, monitor.alert, monitor.send_card, monitor.discover_products, advisor.fetch_query = real_session, real_alert, real_card, real_discover, real_fetch
     return session, sent
 
 
@@ -285,10 +299,10 @@ def test_main_alert_wording_follows_signal_strength():
     prior = {"schema_version": 4, f"target::{url}": {"pokemon": True, "title": "Pokemon ETB", "in_stock": False, "last_seen": "2026-10-03T00:00:00+00:00"}}
     cart = lambda u: _Resp(200, u, "<title>Pokemon ETB</title><button>Add to cart</button>")
     structured = lambda u: _Resp(200, u, '<title>Pokemon ETB</title>"availability":"https://schema.org/InStock"')
-    for answer, expected in ((cart, "Likely in stock"), (structured, "Verified in stock")):
+    for answer, expected in ((cart, "Likely"), (structured, "Verified")):
         with tempfile.TemporaryDirectory() as d:
             _, sent = _run_main(Path(d), config, dict(prior), {"target.com": answer})
-        assert len(sent) == 1 and expected in sent[0][1], sent
+        assert len(sent) == 1 and expected in notify.stock_embed(sent[0])["embeds"][0]["fields"][3]["value"], sent
 
 
 class _Clock:
@@ -409,29 +423,34 @@ def test_fast_pass_does_not_search_and_rechecks_known_listings():
 def test_new_listing_announced_once_and_only_when_in_stock():
     import tempfile
     sent = []
-    real_alert = notify_new_listings.alert
-    notify_new_listings.alert = lambda title, body, ping=False: sent.append((title, body))
+    real = (notify_new_listings.send_card, advisor.fetch_query)
+    notify_new_listings.send_card = lambda card: sent.append(card)
+    advisor.fetch_query = _fake_tcg_search
     base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-04T12:00:00+00:00"}
     state = {
         "schema_version": 4,
-        "target::https://www.target.com/p/-/A-1": {**base, "in_stock": True, "new_announced": False},
+        "target::https://www.target.com/p/-/A-1": {**base, "in_stock": True, "new_announced": False, "signal": "structured"},
         "target::https://www.target.com/p/-/A-2": {**base, "in_stock": False, "new_announced": False},
         "target::https://www.target.com/p/-/A-3": {**base, "in_stock": None, "new_announced": False},
         "target::https://www.target.com/p/-/A-4": {**base, "in_stock": True},  # legacy entry: never new
-        "target::https://www.target.com/p/-/A-5": {**base, "in_stock": True, "new_announced": False, "signal": "text"},
+        "target::https://www.target.com/p/-/A-5": {**base, "in_stock": True, "new_announced": False, "signal": "text", "price": 59.99, "msrp": 49.99},
     }
     with tempfile.TemporaryDirectory() as d:
         notify_new_listings.STATE_FILE = Path(d) / "state.json"
+        notify_new_listings.MARKET_FILE = Path(d) / "market.json"
+        notify_new_listings.CONFIG_FILE = Path(d) / "config.json"
+        notify_new_listings.CONFIG_FILE.write_text(json.dumps({"map_url": "https://m"}))
         notify_new_listings.STATE_FILE.write_text(json.dumps(state))
         try:
             notify_new_listings.main()
             after = json.loads(notify_new_listings.STATE_FILE.read_text())
             notify_new_listings.main()  # a second run must not announce again
         finally:
-            notify_new_listings.alert = real_alert
-    assert len(sent) == 2, [s[0] for s in sent]
-    assert "A-1" in sent[0][1] and "verified stock" in sent[0][1]
-    assert "A-5" in sent[1][1] and "likely in stock" in sent[1][1]
+            notify_new_listings.send_card, advisor.fetch_query = real
+    assert [c["url"][-3:] for c in sent] == ["A-1", "A-5"], [c["url"] for c in sent]
+    assert all(c["kind"] == "new" for c in sent)
+    assert sent[0]["signal"] == "structured" and sent[1]["signal"] == "text" and sent[1]["price"] == 59.99
+    assert notify.stock_embed(sent[0])["embeds"][0]["title"].startswith("🆕")
     assert all(v.get("new_announced", True) for k, v in after.items() if k != "schema_version"), "every decided listing is marked, in stock or not"
 
 
@@ -639,8 +658,10 @@ def test_main_gamestop_trap_never_alerts_but_a_real_listing_does_at_any_price():
         _, sent = _run_main(tmp, _gs_config(GS_PITCH), prior(GS_PITCH), {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_pitch_black_etb_available.html"))})
         state = json.loads((tmp / "state.json").read_text())
         entry = state[f"gamestop::{GS_PITCH}"]
-        assert len(sent) == 1 and "Verified in stock" in sent[0][1], sent
+        assert len(sent) == 1 and sent[0]["signal"] == "page" and "Verified" in notify.stock_embed(sent[0])["embeds"][0]["fields"][3]["value"], sent
         assert entry["in_stock"] is True and entry["price"] == 84.99 and entry["msrp"] == 49.99
+        assert sent[0]["market"]["market"] == 75.58 and sent[0]["verdict"]["label"] == "ABOVE MARKET", "the alert carries the live TCGplayer comparison"
+        assert "pitch-black-etb" in json.loads((tmp / "market.json").read_text()), "and the price is cached for next time"
         _, sent = _run_main(tmp, _gs_config(GS_PITCH), state, {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_pitch_black_etb_available.html"))})
         assert sent == [], "no repeat alert while it stays in stock"
 
@@ -673,6 +694,159 @@ def test_live_hits_show_every_in_stock_item_with_its_price():
     assert second["price"] == 84.99 and second["msrp"] == 49.99 and second["signal"] == "page"
 
 
+PB_URL = "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html"
+CONFIG_FOR_ADVISOR = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8"))
+
+
+def test_advisor_query_building():
+    assert advisor.clean_title("Pokemon Trading Card Game: Pitch Black Elite Trainer Box | GameStop") == "pitch black elite trainer box"
+    assert advisor.clean_title("Pokémon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box : Target") == "pitch black elite trainer box"
+    assert advisor.clean_title("Pokémon Trading Card Game: 30th Celebration Elite Trainer Box : Target") == "30th celebration elite trainer box"
+    key, query, include, exclude = advisor.build_query("whatever", PB_URL, CONFIG_FOR_ADVISOR)
+    assert (key, query) == ("pitch-black-etb", "Pitch Black Elite Trainer Box") and include == ["pitch black", "elite trainer box"] and "case" in exclude
+    key, query, include, exclude = advisor.build_query("Pokemon Trading Card Game: Phantasmal Flames Elite Trainer Box | GameStop", "https://www.gamestop.com/x/1.html", CONFIG_FOR_ADVISOR)
+    assert key == "auto:phantasmal flames elite trainer box" and include == ["phantasmal", "flames", "elite", "trainer", "box"]
+    assert {"case", "pokemon center"} <= set(exclude)
+    key, query, include, exclude = advisor.build_query("Pokemon Center Elite Trainer Box | GameStop", "https://x/1", {})
+    assert advisor.clean_title("Pokémon Center Elite Trainer Box | GameStop") == "pokemon center elite trainer box"
+    assert "pokemon center" not in exclude and "exclusive" not in exclude and "case" in exclude, "asking for the Pokémon Center version must not exclude it"
+    center = advisor.pick(_fixture("tcg_search_pitch_black.json")["results"][0]["results"], ["pitch", "black", "pokemon", "center", "elite", "trainer", "box"], exclude)
+    assert center["productName"].startswith("Pitch Black Pokemon Center Elite Trainer Box") and center["marketPrice"] == 119.43
+
+
+def test_advisor_picks_the_right_tcgplayer_product():
+    rows = _fixture("tcg_search_pitch_black.json")["results"][0]["results"]
+    row = advisor.pick(rows, ["pitch black", "elite trainer box"], ["case", "pokemon center", "exclusive", "display"])
+    assert row["productName"] == "Pitch Black Elite Trainer Box" and row["marketPrice"] == 75.58, "not the case ($714), not the Pokémon Center box ($119)"
+    assert advisor.pick(rows, ["pitch black", "elite trainer box"], ["pitch black"]) is None
+    assert advisor.pick(rows, [], []) is None, "with nothing to match on, never guess a product"
+    assert advisor.pick([{"productName": "Pitch Black Elite Trainer Box", "marketPrice": 0}], ["pitch black"], []) is None, "no price, no match"
+    found = advisor.lookup("Pitch Black Elite Trainer Box", ["pitch black", "elite trainer box"], ["case", "pokemon center"], fetch=lambda q: _fixture("tcg_search_pitch_black.json"))
+    assert found["market"] == 75.58 and found["product_id"] == 692947 and found["listings"] == 213
+
+
+def test_advisor_cache_and_failure_behaviour():
+    now = datetime(2026, 10, 4, 16, 0, tzinfo=timezone.utc)
+    calls = []
+
+    def fetch(query):
+        calls.append(query)
+        return _fixture("tcg_search_pitch_black.json")
+
+    cache = {}
+    first = advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=fetch, now=now)
+    assert first["market"] == 75.58 and len(calls) == 1 and "pitch-black-etb" in cache
+    advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=fetch, now=now + timedelta(hours=5))
+    assert len(calls) == 1, "a cache entry under 6 hours old needs no network call"
+    advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=fetch, now=now + timedelta(hours=7))
+    assert len(calls) == 2, "an old entry is refreshed"
+
+    def boom(query):
+        raise RuntimeError("down")
+
+    stale = advisor.market_for(CONFIG_FOR_ADVISOR, cache, "t", PB_URL, fetch=boom, now=now + timedelta(hours=20))
+    assert stale["market"] == 75.58, "a failed refresh falls back to the stale price (its own timestamp shows the age)"
+    assert advisor.market_for(CONFIG_FOR_ADVISOR, {}, "t", PB_URL, fetch=boom, now=now) is None, "no cache and no network: no market, no crash"
+    nothing = {"results": [{"totalResults": 0, "results": []}]}
+    assert advisor.market_for(CONFIG_FOR_ADVISOR, {}, "t", PB_URL, fetch=lambda q: nothing, now=now) is None
+    cache = {}
+    assert advisor.refresh_cache(CONFIG_FOR_ADVISOR, cache, [("t", PB_URL), ("x", "https://x/unknown")], fetch=fetch, now=now) == 1
+
+
+def test_price_verdicts():
+    v = advisor.verdict
+    low = v(59.99, 49.99, 75.58)
+    assert low["label"] == "BUY: LOW" and low["tone"] == "good" and "21% below" in low["summary"] and low["retail"] == "above MSRP (+20%)"
+    assert v(84.99, 49.99, 75.58)["label"] == "ABOVE MARKET" and "12% above" in v(84.99, 49.99, 75.58)["summary"]
+    assert v(75.00, 49.99, 75.58)["label"] == "FAIR PRICE" and v(75.00, 49.99, 75.58)["tone"] == "fair"
+    assert v(67.0, None, 100.0)["label"] == "BUY: LOW", "10% or more under market is a deal"
+    assert v(89.99, None, 100.0)["label"] == "BUY: LOW" and v(90.0, None, 100.0)["label"] == "BUY: LOW" and v(90.01, None, 100.0)["label"] == "FAIR PRICE"
+    assert v(110.0, None, 100.0)["label"] == "FAIR PRICE" and v(110.01, None, 100.0)["label"] == "ABOVE MARKET"
+    assert v(49.99, 49.99, None)["label"] == "AT RETAIL" and v(49.99, 49.99, None)["retail"] == "at retail"
+    assert v(84.99, 49.99, None)["label"] == "ABOVE MSRP" and v(84.99, 49.99, None)["retail"] == "above MSRP (+70%)"
+    assert v(None, 49.99, 75.0)["label"] == "PRICE UNKNOWN" and v(12.0, None, None)["label"] == "PRICE UNKNOWN"
+
+
+def _card(price=84.99, **over):
+    market = {"market": 75.58, "updated_at": "2026-10-04T15:56:00+00:00", "product_id": 692947}
+    card = advisor.build_card("gamestop", "stock", "Pokemon TCG: Pitch Black Elite Trainer Box", PB_URL, "https://poncema4.github.io/pokemon-alert-bot/", "2026-10-04T16:00:00+00:00", "page", price, 49.99, market, ping=True, now=datetime(2026, 10, 4, 16, 0, tzinfo=timezone.utc))
+    card.update(over)
+    return card
+
+
+def test_stock_embed_is_clean_linked_and_within_discord_limits():
+    card = _card()
+    assert card["retailer"] == "GameStop" and card["market_age"] == "updated 4 min ago" and card["market_url"].endswith("/692947")
+    payload = notify.stock_embed(card)
+    embed = payload["embeds"][0]
+    assert embed["title"] == "🟢 IN STOCK · GameStop"
+    assert embed["description"].startswith("**[Pokemon TCG: Pitch Black Elite Trainer Box](" + PB_URL + ")**"), "the product name is the hyperlink"
+    assert "**ABOVE MARKET**" in embed["description"] and "12% above" in embed["description"]
+    assert payload["content"] == "@everyone" and payload["allowed_mentions"] == {"parse": ["everyone"]}
+    names = [f["name"] for f in embed["fields"]]
+    assert names == ["Price", "Retail", "TCGplayer market", "Proof", "Links"]
+    values = {f["name"]: f["value"] for f in embed["fields"]}
+    assert values["Price"] == "$84.99" and values["Retail"].startswith("$49.99") and "above MSRP (+70%)" in values["Retail"] and values["TCGplayer market"].startswith("$75.58")
+    assert "[Open product](" + PB_URL + ")" in values["Links"] and "[Map](" in values["Links"] and "tcgplayer.com/product/692947" in values["Links"]
+    # No raw URL anywhere: every http(s) address sits inside a markdown link, so Discord never unfurls a giant preview.
+    texts = [embed["title"], embed["description"]] + list(values.values())
+    for text in texts:
+        for m in re.finditer(r"https?://", text):
+            assert text[max(0, m.start() - 2):m.start()] == "](", f"raw link in {text!r}"
+    assert "image" not in embed and "thumbnail" not in embed and "video" not in embed
+
+
+def test_embed_ping_rules_and_tones():
+    assert notify.stock_embed(_card(ping=False))["content"] == "" and notify.stock_embed(_card(ping=False))["allowed_mentions"] == {"parse": []}
+    test_payload = notify.stock_embed(_card(kind="test", ping=True))
+    assert test_payload["content"] != "@everyone" and test_payload["allowed_mentions"] == {"parse": []} and test_payload["embeds"][0]["title"].startswith("🧪 TEST")
+    assert notify.stock_embed(_card(kind="new"))["embeds"][0]["title"].startswith("🆕")
+    assert notify.stock_embed(_card(price=59.99))["embeds"][0]["color"] == notify.COLORS["good"]
+    assert notify.stock_embed(_card(price=75.0))["embeds"][0]["color"] == notify.COLORS["fair"]
+    assert notify.stock_embed(_card())["embeds"][0]["color"] == notify.COLORS["high"]
+    assert notify.stock_embed(_card(market=None, market_age="", market_url="", price=None, msrp=None, verdict=advisor.verdict(None, None, None)))["embeds"][0]["fields"][2]["value"] == "not found"
+    for signal, word in (("page", "Verified"), ("structured", "Verified"), ("text", "Likely"), ("browser", "Verified")):
+        assert word in {f["name"]: f["value"] for f in notify.stock_embed(_card(signal=signal))["embeds"][0]["fields"]}["Proof"]
+
+
+def test_embed_survives_hostile_lengths():
+    huge = "X" * 5000
+    payload = notify.stock_embed(_card(title=huge))
+    embed = payload["embeds"][0]
+    assert len(embed["title"]) <= 256 and len(embed["description"]) <= 4096 and all(len(f["value"]) <= 1024 and len(f["name"]) <= 256 for f in embed["fields"])
+    assert len(embed["fields"]) <= 25 and notify.embed_size(payload) <= 6000, notify.embed_size(payload)
+    assert notify.clip("abc", 10) == "abc" and notify.clip("abcdef", 4) == "abc…" and notify.clip(None, 5) == ""
+    note = notify.notice_embed("blind", "⚠️ BLIND SPOT · Walmart", "Walmart cannot be read.", ping=True)
+    assert note["content"] == "@everyone" and note["embeds"][0]["color"] == notify.COLORS["blind"]
+
+
+def test_post_sends_payload_and_never_raises():
+    sent = []
+
+    class Resp:
+        status_code = 200
+        content = b"{}"
+        def json(self):
+            return {"id": "123"}
+
+    real_url, real_post = notify.DISCORD_WEBHOOK_URL, notify.requests.post
+    try:
+        notify.DISCORD_WEBHOOK_URL = ""
+        notify.requests.post = lambda *a, **k: sent.append((a, k)) or Resp()
+        assert notify.post({"content": "x"}) == (None, None) and sent == [], "no webhook configured: nothing is sent"
+        notify.DISCORD_WEBHOOK_URL = "https://discord.test/api/webhooks/1/abc"
+        assert notify.post({"content": "x"}, wait=True) == (200, {"id": "123"})
+        assert sent[0][0][0].endswith("?wait=true") and sent[0][1]["json"] == {"content": "x"}
+
+        def boom(*a, **k):
+            raise RuntimeError("network down")
+
+        notify.requests.post = boom
+        assert notify.post({"content": "x"}) == (None, None), "a Discord outage must not crash the monitor"
+    finally:
+        notify.DISCORD_WEBHOOK_URL, notify.requests.post = real_url, real_post
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -703,6 +877,14 @@ if __name__ == "__main__":
     test_full_refresh_is_live_with_real_chase_cards()
     test_paging_collects_every_row()
     test_committed_guide_carries_per_product_freshness()
+    test_advisor_query_building()
+    test_advisor_picks_the_right_tcgplayer_product()
+    test_advisor_cache_and_failure_behaviour()
+    test_price_verdicts()
+    test_stock_embed_is_clean_linked_and_within_discord_limits()
+    test_embed_ping_rules_and_tones()
+    test_embed_survives_hostile_lengths()
+    test_post_sends_payload_and_never_raises()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()
