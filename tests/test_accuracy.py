@@ -419,7 +419,6 @@ def test_new_listing_announced_once_and_only_when_in_stock():
         "target::https://www.target.com/p/-/A-3": {**base, "in_stock": None, "new_announced": False},
         "target::https://www.target.com/p/-/A-4": {**base, "in_stock": True},  # legacy entry: never new
         "target::https://www.target.com/p/-/A-5": {**base, "in_stock": True, "new_announced": False, "signal": "text"},
-        "target::https://www.target.com/p/-/A-6": {**base, "in_stock": True, "alertable": False, "overpriced": True, "new_announced": False},  # in stock but marked up
     }
     with tempfile.TemporaryDirectory() as d:
         notify_new_listings.STATE_FILE = Path(d) / "state.json"
@@ -618,9 +617,6 @@ def test_price_and_msrp_rules():
     assert monitor.msrp_for(config, GS_30TH) == 49.99
     assert monitor.msrp_for(config, "https://www.target.com/p/-/pokemon-booster-bundle/A-1") == 26.94
     assert monitor.msrp_for(config, "https://www.bestbuy.com/product/some-plush/1") is None, "unknown products get no price rule"
-    assert monitor.is_overpriced(84.99, 49.99, 1.3) is True
-    assert monitor.is_overpriced(59.99, 49.99, 1.3) is False, "a modest markup (tax-free retail variants) is still worth an alert"
-    assert monitor.is_overpriced(84.99, None, 1.3) is False and monitor.is_overpriced(None, 49.99, 1.3) is False
 
 
 def _gs_config(url):
@@ -629,42 +625,35 @@ def _gs_config(url):
     return cfg
 
 
-def test_main_gamestop_trap_and_markup_never_alert():
+def test_main_gamestop_trap_never_alerts_but_a_real_listing_does_at_any_price():
     import tempfile
     prior = lambda url: {"schema_version": 4, f"gamestop::{url}": {"pokemon": True, "title": "Pokemon ETB", "in_stock": False, "last_seen": "2026-10-03T00:00:00+00:00"}}
     # 1. JSON-LD says InStock but the page says unavailable: no alert, and the state says not in stock.
     with tempfile.TemporaryDirectory() as d:
         _, sent = _run_main(Path(d), _gs_config(GS_30TH), prior(GS_30TH), {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_30th_etb_unavailable.html"))})
         entry = json.loads((Path(d) / "state.json").read_text())[f"gamestop::{GS_30TH}"]
-    assert sent == [] and entry["in_stock"] is False and entry["alertable"] is False
-    # 2. Really available but $84.99 against a $49.99 retail price: in stock, flagged overpriced, no alert.
-    with tempfile.TemporaryDirectory() as d:
-        _, sent = _run_main(Path(d), _gs_config(GS_PITCH), prior(GS_PITCH), {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_pitch_black_etb_available.html"))})
-        entry = json.loads((Path(d) / "state.json").read_text())[f"gamestop::{GS_PITCH}"]
-    assert sent == [] and entry["in_stock"] is True and entry["overpriced"] is True and entry["alertable"] is False and entry["price"] == 84.99 and entry["msrp"] == 49.99
-    # 3. The same product at retail price is a real hit and alerts once; a price DROP after being overpriced also alerts.
-    cheap = _page("gamestop_pitch_black_etb_available.html").replace('"price":"84.99"', '"price":"49.99"')
+    assert sent == [] and entry["in_stock"] is False
+    # 2. Really available at $84.99 (retail $49.99): price never blocks an alert, it is recorded and shown.
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
         _, sent = _run_main(tmp, _gs_config(GS_PITCH), prior(GS_PITCH), {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_pitch_black_etb_available.html"))})
-        state_after_markup = json.loads((tmp / "state.json").read_text())
-        assert sent == []
-        _, sent = _run_main(tmp, _gs_config(GS_PITCH), state_after_markup, {"gamestop.com": lambda u: _Resp(200, u, cheap)})
-        assert len(sent) == 1 and "Verified in stock" in sent[0][1] and "49.99" not in sent[0][0], sent
-        state_after_drop = json.loads((tmp / "state.json").read_text())
-        _, sent = _run_main(tmp, _gs_config(GS_PITCH), state_after_drop, {"gamestop.com": lambda u: _Resp(200, u, cheap)})
+        state = json.loads((tmp / "state.json").read_text())
+        entry = state[f"gamestop::{GS_PITCH}"]
+        assert len(sent) == 1 and "Verified in stock" in sent[0][1], sent
+        assert entry["in_stock"] is True and entry["price"] == 84.99 and entry["msrp"] == 49.99
+        _, sent = _run_main(tmp, _gs_config(GS_PITCH), state, {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_pitch_black_etb_available.html"))})
         assert sent == [], "no repeat alert while it stays in stock"
 
 
-def test_live_hits_exclude_overpriced_and_carry_price():
+def test_live_hits_show_every_in_stock_item_with_its_price():
     import tempfile
     now = datetime.now(timezone.utc).isoformat()
     base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": now, "in_stock": True, "signal": "page"}
     state = {
         "schema_version": 4,
-        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/a/1.html": {**base, "price": 49.99, "msrp": 49.99, "overpriced": False, "alertable": True},
-        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/b/2.html": {**base, "price": 84.99, "msrp": 49.99, "overpriced": True, "alertable": False},
-        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/c/3.html": {**base},  # legacy entry without alertable
+        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/a/1.html": {**base, "price": 49.99, "msrp": 49.99},
+        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/b/2.html": {**base, "price": 84.99, "msrp": 49.99},
+        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/c/3.html": {**base},  # legacy entry without a price
     }
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
@@ -679,9 +668,9 @@ def test_live_hits_exclude_overpriced_and_carry_price():
             refresh_live_hits.STATE_FILE, refresh_live_hits.ALERTS_FILE, refresh_live_hits.CONFIG_FILE = old
         live = json.loads((tmp / "alerts.json").read_text())
     urls = {a["url"].rsplit("/", 1)[1] for a in live}
-    assert urls == {"1.html", "3.html"}, urls
-    first = next(a for a in live if a["url"].endswith("1.html"))
-    assert first["price"] == 49.99 and first["msrp"] == 49.99 and first["signal"] == "page"
+    assert urls == {"1.html", "2.html", "3.html"}, "an above-retail listing is still in stock, so it is still a live hit"
+    second = next(a for a in live if a["url"].endswith("2.html"))
+    assert second["price"] == 84.99 and second["msrp"] == 49.99 and second["signal"] == "page"
 
 
 if __name__ == "__main__":
@@ -700,8 +689,8 @@ if __name__ == "__main__":
     test_main_stops_probing_a_wall_but_keeps_reading_the_rest()
     test_real_pages_classify_correctly()
     test_price_and_msrp_rules()
-    test_main_gamestop_trap_and_markup_never_alert()
-    test_live_hits_exclude_overpriced_and_carry_price()
+    test_main_gamestop_trap_never_alerts_but_a_real_listing_does_at_any_price()
+    test_live_hits_show_every_in_stock_item_with_its_price()
     test_main_target_placeholder_never_becomes_stock()
     test_main_alert_wording_follows_signal_strength()
     test_every_guide_product_has_a_tcgplayer_mapping()

@@ -281,11 +281,6 @@ def msrp_for(config, url):
     return None
 
 
-def is_overpriced(price, msrp, max_markup):
-    """True when a listing costs clearly more than retail; those are not restocks worth a ping."""
-    return bool(price and msrp and price > msrp * max_markup)
-
-
 def check_product_page(http, retailer, url, timeout):
     fallback_title = f"{retailer.title()} Pokémon product"
     try:
@@ -438,7 +433,6 @@ def main(discover=True):
     retailers = [r for r in config.get("retailers", []) if r in SEARCH_URLS]
     cooldown = float(config.get("alert_cooldown_hours", 1))
     timeout = int(config.get("search_timeout_seconds", 8))
-    max_markup = float(config.get("max_markup", 1.3))
     ping = os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")
     map_url = config.get("map_url", "")
     http = requests.Session()
@@ -478,14 +472,11 @@ def main(discover=True):
             kind = None
             price = result.get("price")
             msrp = msrp_for(config, url)
-            overpriced = in_stock is True and is_overpriced(price, msrp, max_markup)
-            alertable = in_stock is True and not overpriced
             # Listings from before first_seen existed are not "new": never announce them.
             first_seen = previous.get("first_seen") or (previous.get("last_seen") if previous else now.isoformat())
             new_announced = previous.get("new_announced", True) if previous else False
 
-            was_alertable = previous.get("alertable", previous.get("in_stock")) is True
-            if previous and alertable and not was_alertable and not recently_stock_alerted(previous, now, cooldown):
+            if previous and in_stock is True and previous.get("in_stock") is not True and not recently_stock_alerted(previous, now, cooldown):
                 kind = "stock"
             elif previous and in_stock is None:
                 sent["unknown"] += 1
@@ -514,8 +505,6 @@ def main(discover=True):
                 "signal": result.get("signal"),
                 "price": price,
                 "msrp": msrp,
-                "overpriced": overpriced,
-                "alertable": alertable,
             }
 
         for url in seeds:

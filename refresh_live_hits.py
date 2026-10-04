@@ -52,7 +52,7 @@ def main():
         if key == "schema_version" or not isinstance(entry, dict) or "::" not in key:
             continue
         retailer, url = key.split("::", 1)
-        if retailer not in BIG4 or entry.get("alertable", entry.get("in_stock")) is not True:
+        if retailer not in BIG4 or entry.get("in_stock") is not True:
             continue
         last_seen = parse_time(entry.get("last_seen", ""))
         if not last_seen or last_seen < freshness_cutoff:
