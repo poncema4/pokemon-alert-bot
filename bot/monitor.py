@@ -473,6 +473,12 @@ def main(discover=True):
             kind = None
             price = result.get("price")
             msrp = msrp_for(config, url)
+            # When this stay in stock began: kept while it stays in stock, cleared when it is not. Older entries without the
+            # field fall back to when we first saw them, so a long-standing in-stock item is never mistaken for a fresh hit.
+            if in_stock is True:
+                in_stock_since = previous.get("in_stock_since") or (previous.get("first_seen") or previous.get("last_seen") if previous.get("in_stock") is True else None) or now.isoformat()
+            else:
+                in_stock_since = None
             # Listings from before first_seen existed are not "new": never announce them.
             first_seen = previous.get("first_seen") or (previous.get("last_seen") if previous else now.isoformat())
             new_announced = previous.get("new_announced", True) if previous else False
@@ -496,6 +502,7 @@ def main(discover=True):
                 "pokemon": True,
                 "title": title,
                 "in_stock": in_stock,
+                "in_stock_since": in_stock_since,
                 "posted_at": posted_at,
                 "first_seen": first_seen,
                 "new_announced": new_announced,
