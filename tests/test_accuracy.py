@@ -1251,6 +1251,18 @@ def test_a_live_hit_clears_fifteen_minutes_after_it_came_into_stock():
         assert _run_live_hits(tmp, {"schema_version": 4, key: entry(t0.isoformat(), seen=t0)}, [], t0 + timedelta(minutes=6)) == [], "stale checks are not live"
 
 
+def test_live_online_never_shows_an_item_that_is_not_confirmed_in_stock_even_with_a_leftover_start_time():
+    """Defence in depth: a sold-out or unknown entry that still carries an in_stock_since (a corrupt or older state file) must not be shown."""
+    import tempfile
+    t0 = datetime(2026, 10, 4, 16, 0, tzinfo=timezone.utc)
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        for stock in (False, None):
+            key = "target::https://www.target.com/p/-/A-1"
+            state = {"schema_version": 4, key: {"pokemon": True, "title": "Pokemon ETB", "in_stock": stock, "in_stock_since": t0.isoformat(), "last_seen": t0.isoformat(), "price": 59.99}}
+            assert _run_live_hits(tmp, state, [], t0 + timedelta(minutes=1)) == [], f"in_stock={stock} with a recent start time is still not a live hit"
+
+
 def test_monitor_tracks_when_a_stay_in_stock_began():
     import tempfile
     config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": ["https://www.target.com/p/-/A-1"]}}
@@ -2000,6 +2012,37 @@ def test_keyword_discovery_stops_at_its_time_budget():
         monitor.time, monitor.discover_products = real
 
 
+def test_an_item_that_is_in_stock_is_checked_at_the_hot_rhythm():
+    """Live online hides an item not checked for 5 minutes, and a sell-out should show quickly: once something is in stock it is re-read every
+    ~2 minutes (browser) / every cycle (HTTP) even if it is a calm product that is normally read every 10 minutes / every 3rd cycle."""
+    import tempfile
+    clock = _Clock2()
+    real = (monitor.time, monitor.BROWSER, dict(monitor._BACKOFF_UNTIL))
+    monitor.time = clock
+    try:
+        monitor._BACKOFF_UNTIL.clear()
+        key = f"bestbuy::{BB_CALM}"
+        for previous_stock, cycle, expect in ((False, 4, 0), (True, 4, 1), (True, 5, 0), (True, 8, 1), (None, 4, 0)):
+            monitor.BROWSER = _SlowBrowser(clock, 1)
+            state = {"schema_version": 4, key: {"pokemon": True, "title": "Pokemon ETB", "in_stock": previous_stock, "last_seen": "2026-10-03T00:00:00+00:00"}}
+            with tempfile.TemporaryDirectory() as d:
+                _run_main(Path(d), _browser_config([BB_CALM]), state, {}, cycle=cycle)
+            assert len(monitor.BROWSER.calls) == expect, f"previous in_stock={previous_stock} at cycle {cycle}: expected {expect} read(s), got {len(monitor.BROWSER.calls)}"
+    finally:
+        monitor.time, monitor.BROWSER = real[0], real[1]
+        monitor._BACKOFF_UNTIL.clear()
+        monitor._BACKOFF_UNTIL.update(real[2])
+    # plain HTTP stores: a calm in-stock listing is read every cycle, a calm out-of-stock one every 3rd
+    url = "https://www.target.com/p/-/A-77"
+    config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": [url]}, "hot_matches": ["30th-celebration"], "slow_every": 3}
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-03T00:00:00+00:00"}
+    for stock, cycle, expect in ((False, 1, 0), (False, 3, 1), (True, 1, 1), (True, 2, 1)):
+        with tempfile.TemporaryDirectory() as d:
+            session, _ = _run_main(Path(d), config, {"schema_version": 4, f"target::{url}": {**base, "in_stock": stock}}, {"target.com": lambda u: _Resp(200, u, "<title>Pokemon ETB</title>Sold out online")}, cycle=cycle)
+        reads = [c for c in session.calls if "target.com/p/-/A-77" in c]
+        assert len(reads) >= expect and (expect == 0) == (len(reads) == 0), f"HTTP, previous in_stock={stock}, cycle {cycle}: {len(reads)} read(s)"
+
+
 def test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone():
     import tempfile
     clock = _Clock2()
@@ -2178,6 +2221,13 @@ def test_page_assets_are_versioned_so_a_browser_never_mixes_releases():
             assert re.fullmatch(r"(?:css|js)/[A-Za-z0-9_.-]+\.(?:css|js)\?v=[0-9a-f]{8}", ref), f"{page.name}: {ref} has no version stamp"
 
 
+def test_ci_runs_the_end_to_end_test():
+    workflow = (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
+    step = workflow[workflow.index("Run the end-to-end test"):]
+    step = step[:step.index("setup-node")]
+    assert "python -u tests/test_end_to_end.py" in step and 'POKEPING_REQUIRE_BROWSER: "1"' in step, "CI must run the end-to-end test with a real browser required"
+
+
 def test_the_watcher_never_shares_a_concurrency_group_with_test_runs():
     """GitHub keeps one PENDING run per group. The watcher's queued handover shared a group with push test runs, so every merge replaced it
     (cancelled) and the watcher chain broke: the data went stale after each merge until the 30-minute cron."""
@@ -2279,6 +2329,7 @@ if __name__ == "__main__":
     test_state_merges_url_variants_and_keeps_the_newest_reading()
     test_new_listing_burst_is_capped_with_one_summary()
     test_a_live_hit_clears_fifteen_minutes_after_it_came_into_stock()
+    test_live_online_never_shows_an_item_that_is_not_confirmed_in_stock_even_with_a_leftover_start_time()
     test_monitor_tracks_when_a_stay_in_stock_began()
     test_the_watchlist_covers_the_etbs_marco_named()
     test_every_watched_etb_a_store_can_be_read_for_has_a_seed_url()
@@ -2306,11 +2357,13 @@ if __name__ == "__main__":
     test_the_map_re_reads_the_clock_by_itself()
     test_store_hours_data_is_complete_and_sourced()
     test_page_assets_are_versioned_so_a_browser_never_mixes_releases()
+    test_ci_runs_the_end_to_end_test()
     test_the_watcher_never_shares_a_concurrency_group_with_test_runs()
     test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
     test_browser_stores_are_read_gently()
     test_a_failing_search_engine_is_not_asked_again_for_a_while()
     test_keyword_discovery_stops_at_its_time_budget()
+    test_an_item_that_is_in_stock_is_checked_at_the_hot_rhythm()
     test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone()
     test_progress_is_saved_after_each_store()
     test_loop_scheduling()

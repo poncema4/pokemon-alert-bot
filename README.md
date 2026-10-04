@@ -13,6 +13,7 @@ Site: <https://poncema4.github.io/pokemon-alert-bot/> (Map, Route, 30th guide).
 - **The page's own signal beats generic data.** GameStop's `data-available` flag overrides its JSON-LD (which says `InStock` for items that are not). A disabled "Add to cart" button (Target's loading placeholder) is not stock.
 - **Proof is stated.** *Verified* means the page's own flag or structured data says in stock; *Likely* means only cart or pickup wording was found.
 - **New listings alert once**, only if the first reading is in stock, at most 5 per run (a summary covers the rest).
+- **Something in stock is checked often.** Calm products are read every few cycles (Best Buy pages every ~10 minutes), but once a page is in stock it is re-read at the hot rhythm (every cycle over HTTP, about every 2 minutes in the browser), so it stays on Live online (hidden after 5 minutes without a check) and a sell-out shows quickly.
 - **One alert per stay in stock.** After an alert the item is disarmed. It can alert again only after confirmed out-of-stock readings lasting 20 minutes (`rearm_minutes`); unknown readings (blocked or half-loaded pages) never re-arm it, so a flickering page cannot ping twice for the same stay.
 - **One listing, one URL.** Fragments, query strings and trailing slashes are dropped, so a product linked several ways is not counted several times.
 - **Repeat alerts are cooled down** per listing, and a blocked check can never suppress a later real restock.
@@ -97,7 +98,10 @@ tests/      Python and Node tests, plus captured real retailer and TCGplayer res
 pip install -r requirements.txt
 python tests/test_accuracy.py     # detection, health, advisor, embeds, loop, pins, site structure
 node tests/web/common.test.js     # the page helpers
+python tests/test_end_to_end.py   # a restock goes through the real watcher code to a (local) Discord webhook and onto the real site in Chromium
 ```
+
+The end-to-end test stages a restock at Target, Walmart, Best Buy and GameStop and checks that Discord and Live online agree (title, price, link), that nothing pings twice for the same stay (even through a blocked reading), that a sell-out clears Live online, and that Pokémon Center is shown as "can't read" and never alerts. CI runs it on every PR.
 
 Tests run against captured real responses (retailer pages, TCGplayer searches), and the habit is to prove a check can fail: change one thing, watch the right test fail, restore it. Never trust a check that cannot fail.
 
