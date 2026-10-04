@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-04T16:42:12.703657+00:00",
+  "updated_at": "2026-10-04T16:52:37.899095+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -14,7 +14,7 @@
         },
         "walmart": {
           "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box-ETB/20754418655?conditionGroupCode=4&classType=REGULAR&from=/search",
+          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box-ETB/20754418655",
           "reason": null
         },
         "bestbuy": {
@@ -36,7 +36,7 @@
     {
       "id": "delta-reign",
       "label": "Delta Reign",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 133.34,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/712102",
@@ -51,7 +51,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 89.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/20037568.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -62,7 +64,7 @@
     {
       "id": "chaos-rising",
       "label": "Chaos Rising",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 69.63,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/684450",
@@ -72,14 +74,16 @@
         },
         "walmart": {
           "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Chaos-Rising-Elite-Trainer-Box/19988614228?conditionGroupCode=4&classType=REGULAR&from=/search",
+          "url": "https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Chaos-Rising-Elite-Trainer-Box/19988614228",
           "reason": null
         },
         "bestbuy": {
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 84.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-chaos-rising-elite-trainer-box/20033749.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -90,7 +94,7 @@
     {
       "id": "pitch-black",
       "label": "Pitch Black",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 75.58,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/692947",
@@ -100,7 +104,7 @@
         },
         "walmart": {
           "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Pitch-Black-Elite-Trainer-Box/20161351456?conditionGroupCode=4&classType=REGULAR&from=/search",
+          "url": "https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Pitch-Black-Elite-Trainer-Box/20161351456",
           "reason": null
         },
         "bestbuy": {
@@ -112,7 +116,7 @@
           "state": "in_stock",
           "price": 84.99,
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
-          "since": null
+          "since": "2026-10-04T12:38:25.630381+00:00"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -123,7 +127,7 @@
     {
       "id": "perfect-order",
       "label": "Perfect Order",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 69.87,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/672401",
@@ -133,14 +137,16 @@
         },
         "walmart": {
           "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Elite-Trainer-Box/19402160990?conditionGroupCode=4&classType=REGULAR&from=/search",
+          "url": "https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Elite-Trainer-Box/19402160990",
           "reason": null
         },
         "bestbuy": {
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 84.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-perfect-order-elite-trainer-box/20031957.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -151,7 +157,7 @@
     {
       "id": "ascended-heroes",
       "label": "Ascended Heroes",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 159.96,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/668496",
@@ -161,14 +167,16 @@
         },
         "walmart": {
           "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pok-mon-Trading-Card-Game-Mega-Evolution-Ascended-Heroes-Elite-Trainer-Box/18710966734?conditionGroupCode=4&classType=REGULAR&from=/search",
+          "url": "https://www.walmart.com/ip/Pok-mon-Trading-Card-Game-Mega-Evolution-Ascended-Heroes-Elite-Trainer-Box/18710966734",
           "reason": null
         },
         "bestbuy": {
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 119.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -179,7 +187,7 @@
     {
       "id": "phantasmal-flames",
       "label": "Phantasmal Flames",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 151.75,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/654136",
@@ -196,7 +204,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 74.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -207,7 +217,7 @@
     {
       "id": "mega-evolution",
       "label": "Mega Evolution",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 121.03,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/644279",
@@ -217,14 +227,16 @@
         },
         "walmart": {
           "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Scarlet-Violet-Mega-Evolution-Elite-Trainer-Box/17328862239?conditionGroupCode=4&classType=REGULAR&from=/search",
+          "url": "https://www.walmart.com/ip/Scarlet-Violet-Mega-Evolution-Elite-Trainer-Box/17328862239",
           "reason": null
         },
         "bestbuy": {
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 69.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -235,7 +247,7 @@
     {
       "id": "prismatic-evolutions",
       "label": "Prismatic Evolutions",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 134.02,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/593355",
@@ -252,7 +264,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 149.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-prismatic-evolutions-elite-trainer-box/20018505.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -263,7 +277,7 @@
     {
       "id": "destined-rivals",
       "label": "Destined Rivals",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 117.28,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/624676",
@@ -280,7 +294,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 99.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -291,7 +307,7 @@
     {
       "id": "black-bolt",
       "label": "Black Bolt",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 160.71,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/630686",
@@ -308,7 +324,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "unreadable",
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-black-bolt-elite-trainer-box/426102.html",
+          "reason": "http_410"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -319,7 +337,7 @@
     {
       "id": "white-flare",
       "label": "White Flare",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 145.97,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/630689",
@@ -329,14 +347,16 @@
         },
         "walmart": {
           "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-White-Flare-Elite-Trainer-Box-9-Packs-Promo-Card/16446322202?conditionGroupCode=4&classType=VARIANT&from=/search",
+          "url": "https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-White-Flare-Elite-Trainer-Box-9-Packs-Promo-Card/16446322202",
           "reason": null
         },
         "bestbuy": {
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 59.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -347,7 +367,7 @@
     {
       "id": "journey-together",
       "label": "Journey Together",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 136.13,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/610930",
@@ -364,7 +384,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "unreadable",
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-journey-together-elite-trainer-box/420196.html",
+          "reason": "http_410"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -375,7 +397,7 @@
     {
       "id": "surging-sparks",
       "label": "Surging Sparks",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 122.24,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/565630",
@@ -392,7 +414,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 59.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-surging-sparks-elite-trainer-box/20015259.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -403,7 +427,7 @@
     {
       "id": "151",
       "label": "151",
-      "msrp": 49.99,
+      "msrp": null,
       "market": 493.91,
       "market_updated_at": "2026-10-04T16:42:06.353798+00:00",
       "market_url": "https://www.tcgplayer.com/product/503313",
@@ -413,7 +437,7 @@
         },
         "walmart": {
           "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-ITM0013380-Trading-Card-Games-Scarlet-Violet-3-5-151-Elite-Trainer-Box/3417089291?conditionGroupCode=4&classType=REGULAR&from=/search",
+          "url": "https://www.walmart.com/ip/Pokemon-ITM0013380-Trading-Card-Games-Scarlet-Violet-3-5-151-Elite-Trainer-Box/3417089291",
           "reason": null
         },
         "bestbuy": {

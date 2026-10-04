@@ -4,10 +4,11 @@
     "pokemon": true,
     "title": "Target Pok\u00e9mon product",
     "in_stock": null,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
     "last_ok": "2026-10-04T15:31:14.144299+00:00",
     "last_stock_alert": "2026-09-08T05:57:08.163500+00:00",
     "http_status": 200,
@@ -20,10 +21,11 @@
     "pokemon": true,
     "title": "Target Pok\u00e9mon product",
     "in_stock": null,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
     "last_ok": "2026-10-04T15:31:14.144299+00:00",
     "last_stock_alert": "2026-09-08T05:57:08.163500+00:00",
     "http_status": 200,
@@ -36,10 +38,11 @@
     "pokemon": true,
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
     "last_ok": "2026-10-04T16:28:57.531443+00:00",
     "last_stock_alert": "2026-10-04T15:53:29.421622+00:00",
     "http_status": 200,
@@ -52,10 +55,11 @@
     "pokemon": true,
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
     "last_ok": "2026-10-04T16:28:57.531443+00:00",
     "last_stock_alert": "2026-10-04T15:53:29.421622+00:00",
     "http_status": 200,
@@ -68,10 +72,11 @@
     "pokemon": true,
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
     "last_ok": "2026-10-04T16:28:57.531443+00:00",
     "last_stock_alert": "2026-10-04T15:53:29.421622+00:00",
     "http_status": 200,
@@ -84,10 +89,11 @@
     "pokemon": true,
     "title": "Bestbuy Pok\u00e9mon product",
     "in_stock": null,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
     "last_ok": null,
     "last_stock_alert": null,
     "http_status": null,
@@ -100,27 +106,29 @@
     "pokemon": true,
     "title": "Bestbuy Pok\u00e9mon product",
     "in_stock": null,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
     "last_ok": null,
     "last_stock_alert": null,
     "http_status": null,
     "reason": "error",
     "signal": null,
     "price": null,
-    "msrp": 49.99
+    "msrp": null
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html": {
     "pokemon": true,
     "title": "Pokemon Trading Card Game: 30th Celebration Elite Trainer Box | GameStop",
     "in_stock": false,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
-    "last_ok": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
     "last_stock_alert": "2026-09-29T19:28:18.886241+00:00",
     "http_status": 200,
     "reason": "ok",
@@ -132,35 +140,37 @@
     "pokemon": true,
     "title": "Pokemon Trading Card Game: Pitch Black Elite Trainer Box | GameStop",
     "in_stock": true,
+    "in_stock_since": "2026-10-04T12:38:25.630381+00:00",
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
-    "last_ok": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
     "last_stock_alert": "2026-09-29T19:28:18.886241+00:00",
     "http_status": 200,
     "reason": "ok",
     "signal": "page",
     "price": 84.99,
-    "msrp": 49.99
+    "msrp": null
   },
   "walmart::https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207": {
     "pokemon": true,
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
+    "in_stock_since": null,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T16:31:46.995172+00:00",
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
     "last_ok": "2026-10-04T16:28:57.531443+00:00",
     "last_stock_alert": "2026-10-04T15:53:29.421622+00:00",
     "http_status": 200,
     "reason": "blocked",
     "signal": null,
     "price": null,
-    "msrp": 49.99
+    "msrp": null
   },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Scarlet-Violet-Destined-Rivals-Pok-mon-Center-Elite-Trainer-Box/15718673510?conditionGroupCode=4&classType=REGULAR&from=/search": {
+  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Scarlet-Violet-Destined-Rivals-Pok-mon-Center-Elite-Trainer-Box/15718673510": {
     "pokemon": true,
     "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
@@ -175,78 +185,6 @@
     "signal": null,
     "price": null,
     "msrp": 49.99
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Elite-Trainer-Box/19402160990?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-Trading-Card-Game-Mega-Evolution-Ascended-Heroes-Elite-Trainer-Box/18710966734?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Walmart Pok\u00e9mon product",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box-ETB/20754418655?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Chaos-Rising-Elite-Trainer-Box/19988614228?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Scarlet-Violet-Mega-Evolution-Elite-Trainer-Box/17328862239?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Walmart Pok\u00e9mon product",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Scarlet-Violet-3-Obsidian-Flames-Elite-Trainer-Box/3280189864?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Scarlet-Violet-Destined-Rivals-Pok-mon-Center-Elite-Trainer-Box/15718673510": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Scarlet-and-Violet-8-5-Prismatic-Evolutions-Elite-Trainer-Box/13816151308": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Elite-Trainer-Box/19402160990": {
     "pokemon": true,
@@ -298,7 +236,16 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T02:29:00.610154+00:00",
+    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
+    "http_status": 200
+  },
+  "walmart::https://www.walmart.com/ip/Pokemon-Scarlet-and-Violet-8-5-Prismatic-Evolutions-Elite-Trainer-Box/13816151308": {
+    "pokemon": true,
+    "title": "Robot or human?",
+    "in_stock": null,
+    "posted_at": null,
+    "last_seen": "2026-10-02T18:30:51.010139+00:00",
     "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
     "http_status": 200
   },
@@ -329,7 +276,7 @@
     "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-9-Journey-Together-Booster-Bundle/15042474261?conditionGroupCode=4&classType=REGULAR&from=/search": {
+  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-9-Journey-Together-Booster-Bundle/15042474261": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -338,7 +285,7 @@
     "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Scarlet-Violet-Mega-Evolution-Booster-Bundle/17344505131?conditionGroupCode=4&classType=REGULAR&from=/search": {
+  "walmart::https://www.walmart.com/ip/Scarlet-Violet-Mega-Evolution-Booster-Bundle/17344505131": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -347,7 +294,7 @@
     "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/POKEMON-SV8-5-PRISMATIC-EVO-BST-BUNDLE/14803962651?conditionGroupCode=4&classType=REGULAR&from=/search": {
+  "walmart::https://www.walmart.com/ip/POKEMON-SV8-5-PRISMATIC-EVO-BST-BUNDLE/14803962651": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -356,7 +303,7 @@
     "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-PHANTASMAL-FLAMES-BOOSTER-BUNDLE/17785924366?conditionGroupCode=4&classType=REGULAR&from=/search": {
+  "walmart::https://www.walmart.com/ip/POKEMON-ME2-PHANTASMAL-FLAMES-BOOSTER-BUNDLE/17785924366": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -366,42 +313,6 @@
     "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Pitch-Black-Booster-Bundle/20243261734": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-9-Journey-Together-Booster-Bundle/15042474261": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Scarlet-Violet-Mega-Evolution-Booster-Bundle/17344505131": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-SV8-5-PRISMATIC-EVO-BST-BUNDLE/14803962651": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-PHANTASMAL-FLAMES-BOOSTER-BUNDLE/17785924366": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -482,7 +393,7 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Booster-Box-36-Packs/19376602103?conditionGroupCode=4&classType=REGULAR&from=/search": {
+  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Booster-Box-36-Packs/19376602103": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -501,15 +412,6 @@
     "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Chaos-Rising-Booster-Box/19939024731": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Booster-Box-36-Packs/19376602103": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -590,51 +492,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-Card-Game-Scarlet-Violet-Enhanced-Expansion-Pack-Pokemon-Card-151-Box-Japanese/2053692795?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-3-5-151-Booster-Bundle-with-6-Booster-Card-Packs/1160437186?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-ITM0013380-Trading-Card-Games-Scarlet-Violet-3-5-151-Elite-Trainer-Box/3417089291?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-3-5-Pokemon-151-Ultra-Premium-Collection/3606845180?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-3-5-151-Poster-Collection-Box-3-Pokemon-TCG-Scarlet-Violet-151-booster-packs/2121361619?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-Card-Game-Scarlet-Violet-Enhanced-Expansion-Pack-Pokemon-Card-151-Box-Japanese/2053692795": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -658,7 +515,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
+    "last_seen": "2026-10-02T13:15:08.565155+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -667,7 +524,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T21:19:01.928446+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -725,24 +582,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlett-Violet-8-5-Prismatic-Evolutions-Surprise-Box/14148473268?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Prismatic-Evolutions-Super-Premium-Collection-SV-Prismatic-Evolutions-PRE/16490008548?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlett-Violet-8-5-Prismatic-Evolutions-Surprise-Box/14148473268": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -757,7 +596,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T02:29:00.610154+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -807,33 +646,6 @@
     "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/Pokemon-Trading-Cards-SV-8-5-Prismatic-Evolutions-Tech-Sticker-Collection/14191660941": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Destined-Rivals-Booster-Bundle-6-Packs/16019713971?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Destined-Rivals-Booster-Display-Box-36-Packs/16017668684?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Destined-Rivals-Blister-Booster-Pack-10-Cards/16034470614?conditionGroupCode=4&classType=REGULAR&from=/search": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -905,24 +717,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-PHANTASMAL-FLAMES-3PK-BLISTER/17818262325?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-PHANTASMAL-FLAMES-ELITE-TRAINER-BOX/17780209250?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/POKEMON-ME2-PHANTASMAL-FLAMES-3PK-BLISTER/17818262325": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -983,87 +777,6 @@
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-White-Flare-Elite-Trainer-Box-9-Packs-Promo-Card/16446322202?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-White-Bolt-Booster-Bundle-Set-6-Packs/16516160047?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-White-Flare-Binder-Collection-Box-5-Packs/16516160046?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Card-Game-White-Flare-Booster-Box-Japanese-20-Packs/16760522330?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-White-Flare-Tech-Sticker-Blister-Pack-3-Packs/16448166186?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Cards-White-Flare-Pokemon-Center-Elite-Trainer-Box-Exclusive/17321161846?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-White-Flare-Elite-Trainer-Box-ETB/17934103058?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Card-Game-White-Flare-Deluxe-Booster-Box-Japanese-4-Packs/16773801690?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Scarlet-Violet-White-Flare-Booster-Pack-ENGLISH-10-Cards/17320312795?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1135,7 +848,7 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T21:19:01.928446+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1154,78 +867,6 @@
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-Black-Bolt-Elite-Trainer-Box-9-Packs-Promo-Card/16498668973?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-Black-Bolt-Binder-Collection-Box-5-Packs/16454374284?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-Black-Bolt-Booster-Bundle-Set-6-Packs/16484003729?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Card-Game-Black-Bolt-Booster-Box-Japanese-20-Packs/16805652997?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Scarlet-Violet-Black-Bolt-Booster-Pack-ENGLISH-10-Cards/17319811487?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-10-5-Black-Bolt-Tech-Sticker-Blister-Pack-3-Packs/16448166601?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Cards-Black-Bolt-Pokemon-Center-Elite-Trainer-Box-Exclusive/17321111945?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-SV10-5-Black-Bolt-Booster-Bundle-2-Pack/17276562327?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1304,60 +945,6 @@
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Black-Bolt-Booster-Bundle/17825760961": {
     "pokemon": true,
     "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-5-ASCENDED-HEROES-EX-BOX/19620004893?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-5-ASCENDED-HEROES-DELUXE-PIN-COLLECTION/19012610850?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Ascended-Heroes-Booster-Bundle-6-Packs/18728422476?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Ascended-Heroes-Focused-Fighters-Premium-Collection/20689957189?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-5-ASCENDED-HEROES-2PK-BLISTER/18911118976?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-Trading-Card-Game-Mega-Evolution-Ascended-Heroes-Premium-Poster-Collection-Styles-May-Vary/19009204107?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-02T13:15:08.565155+00:00",
@@ -1454,69 +1041,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolutions-Perfect-Order-3-Pack-Blister-Chikorita/19385368696?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Booster-Bundle-6-Packs/19380764160?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Build-Battle-Box/19376602895?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Perfect-Order-Pokemon-Center-Elite-Trainer-Box/20010206903?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Game-Scarlet-Violet-Paldea-Evolved-Checklane-BLISTER-Pack-Booster-Pack-Promo-Card-Coin/2938174668?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME3-PERFECT-ORDER-BOOSTER-PACK/19585424875?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/2026-Pokemon-Mega-Evolution-Perfect-Order-Booster-Packs-Lot-of-4/19929951679?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolutions-Perfect-Order-3-Pack-Blister-Chikorita/19385368696": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -1567,31 +1091,13 @@
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T21:19:01.928446+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
   "walmart::https://www.walmart.com/ip/Phantasmal-Flames-25-Reverse-Foil-Card-Lot-x25-No-Duplicates/20587601450": {
     "pokemon": true,
     "title": "Walmart Pok\u00e9mon product",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Pitch-Black-Elite-Trainer-Box/20161351456?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME5-PITCH-BLACK-3PK-BLISTER/20195672958?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-02T13:15:08.565155+00:00",
@@ -1751,39 +1257,12 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Ultra-Premium-Collection-Night/20754568004?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Knock-Out-Collection-box/20767306267?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Booster-Bundle/20638470762?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Ultra-Premium-Collection-Night/20754568004": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T02:29:00.610154+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1832,84 +1311,12 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Chaos-Rising-Bundle/19986002628?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Enhanced-Booster-Display-Box-36-Packs-Box-Topper/17543764108?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Scarlet-Violet-Mega-Evolution-Booster-Pack/17344605256?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Game-Scarlet-and-Violet-Stellar-Crown-Booster-Box-36-Count/8867673598?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-09-28T01:47:01.730599+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-3-5-151-Collection-Zapdos-Ex-4-Pokemon-Tgc-Scarlet-Violet-151-Booster-Packs/3534446787?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/151-Booster-Bundle-English/14404865831?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-151-Blooming-Waters-Premium-Collection-12-Packs-Promo-Cards/15054853620?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/POKEMON-D7-SV3-5-151-ELITE-TRAINER-BOX/5337897826": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-09-29T14:16:16.724714+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Prismatic-Evolutions-Premium-Figure-Collection/17497369978?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -1922,79 +1329,7 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Destined-Rivals-SV10-3-Pack-Blister-Random-Promo/16060605120?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Destined-Rivals-Booster-Display-Box-36-Packs/16665461552?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Destined-Rivals-SV10-3-Pack-Blister-Random-Promo/16060605120": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Mega-Evolutions-Pokemon-Trading-Card-Game-Booster-Box/17936350119?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-PHANTASMAL-FLAMES-BLISTER/17765616595?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Phantasmal-Flames-Elite-Trainer-Box/18387465189?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Phantasmal-Flames/18358300517?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Phantasmal-Flames-Pok-mon-Center-Elite-Trainer-Box/18681102325?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-09-28T01:47:01.730599+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-ME2-5-ASCENDED-HEROES-D7-TOY-TIN/20497167347?conditionGroupCode=4&classType=REGULAR&from=/search": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -2018,33 +1353,6 @@
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Pitch-Black-Build-Battle-Box/20243211848?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Pitch-Black-Pok-mon-Center-Elite-Trainer-Box/20649158182?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokmon-TCG-Mega-Evolution-Pitch-Black-Booster-Bundle-ME05-with-6-Booster-Packs-Trading-Card-Game/20724415375?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2075,109 +1383,21 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Anniversary-Booster-Bundle-Box/20717271194?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Scarlet-and-Violet-8-5-Prismatic-Evolutions-Elite-Trainer-Box/13816151308?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Walmart Pok\u00e9mon product",
-    "in_stock": null,
-    "posted_at": null,
-    "first_seen": "2026-10-02T18:30:51.010139+00:00",
-    "new_announced": true,
-    "last_seen": "2026-10-04T16:17:37.419556+00:00",
-    "last_ok": null,
-    "last_stock_alert": null,
-    "http_status": 200,
-    "reason": "blocked",
-    "signal": null,
-    "price": null,
-    "msrp": 49.99
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Pitch-Black-Booster-Bundle/20243261734?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
-    "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Pitch-Black-Booster-Box-ME05/20140716298?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Chaos-Rising-Booster-Box/19939024731?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-8-5-Prismatic-Evolutions-Poster-Box/14091452016?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Mega-Darkrai-EX-Secret-Rare-Holo-2026-Pokemon-Pitch-Black-116-84-English/20958011938?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Walmart Pok\u00e9mon product",
-    "in_stock": null,
-    "posted_at": null,
-    "first_seen": "2026-10-02T18:30:51.010139+00:00",
-    "new_announced": true,
-    "last_seen": "2026-10-04T16:17:37.419556+00:00",
-    "last_ok": null,
-    "last_stock_alert": null,
-    "http_status": 200,
-    "reason": "blocked",
-    "signal": null,
-    "price": null,
-    "msrp": 49.99
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221": {
     "pokemon": true,
-    "title": "Robot or human?",
+    "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
+    "first_seen": "2026-10-02T18:30:51.010139+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:17:37.419556+00:00",
+    "last_ok": null,
     "last_stock_alert": null,
-    "http_status": 200
+    "http_status": 200,
+    "reason": "blocked",
+    "signal": null,
+    "price": null,
+    "msrp": 49.99
   },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-Celebrations-Collection-Elite-Trainer-Box/576376488": {
     "pokemon": true,
@@ -2188,30 +1408,12 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Poster-Collection/20671207153?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Knock-Out-Collection/20638470037?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Poster-Collection/20671207153": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T21:19:01.928446+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2296,30 +1498,12 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/POKEMON-SV8-5-PRISMATIC-EVOLUTIONS-ETB-REPRINT-2/18170913799?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-6-5-Shrouded-Fable-Booster-Bundle/5988933729": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-01T09:21:21.323410+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Scarlet-Violet-8-5-Prismatic-Evolutions-Super-Premium-Collection/15494520186?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2341,48 +1525,12 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-SPANISH-Scarlet-and-Violet-Destined-Rivals-Booster-Bundle-6-Packs/20570724031?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-ME2-Phantasmal-Flames-Booster-Pack-Mega-Charizard-X/18545811726?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-ME2-Phantasmal-Flames-Booster-Pack-Mega-Charizard-X/18545811726": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Black-Bolt-Booster-Bundle/17825760961?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-SV10-5-Black-Bolt-Booster-Pack/17249101002?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T21:19:01.928446+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2395,15 +1543,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pok-mon-Trading-Card-Games-XY-Evolutions-Sealed-Booster-Box-36-Packs-Per-Box/55124974?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-Mega-Evolutions-Enhanced-Booster-Box/18035961533": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -2413,25 +1552,7 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Blooming-Waters-Premium-Collection/15130366484?conditionGroupCode=4&classType=VARIANT&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Blooming-Waters-Premium-Collection/15130366484": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-SV8-5-PRISMATIC-EVO-MINI-TINS/14753316400?classType=REGULAR&from=/search": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -2467,15 +1588,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-SV10-5-White-Flare-Booster-Bundle-2-Pack/17276562328?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-SV10-5-White-Flare-Booster-Bundle-2-Pack/17276562328": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -2494,33 +1606,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Phantasmal-Flames-25-Reverse-Foil-Card-Lot-x25-No-Duplicates/20587601450?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Walmart Pok\u00e9mon product",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokmon-TCG-Mega-Evolution-Pitch-Black-Elite-Trainer-Box-ME05-Official-Trading-Card-Game-Set/20735014731?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pitch-Black-Mega-Evolution-Pokemon-Build-and-Battle-Box/20796714968?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pitch-Black-Mega-Evolution-Pokemon-Build-and-Battle-Box/20796714968": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -2533,24 +1618,6 @@
   "walmart::https://www.walmart.com/ip/Pokemon-Pitch-Black-Complete-ex-Double-Rare-Card-Lot-Mega-Darkrai-ex-Chandelure-Delphox-Excadrill-Slowbro/20777308602": {
     "pokemon": true,
     "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-30th-Celebration-Pok-mon-Center-Elite-Trainer-Box-Collectible-11-Booster-Packs/20987073258?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-Elite-Trainer-Box-30th-Celebration-2-Pack/21015017956?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Walmart Pok\u00e9mon product",
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-02T13:15:08.565155+00:00",
@@ -2620,34 +1687,7 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Scarlet-Violet-Destined-Rivals-Build-Battle-Box-4-Packs/15958966839?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-SV10-Destined-Rivals-Art-Set-4-Sleeved-Booster-Packs/16697160854": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-White-Flare-Booster-Box-Japanese/16750251858?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolutions-Perfect-Order-Sleeved-Booster-Pack-10-Cards/19335471098?conditionGroupCode=4&classType=REGULAR&from=/search": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -2671,15 +1711,6 @@
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-09-29T14:16:16.724714+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Scarlet-Violet-8-5-Prismatic-Evolutions-Binder-Collection/14078321300?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2728,21 +1759,12 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-Mega-Evolution-2-5-Ascended-Heroes-Elite-Trainer-Box-with-Promo-and-9-Booster-Packs/19629303589?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-Mega-Evolution-2-5-Ascended-Heroes-Elite-Trainer-Box-with-Promo-and-9-Booster-Packs/19629303589": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
+    "last_seen": "2026-10-01T21:19:01.928446+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2755,15 +1777,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/POKEMON-30TH-ANNIVERSARY-SYLVEON-GRENINJA-EX-BOX/20874702667?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-Trading-Card-Games-Scarlet-Violet-8-5-Prismatic-Evolutions-Accessory-Pouch/14169661774": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -2773,52 +1786,7 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Trading-Card-Game-Scarlet-Violet-Pokemon-151-Booster-Pack-ENGLISH-10-Cards/5052198530?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Pitch-Black-Complete-ex-Double-Rare-Card-Lot-Mega-Darkrai-ex-Chandelure-Delphox-Excadrill-Slowbro/20777308602?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pok-mon-TCG-30th-Celebration-Elite-Trainer-Box-2ct-Bundle/20959422790?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pok-mon-TCG-30th-Celebration-Elite-Trainer-Box-2ct-Bundle/20959422790": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Greninja-ex-Box/20900400234?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/POKEMON-30TH-ANNIVERSARY-TECH-STICKER-COLLECTION/20843872728?conditionGroupCode=4&classType=REGULAR&from=/search": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -2842,15 +1810,6 @@
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Mega-Evolution-2-5-Ascended-Heroes-Elite-Trainer-Box-with-Promo-and-9-Booster-Packs/19629303589?classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T13:15:08.565155+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -2962,48 +1921,12 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-SV10-Destined-Rivals-Booster-Bundle-10-Pack/16667753065?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/2025-Pokemon-Mega-Evolution-Phantasmal-Flames-Special-Illustration-Rare-Mega-Charizard-X-Ex-125-PSA-10/21030506683?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/2025-Pokemon-Mega-Evolution-Phantasmal-Flames-Special-Illustration-Rare-Mega-Charizard-X-Ex-125-PSA-10/20974312516?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Graded-2026-Pokemon-Perfect-Order-Meowth-EX-Special-Illustration-Rare-PSA-10-121/21007753771": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
     "posted_at": null,
     "last_seen": "2026-10-01T02:29:00.610154+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-Journey-Together-SV09-Elite-Trainer-Box/15156564532?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-02T18:30:51.010139+00:00",
     "last_stock_alert": null,
     "http_status": 200
   },
@@ -3061,15 +1984,6 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-SV10-5-White-Flare-Booster-Pack/17295406468?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-SV10-5-White-Flare-Booster-Pack/17295406468": {
     "pokemon": true,
     "title": "Robot or human?",
@@ -3088,25 +2002,7 @@
     "last_stock_alert": null,
     "http_status": 200
   },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Ascended-Heroes-Mega-Meganium-ex-Box/20111365096?conditionGroupCode=4&classType=REGULAR&from=/search": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
   "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Ascended-Heroes-Mega-Feraligatr-ex-Box/20091369558": {
-    "pokemon": true,
-    "title": "Robot or human?",
-    "in_stock": null,
-    "posted_at": null,
-    "last_seen": "2026-10-01T21:19:01.928446+00:00",
-    "last_stock_alert": null,
-    "http_status": 200
-  },
-  "walmart::https://www.walmart.com/ip/Pokemon-TCG-Mega-Evolution-Pitch-Black-Checklane-Blister-Pack-Slowpoke/20712823447?conditionGroupCode=4&classType=REGULAR&from=/search": {
     "pokemon": true,
     "title": "Robot or human?",
     "in_stock": null,
@@ -3204,5 +2100,209 @@
     "last_seen": "2026-10-02T18:30:51.010139+00:00",
     "last_stock_alert": null,
     "http_status": 200
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-chaos-rising-elite-trainer-box/20033749.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: Chaos Rising Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 84.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/20037568.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: Delta Reign Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 89.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-prismatic-evolutions-elite-trainer-box/20018505.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game Prismatic Evolutions Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 149.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: Phantasmal Flames Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 74.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-perfect-order-elite-trainer-box/20031957.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: Perfect Order Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 84.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: Mega Evolution - Ascended Heroes Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 119.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: Mega Evolution Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 69.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: Destined Rivals Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 99.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: White Flare Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 59.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-black-bolt-elite-trainer-box/426102.html": {
+    "pokemon": true,
+    "title": "Gamestop Pok\u00e9mon product",
+    "in_stock": null,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": null,
+    "last_stock_alert": null,
+    "http_status": 410,
+    "reason": "http_410",
+    "signal": null,
+    "price": null,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-surging-sparks-elite-trainer-box/20015259.html": {
+    "pokemon": true,
+    "title": "Pokemon Trading Card Game: Scarlet and Violet Surging Sparks Elite Trainer Box | GameStop",
+    "in_stock": false,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": "2026-10-04T16:46:44.246736+00:00",
+    "last_stock_alert": null,
+    "http_status": 200,
+    "reason": "ok",
+    "signal": null,
+    "price": 59.99,
+    "msrp": null
+  },
+  "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-journey-together-elite-trainer-box/420196.html": {
+    "pokemon": true,
+    "title": "Gamestop Pok\u00e9mon product",
+    "in_stock": null,
+    "in_stock_since": null,
+    "posted_at": null,
+    "first_seen": "2026-10-04T16:46:44.246736+00:00",
+    "new_announced": true,
+    "last_seen": "2026-10-04T16:46:44.246736+00:00",
+    "last_ok": null,
+    "last_stock_alert": null,
+    "http_status": 410,
+    "reason": "http_410",
+    "signal": null,
+    "price": null,
+    "msrp": null
   }
 }
