@@ -9,7 +9,7 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
     "last_ok": "2026-10-04T15:31:14.144299+00:00",
     "last_stock_alert": "2026-09-08T05:57:08.163500+00:00",
     "http_status": 200,
@@ -17,7 +17,9 @@
     "signal": null,
     "price": null,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": null
   },
   "target::https://www.target.com/p/-/A-1011483406": {
     "pokemon": true,
@@ -28,7 +30,7 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
     "last_ok": "2026-10-04T15:31:14.144299+00:00",
     "last_stock_alert": "2026-09-08T05:57:08.163500+00:00",
     "http_status": 200,
@@ -36,7 +38,9 @@
     "signal": null,
     "price": null,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": null
   },
   "walmart::https://www.walmart.com/ip/15718673510": {
     "pokemon": true,
@@ -47,7 +51,7 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
     "last_ok": "2026-10-04T20:27:30.809033+00:00",
     "last_stock_alert": "2026-10-04T20:14:07.055646+00:00",
     "http_status": 200,
@@ -55,7 +59,9 @@
     "signal": null,
     "price": null,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": null
   },
   "walmart::https://www.walmart.com/ip/20161351456": {
     "pokemon": true,
@@ -66,7 +72,7 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
     "last_ok": "2026-10-04T20:27:30.809033+00:00",
     "last_stock_alert": "2026-10-04T20:14:07.055646+00:00",
     "http_status": 200,
@@ -74,7 +80,9 @@
     "signal": null,
     "price": null,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": null
   },
   "walmart::https://www.walmart.com/ip/20754418655": {
     "pokemon": true,
@@ -85,7 +93,7 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
     "last_ok": "2026-10-04T20:27:30.809033+00:00",
     "last_stock_alert": "2026-10-04T20:14:07.055646+00:00",
     "http_status": 200,
@@ -93,7 +101,9 @@
     "signal": null,
     "price": null,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": null
   },
   "bestbuy::https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ": {
     "pokemon": true,
@@ -104,15 +114,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:36:57.456289+00:00",
+    "last_seen": "2026-10-04T21:06:54.926716+00:00",
     "last_ok": "2026-10-04T17:32:43.237888+00:00",
     "last_stock_alert": "2026-10-04T17:17:59.507949+00:00",
     "http_status": 200,
     "reason": "no_signal",
     "signal": null,
-    "price": null,
+    "price": 284.99,
     "msrp": 49.99,
-    "sku": "6685559"
+    "sku": "6685559",
+    "armed": true,
+    "out_since": null
   },
   "bestbuy::https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45": {
     "pokemon": true,
@@ -123,15 +135,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:31:21.097514+00:00",
+    "last_seen": "2026-10-04T21:01:27.620245+00:00",
     "last_ok": "2026-10-04T17:30:57.549672+00:00",
     "last_stock_alert": "2026-10-04T17:08:18.694371+00:00",
     "http_status": 200,
     "reason": "no_signal",
     "signal": null,
-    "price": null,
+    "price": 105.99,
     "msrp": null,
-    "sku": "6678361"
+    "sku": "6678361",
+    "armed": true,
+    "out_since": null
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html": {
     "pokemon": true,
@@ -142,15 +156,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:38:39.937194+00:00",
-    "last_ok": "2026-10-04T20:38:39.937194+00:00",
+    "last_seen": "2026-10-04T21:06:54.926716+00:00",
+    "last_ok": "2026-10-04T21:06:54.926716+00:00",
     "last_stock_alert": "2026-09-29T19:28:18.886241+00:00",
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 99.99,
     "msrp": 49.99,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:03:23.441242+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html": {
     "pokemon": true,
@@ -161,15 +177,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": "2026-09-29T19:28:18.886241+00:00",
     "http_status": 200,
     "reason": "ok",
     "signal": "page",
     "price": 84.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": null
   },
   "walmart::https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207": {
     "pokemon": true,
@@ -180,7 +198,7 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
     "last_ok": "2026-10-04T20:27:30.809033+00:00",
     "last_stock_alert": "2026-10-04T20:14:07.055646+00:00",
     "http_status": 200,
@@ -188,7 +206,9 @@
     "signal": null,
     "price": null,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": null
   },
   "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Scarlet-Violet-Destined-Rivals-Pok-mon-Center-Elite-Trainer-Box/15718673510": {
     "pokemon": true,
@@ -2130,15 +2150,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 84.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/20037568.html": {
     "pokemon": true,
@@ -2149,15 +2171,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 89.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-prismatic-evolutions-elite-trainer-box/20018505.html": {
     "pokemon": true,
@@ -2168,15 +2192,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 149.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html": {
     "pokemon": true,
@@ -2187,15 +2213,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 74.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-perfect-order-elite-trainer-box/20031957.html": {
     "pokemon": true,
@@ -2206,15 +2234,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 84.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html": {
     "pokemon": true,
@@ -2225,15 +2255,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 119.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html": {
     "pokemon": true,
@@ -2244,15 +2276,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 69.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html": {
     "pokemon": true,
@@ -2263,15 +2297,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 99.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html": {
     "pokemon": true,
@@ -2282,15 +2318,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 59.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-black-bolt-elite-trainer-box/426102.html": {
     "pokemon": true,
@@ -2318,15 +2356,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T16:46:44.246736+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
-    "last_ok": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
+    "last_ok": "2026-10-04T21:05:54.926407+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 59.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:04:12.554923+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-journey-together-elite-trainer-box/420196.html": {
     "pokemon": true,
@@ -2408,7 +2448,7 @@
     "posted_at": null,
     "first_seen": "2026-10-04T17:08:18.694371+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:36:57.456289+00:00",
+    "last_seen": "2026-10-04T21:06:54.926716+00:00",
     "last_ok": "2026-10-04T17:32:43.237888+00:00",
     "last_stock_alert": null,
     "http_status": 200,
@@ -2416,7 +2456,9 @@
     "signal": null,
     "price": null,
     "msrp": null,
-    "sku": "6685563"
+    "sku": "6685563",
+    "armed": true,
+    "out_since": null
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html": {
     "pokemon": true,
@@ -2427,15 +2469,17 @@
     "posted_at": null,
     "first_seen": "2026-10-04T17:08:18.694371+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:38:39.937194+00:00",
-    "last_ok": "2026-10-04T20:38:39.937194+00:00",
+    "last_seen": "2026-10-04T21:06:54.926716+00:00",
+    "last_ok": "2026-10-04T21:06:54.926716+00:00",
     "last_stock_alert": null,
     "http_status": 200,
     "reason": "ok",
     "signal": null,
     "price": 399.99,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": "2026-10-04T21:03:23.441242+00:00"
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/450739.html": {
     "pokemon": true,
@@ -2446,7 +2490,7 @@
     "posted_at": null,
     "first_seen": "2026-10-04T17:08:18.694371+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T20:37:39.936826+00:00",
+    "last_seen": "2026-10-04T21:05:54.926407+00:00",
     "last_ok": "2026-10-04T17:30:57.549672+00:00",
     "last_stock_alert": null,
     "http_status": 410,
@@ -2454,6 +2498,8 @@
     "signal": null,
     "price": null,
     "msrp": null,
-    "sku": null
+    "sku": null,
+    "armed": true,
+    "out_since": null
   }
 }
