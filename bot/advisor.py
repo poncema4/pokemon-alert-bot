@@ -24,6 +24,19 @@ NOISE = (
 DEFAULT_EXCLUDE = ("case", "pokemon center", "exclusive", "display")
 CART_URLS = {"target": "https://www.target.com/co-cart", "walmart": "https://www.walmart.com/cart", "bestbuy": "https://www.bestbuy.com/cart",
              "gamestop": "https://www.gamestop.com/cart/", "pokemoncenter": "https://www.pokemoncenter.com/cart"}
+WALMART_ITEM = re.compile(r"walmart\.com/ip/(?:[^/?#]+/)?(\d{6,})")
+
+
+def add_to_cart_url(retailer, url):
+    """A link that puts the item in YOUR cart when you tap it (you still check out yourself). Only where the store publishes one:
+    Walmart's add-to-cart link takes the item id from the product URL. Other stores have no public link, so the product page's own button is used."""
+    if retailer == "walmart":
+        m = WALMART_ITEM.search(url or "")
+        if m:
+            return f"https://affil.walmart.com/cart/addToCart?items={m.group(1)}"
+    return ""
+
+
 RETAILER_NAMES = {"target": "Target", "walmart": "Walmart", "bestbuy": "Best Buy", "gamestop": "GameStop", "pokemoncenter": "Pokémon Center"}
 
 
@@ -180,6 +193,7 @@ def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, 
         "market_url": f"https://www.tcgplayer.com/product/{market['product_id']}" if market else "",
         "verdict": verdict(price, msrp, market["market"] if market else None),
         "cart_url": CART_URLS.get(retailer, ""),
+        "add_url": add_to_cart_url(retailer, url),
         "confirmed": confirmed,
     }
 
