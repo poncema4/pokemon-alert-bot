@@ -49,6 +49,10 @@ A retailer that cannot be read looks exactly like "nothing in stock", so each ru
 - **Route**: the fixed school-day sweep with real road miles and drive minutes (OSRM), live open/closed status and weekly hours.
 - **30th guide**: every 30th Celebration product with live TCGplayer market price, premium over MSRP, target buy price, verdict, and the real top chase cards.
 
+Open/closed comes from each store's weekly schedule in `docs/stores.json` (`hours`, with `hours_source` and `hours_checked`), read in Eastern time by one shared reader in `docs/js/common.js`; the pages re-read the clock every 15 seconds so a store flips at its opening and closing minute. A store whose schedule cannot be read shows "Hours?", never "Open".
+
+Every script and stylesheet link in `docs/*.html` carries a content hash (`js/common.js?v=1a2b3c4d`) so a browser can never pair an old script with a new page. After changing anything in `docs/js` or `docs/css`, run `python tools/stamp_assets.py` (the tests fail if you forget).
+
 Home is hard-set in `docs/stores.json`. Store pins come from each store's own OpenStreetMap record where one exists (otherwise the exact street-address point), and `pin_source` says which; `tools/check_pins.py` re-checks them.
 
 ## How it runs
@@ -62,6 +66,8 @@ Each cycle checks the seed and recently readable listings, refreshes the live-hi
 | `monitor.yml` | tests on every PR and push; the watcher on schedule or manual dispatch |
 | `30th-prices.yml` | hourly fallback refresh of the 30th guide prices |
 | `snapshot.yml` | manual: saves the retailer pages exactly as the runner receives them |
+| `verify-deployed.yml` | after every Pages build: loads the live site in a real browser and checks it works and matches the repo (`tools/verify_deployed.py`) |
+| `reader-probe.yml` | manual: shows what the browser reader sees on Best Buy from a runner |
 | `test-alert.yml` | manual: posts clearly labelled TEST alerts and prints Discord's answer |
 
 Secrets: `DISCORD_WEBHOOK_URL` (required for alerts), `DISCORD_PING=true` (optional, adds `@everyone`).

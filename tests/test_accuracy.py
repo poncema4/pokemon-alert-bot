@@ -1930,6 +1930,57 @@ def test_store_hours_data_is_complete_and_sourced():
     assert "Mon closed" in by["bodega-hoboken"]["hours"]
 
 
+def test_page_assets_are_versioned_so_a_browser_never_mixes_releases():
+    """A cached old common.js next to a new route.html broke the deployed Route page; every script and stylesheet URL carries a content hash."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import stamp_assets
+    assert stamp_assets.main(check=True) == 0, "run `python tools/stamp_assets.py` after changing anything in docs/js or docs/css"
+    for page in sorted((ROOT / "docs").glob("*.html")):
+        html_text = page.read_text(encoding="utf-8")
+        local = re.findall(r'(?:src|href)="((?:css|js)/[^"]+)"', html_text)
+        assert local, f"{page.name} loads no local assets?"
+        for ref in local:
+            assert re.fullmatch(r"(?:css|js)/[A-Za-z0-9_.-]+\.(?:css|js)\?v=[0-9a-f]{8}", ref), f"{page.name}: {ref} has no version stamp"
+
+
+def test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one():
+    import os
+    import shutil
+    import subprocess
+    import tempfile
+    import threading
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
+    try:
+        import playwright.sync_api  # noqa: F401
+    except ImportError:
+        assert os.environ.get("POKEPING_REQUIRE_BROWSER") != "1", "CI must have Playwright installed"
+        print("  (skipped: Playwright is not installed here)")
+        return
+
+    def verify(site_dir):
+        class Quiet(SimpleHTTPRequestHandler):
+            def __init__(self, *a, **k):
+                super().__init__(*a, directory=str(site_dir), **k)
+            def log_message(self, *a):
+                pass
+        server = HTTPServer(("127.0.0.1", 0), Quiet)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        try:
+            return subprocess.run([sys.executable, str(ROOT / "tools" / "verify_deployed.py"), f"http://127.0.0.1:{server.server_port}/"], capture_output=True, text=True, timeout=240)
+        finally:
+            server.shutdown()
+
+    good = verify(ROOT / "docs")
+    # the verifier compares with the repo's docs/, so a good copy of docs/ passes and any difference or breakage fails
+    assert good.returncode == 0, f"a good site must verify: {good.stdout}{good.stderr}"
+    with tempfile.TemporaryDirectory() as d:
+        broken = Path(d) / "docs"
+        shutil.copytree(ROOT / "docs", broken)
+        (broken / "js" / "common.js").write_text("// emptied", encoding="utf-8")
+        bad = verify(broken)
+        assert bad.returncode == 1 and "FAIL" in bad.stdout, f"a site with a broken common.js must fail: {bad.stdout}"
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -2003,6 +2054,8 @@ if __name__ == "__main__":
     test_store_hours_flip_to_open_and_closed_live_in_a_real_browser()
     test_the_map_re_reads_the_clock_by_itself()
     test_store_hours_data_is_complete_and_sourced()
+    test_page_assets_are_versioned_so_a_browser_never_mixes_releases()
+    test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
     test_browser_stores_are_read_gently()
     test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone()
     test_progress_is_saved_after_each_store()
