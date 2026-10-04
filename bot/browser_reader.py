@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import re
 
+import sellers
+
 WALLS = (r"px-captcha", r"press\s*&\s*hold", r"access denied", r"queue-it", r"you are in line", r"just a moment",
          r"verify you are (a )?human", r"robot or human", r"pardon our interruption", r"attention required")
 BUY = re.compile(r"^(add to (cart|bag|basket))$", re.I)
@@ -24,6 +26,8 @@ def classify_rendered(snapshot):
         return None, "blocked", None
     buttons = [b for b in snapshot.get("buttons", snapshot.get("buy_buttons", [])) if b.get("visible")]  # (older snapshots call the field buy_buttons)
     if any(BUY.match(b["label"].strip()) and b.get("enabled") for b in buttons):
+        if sellers.marketplace_only(snapshot.get("url"), [snapshot.get("seller")]):
+            return False, "marketplace_only", None  # the button belongs to a third-party seller: the store itself has none
         return True, "ok", "browser"
     if any(NOT_AVAILABLE.match(b["label"].strip()) or (BUY.match(b["label"].strip()) and not b.get("enabled")) for b in buttons):
         return False, "ok", None
@@ -66,7 +70,12 @@ class BrowserReader:
           }
         } catch (e) {}
       }
-      return {sku: ldSku || (skuMatch ? skuMatch[1] : null), sku_ld: ldSku, sku_text: skuMatch ? skuMatch[1] : null, title: document.title.slice(0, 160), text: (document.body ? document.body.innerText : '').slice(0, 150000),
+      // Who sells it: the line after "Sold & shipped by" that follows the buy button (a marketplace reseller on Best Buy shows its own name here).
+      const bodyText = document.body ? document.body.innerText : '';
+      const soldBy = /Sold\\s*(?:&|and)\\s*shipped by\\s*\\n+\\s*([^\\n]{1,80})/i;
+      const addAt = bodyText.search(/Add to cart/i);
+      const sm = (addAt >= 0 ? soldBy.exec(bodyText.slice(addAt)) : null) || soldBy.exec(bodyText);
+      return {seller: sm ? sm[1].trim() : null, sku: ldSku || (skuMatch ? skuMatch[1] : null), sku_ld: ldSku, sku_text: skuMatch ? skuMatch[1] : null, title: document.title.slice(0, 160), text: (document.body ? document.body.innerText : '').slice(0, 150000),
               captchaNode: !!document.querySelector('#px-captcha, [id*=captcha], iframe[src*=captcha]'), buttons};
     }"""
     READY = "() => Array.from(document.querySelectorAll('button')).some(b => /^(add to (cart|bag|basket)|sold out|unavailable|coming soon|check stores|notify me)$/i.test((b.innerText||'').trim()))"
@@ -86,6 +95,7 @@ class BrowserReader:
             data = page.evaluate(self.COLLECT)
             text = data["text"]
             row["title"] = data["title"]
+            row["seller"] = data.get("seller")
             row["sku"] = data.get("sku")
             row["sku_ld"], row["sku_text"] = data.get("sku_ld"), data.get("sku_text")
             row["body_chars"] = len(text)
@@ -104,7 +114,7 @@ class BrowserReader:
         """Same shape as monitor.check_product_page."""
         row = self.snapshot(url)
         stock, reason, signal = classify_rendered(row)
-        return {"stock": stock, "title": row.get("title") or "", "posted_at": None, "http_status": row.get("status"), "reason": reason, "signal": signal, "price": row.get("price"), "sku": row.get("sku")}
+        return {"stock": stock, "title": row.get("title") or "", "posted_at": None, "http_status": row.get("status"), "reason": reason, "signal": signal, "price": row.get("price"), "sku": row.get("sku"), "seller": row.get("seller")}
 
     def close(self):
         try:
