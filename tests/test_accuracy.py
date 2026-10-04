@@ -14,6 +14,7 @@ from datetime import timedelta
 import monitor
 import monitor_loop
 import notify_new_listings
+import refresh_live_hits
 import update_30th_prices as prices_mod
 from monitor import classify_response, extract_structured_availability, is_pokemon, recently_stock_alerted, retailer_url_is_valid, should_prune, update_health
 
@@ -585,6 +586,93 @@ def test_committed_guide_carries_per_product_freshness():
     assert all(p.get("market_source") == "tcgplayer" and p.get("market_updated_at") for p in data["products"]), "every price needs a source and a timestamp"
 
 
+def _page(name):
+    return (ROOT / "tests" / "fixtures" / "pages" / name).read_text(encoding="utf-8")
+
+
+GS_30TH = "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html"
+GS_PITCH = "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html"
+
+
+def test_real_pages_classify_correctly():
+    # Captured from GitHub's runner on 2026-10-04. The 30th ETB page says InStock in JSON-LD but data-available="false".
+    unavailable = _page("gamestop_30th_etb_unavailable.html")
+    assert "schema.org/InStock" in unavailable and 'data-available="false"' in unavailable, "fixture must keep the trap"
+    assert classify_response(200, GS_30TH, unavailable) == (False, "ok", None), "the page's own flag beats JSON-LD"
+    assert classify_response(200, GS_PITCH, _page("gamestop_pitch_black_etb_available.html")) == (True, "ok", "page")
+    assert classify_response(200, "https://www.target.com/p/-/A-1010892076", _page("target_30th_etb_placeholder.html")) == (None, "cart_disabled", None)
+    assert classify_response(200, "https://www.walmart.com/blocked?url=x", _page("walmart_blocked.html"))[:2] == (None, "blocked")
+    # Mixed flags (related products on the page) are ambiguous, so the structured data decides, not a coin flip.
+    mixed = '<div data-available="true"></div><div data-available="false"></div>"availability":"https://schema.org/InStock"'
+    assert classify_response(200, GS_PITCH, mixed) == (True, "ok", "structured"), "mixed flags must defer to the structured data (a flag-based answer here would be False)"
+    mixed_out = mixed.replace("InStock", "OutOfStock")
+    assert classify_response(200, GS_PITCH, mixed_out) == (False, "ok", None)
+
+
+def test_price_and_msrp_rules():
+    config = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8"))
+    assert monitor.extract_price(_page("gamestop_30th_etb_unavailable.html")) == 99.99
+    assert monitor.extract_price(_page("gamestop_pitch_black_etb_available.html")) == 84.99
+    assert monitor.extract_price("<html>no price</html>") is None
+    assert monitor.msrp_for(config, GS_30TH) == 49.99
+    assert monitor.msrp_for(config, "https://www.target.com/p/-/pokemon-booster-bundle/A-1") == 26.94
+    assert monitor.msrp_for(config, "https://www.bestbuy.com/product/some-plush/1") is None, "unknown products get no price rule"
+
+
+def _gs_config(url):
+    cfg = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8"))
+    cfg.update({"retailers": ["gamestop"], "keywords": [], "seed_urls": {"gamestop": [url]}})
+    return cfg
+
+
+def test_main_gamestop_trap_never_alerts_but_a_real_listing_does_at_any_price():
+    import tempfile
+    prior = lambda url: {"schema_version": 4, f"gamestop::{url}": {"pokemon": True, "title": "Pokemon ETB", "in_stock": False, "last_seen": "2026-10-03T00:00:00+00:00"}}
+    # 1. JSON-LD says InStock but the page says unavailable: no alert, and the state says not in stock.
+    with tempfile.TemporaryDirectory() as d:
+        _, sent = _run_main(Path(d), _gs_config(GS_30TH), prior(GS_30TH), {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_30th_etb_unavailable.html"))})
+        entry = json.loads((Path(d) / "state.json").read_text())[f"gamestop::{GS_30TH}"]
+    assert sent == [] and entry["in_stock"] is False
+    # 2. Really available at $84.99 (retail $49.99): price never blocks an alert, it is recorded and shown.
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        _, sent = _run_main(tmp, _gs_config(GS_PITCH), prior(GS_PITCH), {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_pitch_black_etb_available.html"))})
+        state = json.loads((tmp / "state.json").read_text())
+        entry = state[f"gamestop::{GS_PITCH}"]
+        assert len(sent) == 1 and "Verified in stock" in sent[0][1], sent
+        assert entry["in_stock"] is True and entry["price"] == 84.99 and entry["msrp"] == 49.99
+        _, sent = _run_main(tmp, _gs_config(GS_PITCH), state, {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_pitch_black_etb_available.html"))})
+        assert sent == [], "no repeat alert while it stays in stock"
+
+
+def test_live_hits_show_every_in_stock_item_with_its_price():
+    import tempfile
+    now = datetime.now(timezone.utc).isoformat()
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": now, "in_stock": True, "signal": "page"}
+    state = {
+        "schema_version": 4,
+        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/a/1.html": {**base, "price": 49.99, "msrp": 49.99},
+        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/b/2.html": {**base, "price": 84.99, "msrp": 49.99},
+        "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/c/3.html": {**base},  # legacy entry without a price
+    }
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        (tmp / "state.json").write_text(json.dumps(state))
+        (tmp / "alerts.json").write_text("[]")
+        (tmp / "config.json").write_text("{}")
+        old = (refresh_live_hits.STATE_FILE, refresh_live_hits.ALERTS_FILE, refresh_live_hits.CONFIG_FILE)
+        refresh_live_hits.STATE_FILE, refresh_live_hits.ALERTS_FILE, refresh_live_hits.CONFIG_FILE = tmp / "state.json", tmp / "alerts.json", tmp / "config.json"
+        try:
+            refresh_live_hits.main()
+        finally:
+            refresh_live_hits.STATE_FILE, refresh_live_hits.ALERTS_FILE, refresh_live_hits.CONFIG_FILE = old
+        live = json.loads((tmp / "alerts.json").read_text())
+    urls = {a["url"].rsplit("/", 1)[1] for a in live}
+    assert urls == {"1.html", "2.html", "3.html"}, "an above-retail listing is still in stock, so it is still a live hit"
+    second = next(a for a in live if a["url"].endswith("2.html"))
+    assert second["price"] == 84.99 and second["msrp"] == 49.99 and second["signal"] == "page"
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -599,6 +687,10 @@ if __name__ == "__main__":
     test_prune_only_dead_discovered_listings()
     test_main_blocked_retailer_is_silent_but_visible()
     test_main_stops_probing_a_wall_but_keeps_reading_the_rest()
+    test_real_pages_classify_correctly()
+    test_price_and_msrp_rules()
+    test_main_gamestop_trap_never_alerts_but_a_real_listing_does_at_any_price()
+    test_live_hits_show_every_in_stock_item_with_its_price()
     test_main_target_placeholder_never_becomes_stock()
     test_main_alert_wording_follows_signal_strength()
     test_every_guide_product_has_a_tcgplayer_mapping()

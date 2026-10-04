@@ -1,0 +1,163 @@
+<html lang="en">
+
+<head>
+    <title>Robot or human?</title>
+    <meta name="viewport" content="width=device-width">
+    <style>
+    #sign-in-widget a,
+    #sign-in-widget a:active,
+    #sign-in-widget a:hover {
+        color: #000
+    }
+
+    #sign-in-widget h1 {
+        font-weight: 500;
+        font-size: 20px;
+        font-size: 1.25rem;
+        letter-spacing: -.6px;
+        margin: 1px auto
+    }
+
+    @media (min-width:30em) {
+        #sign-in-widget h1 {
+            margin-top: 24px;
+            font-size: 24px;
+            font-size: 1.5rem
+        }
+    }
+
+    #sign-in-widget {
+        font-family: BogleWeb, Helvetica Neue, Helvetica, Arial, sans-serif
+    }
+
+    #sign-in-widget * {
+        box-sizing: border-box
+    }
+
+    #sign-in-widget .text-right {
+        text-align: right
+    }
+
+    @font-face {
+        font-family: NewYorkIcons;
+        src: url(6255ed72d86ece856725a2d80878bce6.eot);
+        font-weight: 400;
+        font-style: normal
+    }
+
+    @font-face {
+        font-family: NewYorkIcons;
+        src: url(fd827841624904d4b8f51d20174fa3a4.woff2) format("woff2"), url(5b38b158833d0265af2b1c1093e489bd.woff) format("woff"), url(2ebae25dcb1bb39acbac9cffd8f10b15.ttf) format("truetype");
+        font-weight: 400;
+        font-style: normal
+    }
+
+    @keyframes spin-clockwise {
+        0% {
+            transform: rotate(0)
+        }
+
+        to {
+            transform: rotate(1turn)
+        }
+    }
+
+    @keyframes zoom-inverse {
+        0% {
+            opacity: 0;
+            transform: scale(3)
+        }
+
+        33% {
+            opacity: 1
+        }
+
+        to {
+            transform: scale(1)
+        }
+    }
+
+    @keyframes blinker {
+        0% {
+            opacity: 1
+        }
+
+        to {
+            opacity: 0
+        }
+    }
+
+    @keyframes slide-from-bottom {
+        0% {
+            transform: translateY(100%)
+        }
+
+        to {
+            transform: translateY(0)
+        }
+    }
+
+    @keyframes slide-from-top {
+        0% {
+            transform: translateY(0)
+        }
+
+        to {
+            transform: translateY(100%)
+        }
+    }
+
+    @keyframes fade-in-opacity {
+        0% {
+            opacity: 0
+        }
+
+        to {
+            opacity: 1
+        }
+    }
+
+    .elc-icon-spark:before {
+        font-family: NewYorkIcons;
+        display: inline;
+        speak: none;
+        content: "\E935"
+    }
+
+    .message {
+        text-align: left
+    }
+
+    .message.active {
+        display: block
+    }
+
+    .divider {
+        margin: 24px 0 8px;
+        text-align: center
+    }
+
+    @media (min-width:30em) {
+        .divider {
+            margin-top: 40px
+        }
+    }
+
+    #sign-in-widget {
+        text-align: center
+    }
+
+    #sign-in-widget p {
+        margin-bottom: 0
+    }
+
+    #sign-in-widget .header-logo {
+        text-decoration: none;
+        font-size: 36px;
+        font-size: 2.25rem
+    }
+
+    @media (min-width:30em) {
+        #sign-in-widget .message.active+h1 {
+            margin-top: 32px
+    

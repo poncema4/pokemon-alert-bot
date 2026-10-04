@@ -73,6 +73,9 @@ def main():
                 "verified": True,
                 "stock": True,
                 "online": True,
+                "price": entry.get("price"),
+                "msrp": entry.get("msrp"),
+                "signal": entry.get("signal"),
                 "stores": [],
             })
         else:
@@ -82,6 +85,9 @@ def main():
                 "stock": True,
                 "online": True,
                 "title": entry.get("title") or existing.get("title"),
+                "price": entry.get("price"),
+                "msrp": entry.get("msrp"),
+                "signal": entry.get("signal"),
                 "posted_at": entry.get("posted_at"),
                 "detected_at": existing.get("detected_at") or now.isoformat(),
                 "ts": existing.get("ts") or existing.get("detected_at") or now.isoformat(),

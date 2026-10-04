@@ -8,8 +8,18 @@
   "discord_alert_new_unknown": false,
   "search_timeout_seconds": 8,
   "verified_stock_only": true,
-  "discord_alert_retailers": ["target", "walmart", "bestbuy", "gamestop"],
-  "live_hit_retailers": ["target", "walmart", "bestbuy", "gamestop"],
+  "discord_alert_retailers": [
+    "target",
+    "walmart",
+    "bestbuy",
+    "gamestop"
+  ],
+  "live_hit_retailers": [
+    "target",
+    "walmart",
+    "bestbuy",
+    "gamestop"
+  ],
   "keywords": [
     "pokemon elite trainer box",
     "pokemon booster bundle",
@@ -27,7 +37,12 @@
     "pokemon 30th celebration",
     "pokemon 30th anniversary elite trainer box"
   ],
-  "retailers": ["target", "walmart", "bestbuy", "gamestop"],
+  "retailers": [
+    "target",
+    "walmart",
+    "bestbuy",
+    "gamestop"
+  ],
   "seed_urls": {
     "target": [
       "https://www.target.com/p/-/A-1010892076",
@@ -75,6 +90,28 @@
       "seed_urls": [],
       "searchable": false,
       "notes": "Map-only niche shop. Never sends Discord alerts."
+    }
+  ],
+  "msrp_rules": [
+    {
+      "match": "30th-celebration-elite-trainer-box",
+      "msrp": 49.99,
+      "name": "30th Celebration ETB"
+    },
+    {
+      "match": "elite-trainer-box",
+      "msrp": 49.99,
+      "name": "Elite Trainer Box"
+    },
+    {
+      "match": "booster-bundle",
+      "msrp": 26.94,
+      "name": "Booster Bundle"
+    },
+    {
+      "match": "booster-box",
+      "msrp": 143.64,
+      "name": "Booster Box"
     }
   ]
 }
