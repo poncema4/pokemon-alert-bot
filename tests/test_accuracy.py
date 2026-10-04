@@ -1928,6 +1928,78 @@ def test_browser_stores_are_read_gently():
         monitor._BACKOFF_UNTIL.update(real[2])
 
 
+def test_a_failing_search_engine_is_not_asked_again_for_a_while():
+    clock = _Clock2()
+    real = (monitor.time, dict(monitor._ENGINE_DOWN_UNTIL))
+    monitor.time = clock
+    monitor._ENGINE_DOWN_UNTIL.clear()
+    try:
+        class Http:
+            def __init__(self):
+                self.calls = []
+            def get(self, url, **kw):
+                self.calls.append(url.split("/")[2])
+                if "duckduckgo" in url:
+                    raise OSError("Max retries exceeded")
+                return _Resp(200, url, '<a href="https://www.gamestop.com/toys-games/trading-cards/products/pokemon-pitch-black-elite-trainer-box/445744.html">x</a>')
+        http = Http()
+        first = monitor.fallback_search(http, "gamestop", "pokemon pitch black")
+        assert first and http.calls == ["html.duckduckgo.com", "www.bing.com"], "the first search tries DuckDuckGo, it fails, Bing answers"
+        monitor.fallback_search(http, "gamestop", "pokemon prismatic")
+        monitor.fallback_search(http, "gamestop", "pokemon white flare")
+        assert http.calls.count("html.duckduckgo.com") == 1 and http.calls.count("www.bing.com") == 3, "after one failure DuckDuckGo is left alone (it used to cost 7 s per search, all day)"
+        clock.t += monitor.ENGINE_COOLDOWN_SECONDS + 1
+        monitor.fallback_search(http, "gamestop", "pokemon later")
+        assert http.calls.count("html.duckduckgo.com") == 2, "after the cool-down it is tried again"
+        # an HTTP refusal (not just an exception) also starts the cool-down
+        class Refuse:
+            def __init__(self):
+                self.calls = []
+            def get(self, url, **kw):
+                self.calls.append(url.split("/")[2])
+                return _Resp(403, url, "denied")
+        monitor._ENGINE_DOWN_UNTIL.clear()
+        refuse = Refuse()
+        monitor.fallback_search(refuse, "gamestop", "a")
+        monitor.fallback_search(refuse, "gamestop", "b")
+        assert refuse.calls == ["html.duckduckgo.com", "www.bing.com"], f"a 403 from both engines silences both: {refuse.calls}"
+    finally:
+        monitor.time = real[0]
+        monitor._ENGINE_DOWN_UNTIL.clear()
+        monitor._ENGINE_DOWN_UNTIL.update(real[1])
+
+
+def test_keyword_discovery_stops_at_its_time_budget():
+    import tempfile
+    clock = _Clock2()
+    real = (monitor.time, monitor.discover_products)
+    monitor.time = clock
+    searched = []
+    try:
+        def slow_discover(http, retailer, keyword, timeout):
+            searched.append(keyword)
+            clock.t += 30   # every search is slow
+            return []
+        config = {"retailers": ["gamestop"], "keywords": [f"kw{n}" for n in range(20)], "seed_urls": {"gamestop": []}, "discovery_budget_seconds": 100}
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            monitor.STATE_FILE, monitor.ALERTS_FILE, monitor.HEALTH_FILE, monitor.MARKET_FILE, monitor.PIDS_FILE = tmp / "state.json", tmp / "alerts.json", tmp / "health.json", tmp / "market.json", tmp / "pids.json"
+            monitor.CONFIG_FILE = tmp / "config.json"
+            monitor.CONFIG_FILE.write_text(json.dumps(config), encoding="utf-8")
+            monitor.STATE_FILE.write_text(json.dumps({"schema_version": 4}), encoding="utf-8")
+            real_session, real_gs = monitor.requests.Session, monitor.gamestop_discovery.discover
+            monitor.requests.Session = lambda: _FakeSession({})
+            monitor.gamestop_discovery.discover = lambda *a, **k: []
+            monitor.discover_products = slow_discover
+            try:
+                monitor.main(discover=True, cycle=0)
+            finally:
+                monitor.requests.Session, monitor.gamestop_discovery.discover = real_session, real_gs
+        assert 3 <= len(searched) <= 5, f"20 slow keywords but only about 100 s worth are searched per cycle, got {len(searched)}"
+    finally:
+        monitor.time, monitor.discover_products = real
+
+
 def test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone():
     import tempfile
     clock = _Clock2()
@@ -2237,6 +2309,8 @@ if __name__ == "__main__":
     test_the_watcher_never_shares_a_concurrency_group_with_test_runs()
     test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
     test_browser_stores_are_read_gently()
+    test_a_failing_search_engine_is_not_asked_again_for_a_while()
+    test_keyword_discovery_stops_at_its_time_budget()
     test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone()
     test_progress_is_saved_after_each_store()
     test_loop_scheduling()

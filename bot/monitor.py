@@ -156,21 +156,32 @@ def extract_retailer_urls(retailer, text, limit=20):
     return links[:limit]
 
 
+# A search engine that refuses or fails is left alone for a while. From a GitHub runner DuckDuckGo failed every single time and each failure cost a
+# 7 s timeout, so one discovery pass (about 40 searches per store) burned minutes doing nothing while the stock checks waited.
+ENGINE_COOLDOWN_SECONDS = 1800
+_ENGINE_DOWN_UNTIL = {}
+
+
 def fallback_search(http, retailer, keyword):
     query = f'site:{DOMAINS[retailer]} "{keyword}"'
     for engine, endpoint in (
         ("DuckDuckGo", f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"),
         ("Bing", f"https://www.bing.com/search?q={quote_plus(query)}&setlang=en-US"),
     ):
+        if time.monotonic() < _ENGINE_DOWN_UNTIL.get(engine, 0):
+            continue  # failed recently: not asked again until the cool-down ends
         try:
             response = http.get(endpoint, timeout=7)
             print(f"  fallback {engine} -> HTTP {response.status_code} ({len(response.text)} bytes)")
-            if response.status_code < 400:
-                links = extract_retailer_urls(retailer, response.text)
-                if links:
-                    return links[:8]
+            if response.status_code >= 400:
+                _ENGINE_DOWN_UNTIL[engine] = time.monotonic() + ENGINE_COOLDOWN_SECONDS
+                continue
+            links = extract_retailer_urls(retailer, response.text)
+            if links:
+                return links[:8]
         except Exception as exc:
-            print(f"  fallback {engine} failed: {exc}")
+            _ENGINE_DOWN_UNTIL[engine] = time.monotonic() + ENGINE_COOLDOWN_SECONDS
+            print(f"  fallback {engine} failed: {exc}; not asked again for {ENGINE_COOLDOWN_SECONDS // 60} minutes")
     return []
 
 
@@ -468,6 +479,7 @@ def main(discover=True, cycle=0):
     browser_hot_every = max(1, int(config.get("browser_hot_every", 4)))    # a browser read is heavy: hot pages every ~2 minutes,
     browser_slow_every = max(1, int(config.get("browser_slow_every", 20)))  # the rest every ~10 minutes (30 s cycles)
     budget = float(config.get("cycle_budget_seconds", 75))
+    discovery_budget = float(config.get("discovery_budget_seconds", 120))   # stock checks come first; keyword discovery gets what is left
     started = time.monotonic()
     is_hot = lambda url: any(h in url.lower() for h in hot)
     by_hot = lambda urls: sorted(urls, key=lambda u: not is_hot(u))  # hot listings first, so a slow cycle never starves them
@@ -604,6 +616,9 @@ def main(discover=True, cycle=0):
             extra = known_urls(state, retailer, seen, now)
             seen.update(extra)
             for keyword in (keywords if discover else []):
+                if time.monotonic() - started > discovery_budget:
+                    print(f"  discovery has used its {discovery_budget:.0f} s this cycle; the remaining keywords wait for the next discovery pass")
+                    break
                 print(f"Checking {retailer} / {keyword}")
                 for url in discover_products(http, retailer, keyword, timeout):
                     if retailer_url_is_valid(retailer, url) and url not in seen:
