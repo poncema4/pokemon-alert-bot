@@ -25,6 +25,7 @@ from urllib.parse import quote_plus, unquote, urljoin, urlparse, urlsplit, urlun
 
 import requests
 import advisor
+import bestbuy_api
 import gamestop_discovery
 import sellers
 from notify import alert, send_card
@@ -509,12 +510,21 @@ def main(discover=True, cycle=0):
         counts = {"checked": 0, "readable": 0, "blocked": 0, "errors": 0}
         browser_run = {"failures": 0}
         streak = 0
+        # Best Buy's official API, when a key is set: one request answers for every SKU we know (no browser, no bot wall). A product it does
+        # not cover, or any failure, falls back to the browser reader below.
+        api_readings = {}
+        if retailer == "bestbuy" and os.environ.get("BESTBUY_API_KEY"):
+            wanted = {advisor.sku_for(config, u, state.get(f"bestbuy::{u}", {}).get("sku")) for u in set(seeds) | {k.split("::", 1)[1] for k in state if k.startswith("bestbuy::")}}
+            api_readings = bestbuy_api.fetch({w for w in wanted if w}, os.environ["BESTBUY_API_KEY"], http, timeout)
+            print(f"  Best Buy API: {len(api_readings)} product(s) answered")
 
         def check_url(url):
             nonlocal streak
             key = f"{retailer}::{url}"
             previous = state.get(key, {})
-            via_browser = BROWSER is not None and retailer in browser_retailers
+            api_sku = advisor.sku_for(config, url, previous.get("sku")) if retailer == "bestbuy" else None
+            via_api = bool(api_sku and api_sku in api_readings)
+            via_browser = (BROWSER is not None and retailer in browser_retailers) and not via_api
             # Something in stock is "hot" whatever it is: it must be re-read often so it stays on Live online (hidden after 5 minutes without a
             # check) and so a sell-out shows quickly. Calm out-of-stock pages keep the slow rhythm.
             hot_now = is_hot(url) or previous.get("in_stock") is True
@@ -525,7 +535,15 @@ def main(discover=True, cycle=0):
                 return  # this cycle has used its time; the rest waits for the next one
             if via_browser and time.monotonic() < _BACKOFF_UNTIL.get(retailer, 0):
                 return  # the store has been failing: leave it alone for a few minutes
-            read = (lambda: BROWSER.check(url)) if (BROWSER is not None and retailer in browser_retailers) else (lambda: check_product_page(http, retailer, url, timeout))
+            if via_api:
+                fresh = {"first": True}
+                def read():   # the first read uses the batch already fetched this cycle; the confirming read asks the API again
+                    if fresh.pop("first", False):
+                        return dict(api_readings[api_sku])
+                    again = bestbuy_api.fetch({api_sku}, os.environ.get("BESTBUY_API_KEY", ""), http, timeout)
+                    return dict(again.get(api_sku) or {"stock": None, "title": "", "posted_at": None, "http_status": None, "reason": "error", "signal": None, "price": None, "sku": api_sku, "seller": None})
+            else:
+                read = (lambda: BROWSER.check(url)) if via_browser else (lambda: check_product_page(http, retailer, url, timeout))
             result = read()
             if via_browser:
                 failures = browser_run["failures"] + 1 if result["reason"] in ("error", "blocked") else 0

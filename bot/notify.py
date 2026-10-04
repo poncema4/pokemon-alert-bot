@@ -20,6 +20,7 @@ PROOF = {
     "structured": "Verified: the page's availability data says in stock.",
     "text": "Likely: cart or pickup wording found, no structured data. Confirm on the page.",
     "browser": "Verified: a real browser saw an enabled Add to cart button on the page.",
+    "api": "Verified: Best Buy's own product API says it can be ordered online right now.",
 }
 
 

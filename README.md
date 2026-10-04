@@ -78,11 +78,22 @@ Each cycle checks the seed and recently readable listings, refreshes the live-hi
 | `30th-prices.yml` | hourly fallback refresh of the 30th guide prices |
 | `snapshot.yml` | manual: saves the retailer pages exactly as the runner receives them |
 | `watchdog.yml` | whenever a monitor run ends: starts a watcher if none is running or queued |
+| `bestbuy-api-check.yml` | manual: asks Best Buy's official API about every known SKU (needs the `BESTBUY_API_KEY` secret) |
 | `verify-deployed.yml` | after every Pages build: loads the live site in a real browser and checks it works and matches the repo (`tools/verify_deployed.py`) |
 | `reader-probe.yml` | manual: shows what the browser reader sees on Best Buy from a runner |
 | `test-alert.yml` | manual: posts clearly labelled TEST alerts and prints Discord's answer |
 
 Secrets: `DISCORD_WEBHOOK_URL` (required for alerts), `DISCORD_PING=true` (optional, adds `@everyone`).
+
+## Best Buy's official API (recommended)
+
+Best Buy publishes a free product API that answers "can this be ordered online right now?" for its own stock, with no browser and no bot wall in the way. With a key, the watcher asks it for every known SKU in one request each cycle and uses the browser only for products it does not cover (or if the API is down).
+
+1. Go to developer.bestbuy.com, **Get API Key**, sign up with your email, and activate the key from the email.
+2. Add it as a repository secret named `BESTBUY_API_KEY` (GitHub > Settings > Secrets and variables > Actions, or `gh secret set BESTBUY_API_KEY`).
+3. Run the **Best Buy API check** workflow once: it prints what the API says for each known SKU and lists the Pokemon products Best Buy has, so more SKUs can go into `bestbuy_skus` in `config/search_config.json`. The key is never printed.
+
+A product counts as in stock only when the API says it can be ordered online **and** its ordering status is exactly "Available"; sold-out and coming-soon statuses are out of stock, and anything unrecognised is unknown (never an alert). Without a key nothing changes: Best Buy is read in a browser as before.
 
 ## Alerts from the stores' own emails (Target, Walmart, Pokémon Center and the rest)
 
