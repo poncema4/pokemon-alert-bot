@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 from pathlib import Path
 import json
+import os
 import re
 import sys
 
@@ -305,6 +306,9 @@ def test_prune_only_dead_discovered_listings():
 class _Resp:
     def __init__(self, status, url, text):
         self.status_code, self.url, self.text = status, url, text
+
+    def json(self):
+        return json.loads(self.text)
 
 
 class _FakeSession:
@@ -654,6 +658,141 @@ def test_a_half_loaded_page_is_retried_once_but_a_wall_never_is():
         assert r.check(full["url"])["reason"] == "error" and r.calls == 1, "a timeout or error is not retried here (the back-off handles it)"
     finally:
         browser_reader.time_sleep = real_sleep
+
+
+import bestbuy_api  # noqa: E402
+
+
+def _api_json(*products):
+    return json.dumps({"from": 1, "to": len(products), "total": len(products), "products": list(products)})
+
+
+def _api_product(sku, online, orderable, name="Pokémon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box", price=49.99):
+    return {"sku": sku, "name": name, "salePrice": price, "onlineAvailability": online, "orderable": orderable, "inStoreAvailability": False,
+            "addToCartUrl": f"https://api.bestbuy.com/click/-/{sku}/cart", "url": f"https://www.bestbuy.com/site/x/{sku}.p?skuId={sku}"}
+
+
+def test_best_buy_api_status_rules_are_strict():
+    r = bestbuy_api.reading
+    assert r(_api_product(6678361, True, "Available"))["stock"] is True and r(_api_product(6678361, True, "Available"))["signal"] == "api"
+    for online, status in ((True, "SoldOut"), (False, "SoldOut"), (False, "Available"), (True, "ComingSoon"), (False, ""), (None, "SoldOut"), (True, "NotOrderable")):
+        assert r(_api_product(6678361, online, status))["stock"] is False, f"online={online} status={status!r} is not in stock"
+    for online, status in ((True, "Preorder"), (True, "SomethingNew"), (True, ""), (None, "Available"), (None, None)):
+        assert r(_api_product(6678361, online, status))["stock"] is None, f"online={online} status={status!r} is unknown, never an alert"
+    assert r({"sku": 6678361})["stock"] is None and r({})["sku"] is None
+    assert r(_api_product(6678361, True, "available"))["stock"] is True, "the status comparison ignores case"
+    got = r(_api_product(6678361, True, "Available", price=49.99))
+    assert got["price"] == 49.99 and got["sku"] == "6678361" and got["seller"] is None and got["add_url"].endswith("/6678361/cart")
+
+
+def test_best_buy_api_fetch_batches_one_request_and_never_leaks_the_key():
+    import io
+    from contextlib import redirect_stdout
+    key = "SECRETKEY123456789"
+
+    class Http:
+        def __init__(self, answer):
+            self.answer, self.urls = answer, []
+        def get(self, url, **kw):
+            self.urls.append(url)
+            if isinstance(self.answer, Exception):
+                raise self.answer
+            return self.answer
+
+    ok = Http(_Resp(200, "u", _api_json(_api_product(6678361, True, "Available"), _api_product(6685559, False, "SoldOut", name="Pokémon Trading Card Game: 30th Celebration Elite Trainer Box"))))
+    got = bestbuy_api.fetch(["6685559", "6678361", "6678361", "JJG2TL8J45", "12"], key, ok)
+    assert len(ok.urls) == 1, "one request for all SKUs"
+    assert "sku in(6678361,6685559)" in ok.urls[0] and "apiKey=" + key in ok.urls[0] and "JJG" not in ok.urls[0] and "12)" not in ok.urls[0], ok.urls[0]
+    assert got["6678361"]["stock"] is True and got["6685559"]["stock"] is False
+    assert bestbuy_api.fetch(["6678361"], "", Http(None)) == {} and bestbuy_api.fetch([], key, Http(None)) == {}, "no key / no SKU: nothing is asked"
+    leaky = Http(OSError(f"HTTPSConnectionPool: Max retries exceeded with url: /v1/products(sku in(6678361))?apiKey={key}&show=sku"))
+    out = io.StringIO()
+    with redirect_stdout(out):
+        assert bestbuy_api.fetch(["6678361"], key, leaky) == {}
+        assert bestbuy_api.fetch(["6678361"], key, Http(_Resp(403, "u", "{}"))) == {}
+        assert bestbuy_api.fetch(["6678361"], key, Http(_Resp(200, "u", "not json"))) == {}
+        assert bestbuy_api.fetch(["6678361"], key, Http(_Resp(200, "u", json.dumps({"errors": ["x"]})))) == {}
+    assert key not in out.getvalue(), "the API key must never be printed"
+    assert out.getvalue().count("falling back") == 3, out.getvalue()
+
+
+def test_the_watcher_uses_the_best_buy_api_and_falls_back_to_the_browser():
+    import tempfile
+    pb = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45"
+    other = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-chaos-rising-elite-trainer-box/JJG2TL34RT"
+    config = {"retailers": ["bestbuy"], "keywords": [], "seed_urls": {"bestbuy": [pb, other]}, "bestbuy_skus": {"JJG2TL8J45": "6678361"}, "browser_retailers": ["bestbuy"]}
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-03T00:00:00+00:00", "in_stock": False}
+
+    class Browser:
+        def __init__(self):
+            self.calls = []
+        def check(self, url):
+            self.calls.append(url)
+            return {"stock": False, "title": "Pokemon ETB", "posted_at": None, "http_status": 200, "reason": "ok", "signal": None, "price": None, "sku": None, "seller": None}
+
+    real_env, real_browser = os.environ.get("BESTBUY_API_KEY"), monitor.BROWSER
+    try:
+        os.environ["BESTBUY_API_KEY"] = "SECRETKEY123456789"
+        # 1. the API says the Pitch Black box is orderable: ONE alert from the API (no browser), re-asked once to confirm; the other product has no SKU, so the browser reads it
+        monitor.BROWSER = Browser()
+        calls = []
+        def api_answer(url):
+            calls.append(url)
+            return _Resp(200, url, _api_json(_api_product(6678361, True, "Available")))
+        with tempfile.TemporaryDirectory() as d:
+            state = {"schema_version": 4, f"bestbuy::{pb}": dict(base), f"bestbuy::{other}": dict(base)}
+            session, sent = _run_main(Path(d), config, state, {"api.bestbuy.com": api_answer}, cycle=0)
+            saved = json.loads((Path(d) / "state.json").read_text())
+        cards = [c for c in sent if isinstance(c, dict)]
+        assert len(cards) == 1 and cards[0]["url"] == pb and cards[0]["signal"] == "api" and cards[0]["confirmed"] is True, cards
+        assert cards[0]["add_url"] == "https://api.bestbuy.com/click/-/6678361/cart" and cards[0]["price"] == 49.99
+        assert len(calls) == 2, "one batch request, plus one fresh request to confirm the restock"
+        assert monitor.BROWSER.calls == [other], "the browser reads only the product the API does not cover"
+        assert saved[f"bestbuy::{pb}"]["in_stock"] is True and saved[f"bestbuy::{pb}"]["sku"] == "6678361"
+        # 2. the API says sold out: no alert
+        monitor.BROWSER = Browser()
+        with tempfile.TemporaryDirectory() as d:
+            _, sent = _run_main(Path(d), config, {"schema_version": 4, f"bestbuy::{pb}": dict(base)}, {"api.bestbuy.com": lambda u: _Resp(200, u, _api_json(_api_product(6678361, False, "SoldOut")))}, cycle=0)
+        assert [c for c in sent if isinstance(c, dict)] == []
+        # 3. the API refuses (bad key, outage): the browser takes over for everything
+        monitor.BROWSER = Browser()
+        with tempfile.TemporaryDirectory() as d:
+            _, sent = _run_main(Path(d), config, {"schema_version": 4, f"bestbuy::{pb}": dict(base), f"bestbuy::{other}": dict(base)}, {"api.bestbuy.com": lambda u: _Resp(403, u, "{}")}, cycle=0)
+        assert sorted(monitor.BROWSER.calls) == sorted([pb, other]), "no API answer: the browser reads both"
+        # 4. no key at all: the API is never contacted
+        del os.environ["BESTBUY_API_KEY"]
+        monitor.BROWSER = Browser()
+        with tempfile.TemporaryDirectory() as d:
+            session, _ = _run_main(Path(d), config, {"schema_version": 4, f"bestbuy::{pb}": dict(base)}, {"api.bestbuy.com": lambda u: _Resp(200, u, "{}")}, cycle=0)
+        assert not any("api.bestbuy.com" in c for c in session.calls), "no key: the API is never contacted"
+        assert sorted(monitor.BROWSER.calls) == sorted([pb, other]), "no key: the browser reads both seeds"
+    finally:
+        monitor.BROWSER = real_browser
+        if real_env is None:
+            os.environ.pop("BESTBUY_API_KEY", None)
+        else:
+            os.environ["BESTBUY_API_KEY"] = real_env
+
+
+def test_the_best_buy_key_reaches_the_watcher_and_search_builds_a_safe_query():
+    workflow = (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
+    watcher = workflow[workflow.index("Watch stock for about 55 minutes"):]
+    assert "BESTBUY_API_KEY: ${{ secrets.BESTBUY_API_KEY }}" in watcher, "the watcher job gets the secret"
+    check = (ROOT / ".github" / "workflows" / "bestbuy-api-check.yml").read_text(encoding="utf-8")
+    assert "BESTBUY_API_KEY: ${{ secrets.BESTBUY_API_KEY }}" in check and "tools/bestbuy_api_check.py" in check
+    assert "BESTBUY_API_KEY" in (ROOT / "README.md").read_text(encoding="utf-8") and "developer.bestbuy.com" in (ROOT / "README.md").read_text(encoding="utf-8")
+    class Http:
+        def __init__(self):
+            self.urls = []
+        def get(self, url, **kw):
+            self.urls.append(url)
+            return _Resp(200, url, _api_json(_api_product(6678361, True, "Available"), {"sku": "bad", "name": "x"}))
+    http = Http()
+    found = bestbuy_api.search(["pokemon", "elite", "trainer", "box"], "KEY123", http)
+    assert "(search=pokemon&search=elite&search=trainer&search=box)" in http.urls[0] and "apiKey=KEY123" in http.urls[0]
+    assert [f["sku"] for f in found] == ["6678361"] and found[0]["stock"] is True, "entries without a valid SKU are dropped"
+    assert bestbuy_api.search(["pokemon&apiKey=evil", "x y"], "KEY123", Http()) == [], "words that could alter the query are refused"
+    assert bestbuy_api.search(["pokemon"], "", Http()) == [] and bestbuy_api.search([], "KEY123", Http()) == []
 
 
 def test_a_marketplace_reseller_is_not_the_store_restocking():
@@ -2545,6 +2684,10 @@ if __name__ == "__main__":
     test_one_alert_per_stay_in_stock_and_rearming_needs_confirmed_out_of_stock()
     test_rearm_state_rules()
     test_a_half_loaded_page_is_retried_once_but_a_wall_never_is()
+    test_best_buy_api_status_rules_are_strict()
+    test_best_buy_api_fetch_batches_one_request_and_never_leaks_the_key()
+    test_the_watcher_uses_the_best_buy_api_and_falls_back_to_the_browser()
+    test_the_best_buy_key_reaches_the_watcher_and_search_builds_a_safe_query()
     test_a_marketplace_reseller_is_not_the_store_restocking()
     test_a_reseller_listing_never_alerts_and_clears_a_stale_in_stock_state()
     test_a_new_listing_alert_uses_up_that_stay()

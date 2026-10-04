@@ -1,0 +1,32 @@
+name: Best Buy API check
+
+# Manual: asks Best Buy's official API about every SKU PokePing knows (and, with search on, which Pokemon products Best Buy lists) using the
+# BESTBUY_API_KEY secret, and prints the answers. The key is never printed. Use it once after adding the secret.
+on:
+  workflow_dispatch:
+    inputs:
+      search:
+        description: "also list the Pokemon products Best Buy has (to find SKUs)"
+        default: "true"
+        type: choice
+        options: ["true", "false"]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - name: Ask the Best Buy API
+        env:
+          BESTBUY_API_KEY: ${{ secrets.BESTBUY_API_KEY }}
+        run: |
+          if [ "${{ inputs.search }}" = "true" ]; then python -u tools/bestbuy_api_check.py --search; else python -u tools/bestbuy_api_check.py; fi
