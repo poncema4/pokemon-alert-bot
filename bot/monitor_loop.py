@@ -5,8 +5,8 @@ GitHub's `*/5` cron is best effort; measured over 100 scheduled runs the median 
 for ~55 minutes and polls inside it; the workflow starts the next job when this one ends.
 
 Every cycle: fast pass (seed + known listings), refresh the live-hit map, announce new listings.
-Every DISCOVER_EVERY-th cycle also runs the slower keyword searches. State is committed when something
-meaningful changed (never just because `last_seen` moved), at most every COMMIT_EVERY seconds, and at once
+Every DISCOVER_EVERY-th cycle also runs the slower keyword searches. State is committed every COMMIT_EVERY seconds (a heartbeat: even when nothing changed, so the site can show how recently the
+stores were checked), and at once
 when the live-hit list changes.
 
 Also runs on an always-on machine: `python monitor_loop.py` (set MONITOR_RUNTIME_SECONDS=0 to run forever).
@@ -130,9 +130,13 @@ def run_loop(cycle=run_cycle, commit=commit_and_push, sig=signature, now=time.mo
         number += 1
         full, alerts = sig()
         alerts_changed = alerts != last_sig[1]
-        if full != last_sig[0] and (alerts_changed or now() - last_commit >= commit_every):
+        # A changed live-hit list is committed at once. Otherwise a HEARTBEAT every commit_every seconds: when every store is out of stock nothing
+        # "meaningful" changes, and without it last_seen / last_run were never committed, so the site said "checked 38 minutes ago" for a
+        # watcher that was running fine.
+        if alerts_changed or now() - last_commit >= commit_every:
             if commit():
-                last_sig, last_commit = (full, alerts), now()
+                last_sig = (full, alerts)
+            last_commit = now()
         if runtime and now() - start + interval > runtime:
             break
         sleep(max(1.0, interval - (now() - began)))
