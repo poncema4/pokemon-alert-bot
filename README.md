@@ -2,7 +2,9 @@
 
 A personal Pokémon TCG restock alert bot for North Jersey. It watches Target, Walmart, Best Buy, GameStop and Pokémon Center, pings Discord when something is really in stock, says what the price means against live TCGplayer data, and shows the stores near home on a map.
 
-Site: <https://poncema4.github.io/pokemon-alert-bot/> (Map, Route, 30th guide). It never buys anything and never works around a retailer's bot protection.
+It exists to help a collector get product at fair prices ahead of resellers: confirmed restock alerts within about a minute, a price check so you know whether a listing is a good deal, the nearest open store, and a route for the school-day sweep.
+
+Site: <https://poncema4.github.io/pokemon-alert-bot/> (Map, Route, 30th guide).
 
 ## How an alert is decided
 
