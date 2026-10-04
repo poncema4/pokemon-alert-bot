@@ -221,6 +221,7 @@ def extract_structured_availability(text):
     return None
 
 
+CART_BUTTON = re.compile(r"<button\b([^>]*)>\s*add to (?:cart|bag|basket)\s*</button>", re.I | re.S)
 BOT_WALL_MARKERS = ("robot or human", "px-captcha", "captcha.px-cdn", "press & hold", "access denied", "are you a human")
 
 
@@ -248,6 +249,11 @@ def classify_response(status, final_url, text):
     if any(h in low for h in OUT_OF_STOCK_HINTS):
         return False, "ok", None
     if any(h in low for h in IN_STOCK_HINTS):
+        # Target's server-rendered page ships a *disabled* "Add to cart" placeholder and fills in real stock later from an
+        # API behind a captcha. A disabled cart button is a loading state, never evidence of stock.
+        carts = CART_BUTTON.findall(text or "")
+        if carts and all("disabled" in attrs.lower() for attrs in carts):
+            return None, "cart_disabled", None
         return True, "ok", "text"
     return None, "no_signal", None
 

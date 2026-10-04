@@ -134,6 +134,16 @@ def test_classify_response():
     assert classify_response(200, "https://x.com/p", '"availability":"https://schema.org/OutOfStock"') == (False, "ok", None)
     assert classify_response(200, "https://x.com/p", "<button>Add to cart</button>") == (True, "ok", "text")
     assert classify_response(200, "https://x.com/p", "Sold out online") == (False, "ok", None)
+    # Target's real server-rendered placeholder (captured 2026-10-04): a DISABLED cart button is a loading state, not stock.
+    target_placeholder = '<div><button class="styles_md__N9Usy styles_filled__uq68y styles_fullWidth__ztP_d" type="button" disabled="">Add to cart</button></div>'
+    assert classify_response(200, "https://www.target.com/p/-/A-1", target_placeholder) == (None, "cart_disabled", None)
+    assert classify_response(200, "https://www.target.com/p/-/A-1", '<button type="button" disabled>Add to cart</button>') == (None, "cart_disabled", None)
+    assert classify_response(200, "https://x.com/p", '<button type="button" class="go">Add to cart</button>') == (True, "ok", "text"), "an enabled button still counts"
+    assert classify_response(200, "https://x.com/p", "<span>Pickup today at your store</span>") == (True, "ok", "text"), "wording with no cart button at all is still a weak in-stock signal"
+    assert classify_response(200, "https://x.com/p", "<a>Add to cart</a>") == (True, "ok", "text"), "only a disabled <button> is a placeholder"
+    mixed = '<button disabled>Add to cart</button><button class="x">Add to cart</button>'
+    assert classify_response(200, "https://x.com/p", mixed) == (True, "ok", "text"), "any enabled cart button wins"
+    assert classify_response(200, "https://x.com/p", '<button disabled>Add to cart</button> Ship it') == (None, "cart_disabled", None), "a disabled button is not rescued by other wording on the page"
     assert classify_response(200, "https://x.com/p", "<html>nothing useful</html>") == (None, "no_signal", None)
 
 
@@ -242,6 +252,20 @@ def test_main_stops_probing_a_wall_but_keeps_reading_the_rest():
     with tempfile.TemporaryDirectory() as d:
         session, _ = _run_main(Path(d), config, {"schema_version": 4}, {"walmart.com": ok}, discovered=extras)
     assert session.calls == seeds + extras
+
+
+def test_main_target_placeholder_never_becomes_stock():
+    import tempfile
+    url = "https://www.target.com/p/-/A-1"
+    config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": [url]}}
+    prior = {"schema_version": 4, f"target::{url}": {"pokemon": True, "title": "Pokemon ETB", "in_stock": False, "last_seen": "2026-10-03T00:00:00+00:00"}}
+    placeholder = lambda u: _Resp(200, u, '<title>Pokemon ETB : Target</title><button type="button" disabled="">Add to cart</button>')
+    with tempfile.TemporaryDirectory() as d:
+        _, sent = _run_main(Path(d), config, prior, {"target.com": placeholder})
+        state = json.loads((Path(d) / "state.json").read_text())[f"target::{url}"]
+        health = json.loads((Path(d) / "health.json").read_text())["target"]
+    assert sent == [] and state["in_stock"] is None and state["reason"] == "cart_disabled"
+    assert health["readable"] == 0 and health["checked"] == 1, "Target must show up as unreadable, not as quietly fine"
 
 
 def test_main_alert_wording_follows_signal_strength():
@@ -399,6 +423,7 @@ if __name__ == "__main__":
     test_prune_only_dead_discovered_listings()
     test_main_blocked_retailer_is_silent_but_visible()
     test_main_stops_probing_a_wall_but_keeps_reading_the_rest()
+    test_main_target_placeholder_never_becomes_stock()
     test_main_alert_wording_follows_signal_strength()
     test_loop_scheduling()
     test_loop_commits_on_meaningful_change_only()
