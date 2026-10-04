@@ -60,7 +60,7 @@ def main():
         retailer, url = key.split("::", 1)
         if retailer not in BIG4 or entry.get("pokemon") is not True:
             continue
-        if entry.get("in_stock") is not True:
+        if entry.get("alertable", entry.get("in_stock")) is not True:
             continue
 
         detected = entry.get("last_seen") or datetime.now(timezone.utc).isoformat()

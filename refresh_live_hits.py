@@ -52,7 +52,7 @@ def main():
         if key == "schema_version" or not isinstance(entry, dict) or "::" not in key:
             continue
         retailer, url = key.split("::", 1)
-        if retailer not in BIG4 or entry.get("in_stock") is not True:
+        if retailer not in BIG4 or entry.get("alertable", entry.get("in_stock")) is not True:
             continue
         last_seen = parse_time(entry.get("last_seen", ""))
         if not last_seen or last_seen < freshness_cutoff:
@@ -73,6 +73,9 @@ def main():
                 "verified": True,
                 "stock": True,
                 "online": True,
+                "price": entry.get("price"),
+                "msrp": entry.get("msrp"),
+                "signal": entry.get("signal"),
                 "stores": [],
             })
         else:
@@ -82,6 +85,9 @@ def main():
                 "stock": True,
                 "online": True,
                 "title": entry.get("title") or existing.get("title"),
+                "price": entry.get("price"),
+                "msrp": entry.get("msrp"),
+                "signal": entry.get("signal"),
                 "posted_at": entry.get("posted_at"),
                 "detected_at": existing.get("detected_at") or now.isoformat(),
                 "ts": existing.get("ts") or existing.get("detected_at") or now.isoformat(),

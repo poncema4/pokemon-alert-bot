@@ -222,6 +222,10 @@ def extract_structured_availability(text):
 
 
 CART_BUTTON = re.compile(r"<button\b([^>]*)>\s*add to (?:cart|bag|basket)\s*</button>", re.I | re.S)
+# GameStop marks the real state on the page ("data-available") while its JSON-LD says InStock even when the item is
+# unavailable (captured 2026-10-04: 30th Celebration ETB had data-available="false", no cart button, JSON-LD InStock).
+AVAILABILITY_FLAG = re.compile(r'\bdata-available\s*=\s*"(true|false)"', re.I)
+PRICE_PATTERN = re.compile(r'"price"\s*:\s*"?([0-9]{1,5}(?:\.[0-9]{1,2})?)"?')
 BOT_WALL_MARKERS = ("robot or human", "px-captcha", "captcha.px-cdn", "press & hold", "access denied", "are you a human")
 
 
@@ -243,6 +247,10 @@ def classify_response(status, final_url, text):
     low = (text or "").lower()
     if path.startswith("/blocked") or any(marker in low for marker in BOT_WALL_MARKERS):
         return None, "blocked", None
+    flags = {v.lower() for v in AVAILABILITY_FLAG.findall(text or "")}
+    if len(flags) == 1:  # the page's own flag beats JSON-LD; mixed flags (e.g. related products) are ambiguous, so fall through
+        available = flags == {"true"}
+        return available, "ok", "page" if available else None
     structured = extract_structured_availability(text or "")
     if structured is not None:
         return structured, "ok", "structured" if structured else None
@@ -258,6 +266,26 @@ def classify_response(status, final_url, text):
     return None, "no_signal", None
 
 
+def extract_price(text):
+    """The first listed price on the page (JSON-LD offer), or None."""
+    m = PRICE_PATTERN.search(text or "")
+    return float(m.group(1)) if m else None
+
+
+def msrp_for(config, url):
+    """Retail price for a listing from the config rules (first rule whose text appears in the URL), or None."""
+    low = (url or "").lower()
+    for rule in config.get("msrp_rules", []):
+        if rule["match"].lower() in low:
+            return float(rule["msrp"])
+    return None
+
+
+def is_overpriced(price, msrp, max_markup):
+    """True when a listing costs clearly more than retail; those are not restocks worth a ping."""
+    return bool(price and msrp and price > msrp * max_markup)
+
+
 def check_product_page(http, retailer, url, timeout):
     fallback_title = f"{retailer.title()} Pokémon product"
     try:
@@ -270,7 +298,7 @@ def check_product_page(http, retailer, url, timeout):
         print(f"  product page {reason} (HTTP {response.status_code}): {url}")
         return {"stock": None, "title": fallback_title, "posted_at": None, "http_status": response.status_code, "reason": reason, "signal": None}
     text = response.text
-    return {"stock": stock, "title": extract_title(text, retailer), "posted_at": extract_posted_time(text), "http_status": response.status_code, "reason": reason, "signal": signal}
+    return {"stock": stock, "title": extract_title(text, retailer), "posted_at": extract_posted_time(text), "http_status": response.status_code, "reason": reason, "signal": signal, "price": extract_price(text)}
 
 
 HEALTH_FILE = ROOT / "docs/health.json"
@@ -348,12 +376,12 @@ def format_et(value):
         return value
 
 
-def send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, signal="structured"):
+def send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, signal="structured", price=None, msrp=None):
     if kind != "stock":
         return
     verdict = (
         "Verified in stock — the retailer page exposed structured availability data."
-        if signal == "structured"
+        if signal in ("structured", "page")
         else "Likely in stock — cart/pickup wording was found but there is no structured availability data. Confirm on the page."
     )
     lines = [
@@ -410,6 +438,7 @@ def main(discover=True):
     retailers = [r for r in config.get("retailers", []) if r in SEARCH_URLS]
     cooldown = float(config.get("alert_cooldown_hours", 1))
     timeout = int(config.get("search_timeout_seconds", 8))
+    max_markup = float(config.get("max_markup", 1.3))
     ping = os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")
     map_url = config.get("map_url", "")
     http = requests.Session()
@@ -447,11 +476,16 @@ def main(discover=True):
             title = result["title"] if is_pokemon(result["title"] + " " + url) else f"{retailer.title()} Pokémon product"
             posted_at = result.get("posted_at")
             kind = None
+            price = result.get("price")
+            msrp = msrp_for(config, url)
+            overpriced = in_stock is True and is_overpriced(price, msrp, max_markup)
+            alertable = in_stock is True and not overpriced
             # Listings from before first_seen existed are not "new": never announce them.
             first_seen = previous.get("first_seen") or (previous.get("last_seen") if previous else now.isoformat())
             new_announced = previous.get("new_announced", True) if previous else False
 
-            if previous and in_stock is True and previous.get("in_stock") is not True and not recently_stock_alerted(previous, now, cooldown):
+            was_alertable = previous.get("alertable", previous.get("in_stock")) is True
+            if previous and alertable and not was_alertable and not recently_stock_alerted(previous, now, cooldown):
                 kind = "stock"
             elif previous and in_stock is None:
                 sent["unknown"] += 1
@@ -459,7 +493,7 @@ def main(discover=True):
             if kind == "stock":
                 detected_at = now.isoformat()
                 record_alert(alerts, retailer, kind, title, url, True, posted_at, detected_at, True)
-                send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, result.get("signal"))
+                send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, result.get("signal"), price, msrp)
                 sent["stock"] += 1
                 last_stock_alert = detected_at
             else:
@@ -478,6 +512,10 @@ def main(discover=True):
                 "http_status": result.get("http_status"),
                 "reason": reason,
                 "signal": result.get("signal"),
+                "price": price,
+                "msrp": msrp,
+                "overpriced": overpriced,
+                "alertable": alertable,
             }
 
         for url in seeds:
