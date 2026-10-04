@@ -1,0 +1,29 @@
+name: Browser snapshot
+
+# Manual: loads the retailer pages in a real headless browser from GitHub's runner and uploads screenshots plus what was visible
+# (buy buttons, captcha or queue walls). Used to learn which stores a browser can read; it never tries to get past a wall.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r requirements.txt playwright
+      - run: playwright install --with-deps chromium
+      - run: python -u tools/browser_snapshot.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-snapshots
+          path: snapshots/browser/
+          retention-days: 14
