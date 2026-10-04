@@ -7,12 +7,14 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
     "last_ok": "2026-10-04T15:31:14.144299+00:00",
     "last_stock_alert": "2026-09-08T05:57:08.163500+00:00",
     "http_status": 200,
     "reason": "cart_disabled",
-    "signal": null
+    "signal": null,
+    "price": null,
+    "msrp": null
   },
   "target::https://www.target.com/p/-/A-1011483406": {
     "pokemon": true,
@@ -21,12 +23,14 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
     "last_ok": "2026-10-04T15:31:14.144299+00:00",
     "last_stock_alert": "2026-09-08T05:57:08.163500+00:00",
     "http_status": 200,
     "reason": "cart_disabled",
-    "signal": null
+    "signal": null,
+    "price": null,
+    "msrp": null
   },
   "walmart::https://www.walmart.com/ip/15718673510": {
     "pokemon": true,
@@ -35,12 +39,14 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
     "last_ok": null,
     "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
     "http_status": 200,
     "reason": "blocked",
-    "signal": null
+    "signal": null,
+    "price": null,
+    "msrp": null
   },
   "walmart::https://www.walmart.com/ip/20161351456": {
     "pokemon": true,
@@ -49,12 +55,14 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
     "last_ok": null,
     "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
     "http_status": 200,
     "reason": "blocked",
-    "signal": null
+    "signal": null,
+    "price": null,
+    "msrp": null
   },
   "walmart::https://www.walmart.com/ip/20754418655": {
     "pokemon": true,
@@ -63,12 +71,14 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
     "last_ok": null,
     "last_stock_alert": "2026-09-25T00:45:46.188795+00:00",
     "http_status": 200,
     "reason": "blocked",
-    "signal": null
+    "signal": null,
+    "price": null,
+    "msrp": null
   },
   "bestbuy::https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ": {
     "pokemon": true,
@@ -77,12 +87,14 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
     "last_ok": null,
     "last_stock_alert": null,
     "http_status": null,
     "reason": "error",
-    "signal": null
+    "signal": null,
+    "price": null,
+    "msrp": 49.99
   },
   "bestbuy::https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45": {
     "pokemon": true,
@@ -91,26 +103,30 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
     "last_ok": null,
     "last_stock_alert": null,
     "http_status": null,
     "reason": "error",
-    "signal": null
+    "signal": null,
+    "price": null,
+    "msrp": 49.99
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html": {
     "pokemon": true,
     "title": "Pokemon Trading Card Game: 30th Celebration Elite Trainer Box | GameStop",
-    "in_stock": true,
+    "in_stock": false,
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
-    "last_ok": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
+    "last_ok": "2026-10-04T15:47:22.055648+00:00",
     "last_stock_alert": "2026-09-29T19:28:18.886241+00:00",
     "http_status": 200,
     "reason": "ok",
-    "signal": "structured"
+    "signal": null,
+    "price": 99.99,
+    "msrp": 49.99
   },
   "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html": {
     "pokemon": true,
@@ -119,12 +135,14 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
-    "last_ok": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
+    "last_ok": "2026-10-04T15:47:22.055648+00:00",
     "last_stock_alert": "2026-09-29T19:28:18.886241+00:00",
     "http_status": 200,
     "reason": "ok",
-    "signal": "structured"
+    "signal": "page",
+    "price": 84.99,
+    "msrp": 49.99
   },
   "walmart::https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207": {
     "pokemon": true,
@@ -133,12 +151,14 @@
     "posted_at": null,
     "first_seen": "2026-10-04T12:38:25.630381+00:00",
     "new_announced": true,
-    "last_seen": "2026-10-04T15:46:12.427318+00:00",
+    "last_seen": "2026-10-04T15:47:22.055648+00:00",
     "last_ok": null,
     "last_stock_alert": "2026-10-03T19:15:03.748925+00:00",
     "http_status": 200,
     "reason": "blocked",
-    "signal": null
+    "signal": null,
+    "price": null,
+    "msrp": 49.99
   },
   "walmart::https://www.walmart.com/ip/Pok-mon-TCG-Scarlet-Violet-Destined-Rivals-Pok-mon-Center-Elite-Trainer-Box/15718673510?conditionGroupCode=4&classType=REGULAR&from=/search": {
     "pokemon": true,
