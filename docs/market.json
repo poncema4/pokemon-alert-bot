@@ -5,14 +5,22 @@
     "listings": 213,
     "name": "Pitch Black Elite Trainer Box",
     "product_id": 692947,
-    "updated_at": "2026-10-04T15:56:46.244446+00:00"
+    "updated_at": "2026-10-04T16:20:57.527864+00:00"
   },
   "30th-etb": {
-    "market": 156.92,
+    "market": 157.0,
     "low": 139.99,
-    "listings": 311,
+    "listings": 315,
     "name": "30th Celebration Elite Trainer Box",
     "product_id": 704143,
-    "updated_at": "2026-10-04T15:56:46.244446+00:00"
+    "updated_at": "2026-10-04T16:20:57.527864+00:00"
+  },
+  "auto:destined rivals elite trainer box": {
+    "market": 117.28,
+    "low": 104.99,
+    "listings": 194,
+    "name": "Destined Rivals Elite Trainer Box",
+    "product_id": 624676,
+    "updated_at": "2026-10-04T16:20:57.527864+00:00"
   }
 }
