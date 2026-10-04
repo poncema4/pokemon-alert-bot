@@ -15,6 +15,7 @@ import monitor
 monitor.CONFIRM_DELAY = 0  # tests never wait
 import monitor_loop
 import advisor
+import browser_reader
 import coverage
 import gamestop_discovery
 import notify
@@ -1553,6 +1554,114 @@ def test_hot_listings_are_checked_every_cycle_and_the_rest_less_often():
     assert session.calls == [hot, calm], "without a hot list there is no slow rhythm: everything is checked every cycle"
 
 
+def _browser_rows():
+    return {r["name"]: r for r in json.loads((ROOT / "tests" / "fixtures" / "browser_snapshot_2026-10-04.json").read_text(encoding="utf-8"))}
+
+
+def test_browser_reader_decides_from_the_visible_buy_button_on_real_pages():
+    rows = _browser_rows()
+    c = browser_reader.classify_rendered
+    # Captured from GitHub's runner on 2026-10-04 with a real headless browser.
+    assert c(rows["bestbuy_30th_etb"]) == (False, "ok", None), "a disabled Unavailable button is not in stock (Best Buy's JSON-LD said InStock)"
+    assert c(rows["bestbuy_pitch_black_etb"]) == (True, "ok", "browser"), "an enabled, visible Add to cart is in stock"
+    assert c(rows["target_30th_etb"]) == (None, "blocked", None), "Target's press-and-hold wall is blocked, even though a hidden Add to cart sits behind it"
+    assert c(rows["walmart_30th_etb"]) == (None, "blocked", None)
+    assert c(rows["gamestop_pitch_black_etb"]) == (None, "blocked", None), "Cloudflare's 'Attention Required' page is a block page"
+    assert c(rows["pokemoncenter_home"]) == (None, "blocked", None) and c(rows["pokemoncenter_tcg"]) == (None, "blocked", None), "an empty page is a block page, never 'out of stock'"
+    # edge cases
+    btn = lambda label, visible=True, enabled=True: {"label": label, "visible": visible, "enabled": enabled}
+    page = lambda *buttons, **kw: {"walls": [], "title": "Pokemon ETB", "body_chars": 3000, "buttons": list(buttons), **kw}
+    assert c(page(btn("Add to cart"), btn("Sold Out"))) == (True, "ok", "browser"), "an enabled buy button wins over another variant's Sold Out"
+    assert c(page(btn("Add to cart", enabled=False))) == (False, "ok", None), "a disabled Add to cart is not stock"
+    assert c(page(btn("Add to cart", visible=False))) == (None, "no_signal", None), "a hidden button is not evidence of anything"
+    assert c(page(btn("Coming Soon"))) == (False, "ok", None) and c(page(btn("Notify Me"))) == (False, "ok", None) and c(page(btn("Check Stores"))) == (False, "ok", None)
+    assert c(page()) == (None, "no_signal", None), "no buy button and a real page: unknown, never a guess"
+    assert c(page(btn("Add to cart"), walls=["px-captcha"])) == (None, "blocked", None)
+    assert c({"error": "timeout"}) == (None, "error", None)
+    assert c(page(btn("Add to cart"), title="Access Denied")) == (None, "blocked", None), "a wall named in the title is a wall"
+
+
+def test_browser_stores_are_read_by_the_browser_and_the_rest_over_http():
+    import tempfile
+    bb, gs = "https://www.bestbuy.com/product/pokemon-pitch-black-elite-trainer-box/JJG1", "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-pitch-black-elite-trainer-box/1.html"
+    config = {"retailers": ["bestbuy", "gamestop"], "keywords": [], "seed_urls": {"bestbuy": [bb], "gamestop": [gs]}, "browser_retailers": ["bestbuy"]}
+    sold = lambda u: _Resp(200, u, "<title>Pokemon ETB</title>Sold out online")
+
+    class FakeBrowser:
+        def __init__(self, stock):
+            self.calls, self.stock = [], stock
+        def check(self, url):
+            self.calls.append(url)
+            return {"stock": self.stock, "title": "Pokemon Pitch Black Elite Trainer Box", "posted_at": None, "http_status": 200, "reason": "ok", "signal": "browser" if self.stock else None, "price": 49.99}
+
+    prior = {"schema_version": 4, f"bestbuy::{bb}": {"pokemon": True, "title": "Pokemon Pitch Black ETB", "in_stock": False, "last_seen": "2026-10-03T00:00:00+00:00"}}
+    real = monitor.BROWSER
+    try:
+        monitor.BROWSER = FakeBrowser(True)
+        with tempfile.TemporaryDirectory() as d:
+            session, sent = _run_main(Path(d), config, prior, {"gamestop.com": sold, "bestbuy.com": sold})
+            state = json.loads((Path(d) / "state.json").read_text())
+        assert monitor.BROWSER.calls == [bb, bb], "Best Buy goes through the browser (twice: reading plus confirmation)"
+        assert session.calls == [gs], "GameStop still goes over plain HTTP, and Best Buy never does"
+        assert len(sent) == 1 and sent[0]["signal"] == "browser" and sent[0]["confirmed"] is True and sent[0]["price"] == 49.99
+        assert "real browser" in {f["name"]: f["value"] for f in notify.stock_embed(sent[0])["embeds"][0]["fields"]}["Proof"]
+        # no browser available: Best Buy falls back to plain HTTP (and a timeout there is simply unknown)
+        monitor.BROWSER = None
+        with tempfile.TemporaryDirectory() as d:
+            session, _ = _run_main(Path(d), config, prior, {"gamestop.com": sold, "bestbuy.com": sold})
+        assert session.calls == [bb, gs]
+    finally:
+        monitor.BROWSER = real
+
+
+def test_the_browser_starts_only_when_enabled_and_failure_is_harmless():
+    import os
+    real_env, real_browser = os.environ.get("POKEPING_BROWSER"), monitor.BROWSER
+    try:
+        os.environ.pop("POKEPING_BROWSER", None)
+        monitor.BROWSER = None
+        started = []
+        real_cls = browser_reader.BrowserReader
+        class Counting:
+            def __init__(self):
+                started.append(1)
+        browser_reader.BrowserReader = Counting
+        try:
+            monitor_loop.start_browser()
+            assert monitor.BROWSER is None and started == [], "off unless POKEPING_BROWSER=1: the reader is not even created"
+            os.environ["POKEPING_BROWSER"] = "1"
+            monitor_loop.start_browser()
+            assert isinstance(monitor.BROWSER, Counting) and started == [1], "with the switch on it starts, once"
+            monitor_loop.start_browser()
+            assert started == [1], "and an already started browser is not started again"
+        finally:
+            browser_reader.BrowserReader = real_cls
+            monitor.BROWSER = None
+        class Broken:
+            def __init__(self):
+                raise RuntimeError("no chromium installed")
+        browser_reader.BrowserReader = Broken
+        try:
+            monitor_loop.start_browser()
+        finally:
+            browser_reader.BrowserReader = real_cls
+        assert monitor.BROWSER is None, "a missing browser must not stop the watcher"
+        cfg = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
+        assert cfg["browser_retailers"] == ["bestbuy"] and len(cfg["seed_urls"]["bestbuy"]) >= 6
+        for url in cfg["seed_urls"]["bestbuy"]:
+            assert monitor.retailer_url_is_valid("bestbuy", url), url
+        workflow = (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
+        assert "playwright install --with-deps chromium" in workflow and 'POKEPING_BROWSER: "1"' in workflow
+        install = workflow[workflow.index("Install the browser"):workflow.index("Watch stock")]
+        assert "continue-on-error: true" in install, "a failed browser install must never stop the watcher"
+    finally:
+        monitor.BROWSER = real_browser
+        if real_env is None:
+            os.environ.pop("POKEPING_BROWSER", None)
+        else:
+            os.environ["POKEPING_BROWSER"] = real_env
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -1619,6 +1728,9 @@ if __name__ == "__main__":
     test_main_tracks_a_newly_discovered_etb_and_announces_it_once()
     test_an_alert_needs_two_agreeing_readings()
     test_hot_listings_are_checked_every_cycle_and_the_rest_less_often()
+    test_browser_reader_decides_from_the_visible_buy_button_on_real_pages()
+    test_browser_stores_are_read_by_the_browser_and_the_rest_over_http()
+    test_the_browser_starts_only_when_enabled_and_failure_is_harmless()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()

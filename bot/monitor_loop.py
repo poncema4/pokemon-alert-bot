@@ -44,6 +44,19 @@ def signature():
     return json.dumps([state, load("docs/alerts.json"), health, prices, market, coverage], sort_keys=True), json.dumps(load("docs/alerts.json"), sort_keys=True)
 
 
+def start_browser():
+    """Open the shared browser if Playwright is installed and enabled (POKEPING_BROWSER=1); otherwise the browser-read stores are skipped."""
+    import monitor
+    if os.environ.get("POKEPING_BROWSER") != "1" or monitor.BROWSER is not None:
+        return
+    try:
+        from browser_reader import BrowserReader
+        monitor.BROWSER = BrowserReader()
+        print("browser reader started")
+    except Exception as exc:
+        print(f"browser reader unavailable: {exc}")
+
+
 def run_cycle(number):
     import monitor
     import notify_new_listings
@@ -105,6 +118,8 @@ def run_loop(cycle=run_cycle, commit=commit_and_push, sig=signature, now=time.mo
     """Scheduling only (clock, cycle and commit are injected so it is testable). Returns cycles run."""
     start = last_commit = now()
     last_sig = sig()
+    if cycle is run_cycle:
+        start_browser()
     number = 0
     while True:
         began = now()

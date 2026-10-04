@@ -67,11 +67,17 @@ jobs:
           cache: "pip"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Watch stock for about 55 minutes (checks every minute)
+      - name: Install the browser (Best Buy is read in a real browser)
+        continue-on-error: true  # if this fails the watcher still runs; only Best Buy is skipped
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+      - name: Watch stock for about 55 minutes (checks every 30 seconds)
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_PING: ${{ secrets.DISCORD_PING }}
           MONITOR_RUNTIME_SECONDS: "3300"
+          POKEPING_BROWSER: "1"
         run: |
           python --version
           if [ -n "$DISCORD_WEBHOOK_URL" ]; then
