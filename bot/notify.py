@@ -19,7 +19,7 @@ PROOF = {
     "page": "Verified: the retailer's own page says it is available.",
     "structured": "Verified: the page's availability data says in stock.",
     "text": "Likely: cart or pickup wording found, no structured data. Confirm on the page.",
-    "browser": "Verified: a real browser saw an enabled Add to Cart button.",
+    "browser": "Verified: a real browser saw an enabled Add to cart button on the page.",
 }
 
 

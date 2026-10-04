@@ -39,6 +39,7 @@ CONFIG_FILE = ROOT / "config" / "search_config.json"
 ALERTS_FILE = ROOT / "docs/alerts.json"
 MARKET_FILE = ROOT / "docs/market.json"
 PIDS_FILE = ROOT / "data" / "gamestop_pids.json"
+BROWSER = None  # a browser_reader.BrowserReader, set by the watcher loop when Playwright is available
 CONFIRM_DELAY = 2.0  # seconds between the first in-stock reading and the confirming one
 
 SEARCH_URLS = {
@@ -440,6 +441,7 @@ def main(discover=True, cycle=0):
     retailers = [r for r in config.get("retailers", []) if r in SEARCH_URLS]
     cooldown = float(config.get("alert_cooldown_hours", 1))
     timeout = int(config.get("search_timeout_seconds", 8))
+    browser_retailers = set(config.get("browser_retailers", []))
     hot = [h.lower() for h in config.get("hot_matches", [])]
     slow_every = max(1, int(config.get("slow_every", 3))) if hot else 1  # the slow rhythm only exists when something is hot
     is_hot = lambda url: any(h in url.lower() for h in hot)
@@ -471,12 +473,13 @@ def main(discover=True, cycle=0):
             previous = state.get(key, {})
             if not is_hot(url) and cycle % slow_every != 0:
                 return  # a calmer listing: checked on the slower rhythm
-            result = check_product_page(http, retailer, url, timeout)
+            read = (lambda: BROWSER.check(url)) if (BROWSER is not None and retailer in browser_retailers) else (lambda: check_product_page(http, retailer, url, timeout))
+            result = read()
             confirmed = previous.get("confirmed") if previous.get("in_stock") is True else None
             if result["stock"] is True and previous.get("in_stock") is not True:
                 # Coming into stock: read it again a moment later. An alert that is out of stock by the time you click is worse than none.
                 time.sleep(CONFIRM_DELAY)
-                again = check_product_page(http, retailer, url, timeout)
+                again = read()
                 if again["stock"] is True:
                     confirmed = True
                 else:
