@@ -1662,6 +1662,68 @@ def test_the_browser_starts_only_when_enabled_and_failure_is_harmless():
             os.environ["POKEPING_BROWSER"] = real_env
 
 
+def test_the_real_browser_reads_real_pages():
+    """Drives a real headless Chromium against a local web server that behaves like the stores seen on 2026-10-04."""
+    import os
+    import threading
+    import tempfile
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
+    try:
+        import playwright.sync_api  # noqa: F401
+    except ImportError:
+        assert os.environ.get("POKEPING_REQUIRE_BROWSER") != "1", "CI must have Playwright installed"
+        print("  (skipped: Playwright is not installed here)")
+        return
+    filler = "<p>" + "Pokemon Elite Trainer Box product details. " * 40 + "</p>"
+    pages = {
+        "buyable.html": f"<html><head><title>Pokemon ETB - Best Buy</title></head><body><h1>Pokemon ETB</h1><span>$49.99</span>{filler}<button>Add to cart</button></body></html>",
+        "unavailable.html": f"<html><head><title>Pokemon 30th ETB - Best Buy</title></head><body><span>$284.99</span>{filler}<button disabled>Unavailable</button></body></html>",
+        "wall.html": f"<html><head><title>Target</title></head><body><div id='px-captcha'></div><h1>Quick verification</h1><p>Press &amp; hold to confirm you're a human</p>{filler}<button style='display:none'>Add to cart</button></body></html>",
+        "later.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<div id='slot'>loading</div><script>setTimeout(function(){{document.getElementById('slot').innerHTML='<button>Add to cart</button>';}}, 700);</script></body></html>",
+        "blank.html": "<html><head></head><body></body></html>",
+        "hidden.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<button style='display:none'>Add to cart</button></body></html>",
+        "sold.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<button>Sold Out</button><button>Add to cart</button><script>document.querySelectorAll('button')[1].disabled = true;</script></body></html>",
+    }
+    with tempfile.TemporaryDirectory() as d:
+        for name, html_text in pages.items():
+            (Path(d) / name).write_text(html_text, encoding="utf-8")
+
+        class Quiet(SimpleHTTPRequestHandler):
+            def __init__(self, *a, **k):
+                super().__init__(*a, directory=d, **k)
+            def log_message(self, *a):
+                pass
+
+        server = HTTPServer(("127.0.0.1", 0), Quiet)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        base = f"http://127.0.0.1:{server.server_port}/"
+        reader = browser_reader.BrowserReader(wait_ms=1500)
+        try:
+            check = lambda name: reader.check(base + name)
+            got = check("buyable.html")
+            assert (got["stock"], got["reason"], got["signal"], got["price"]) == (True, "ok", "browser", 49.99), got
+            assert got["title"] == "Pokemon ETB - Best Buy" and got["http_status"] == 200
+            got = check("unavailable.html")
+            assert (got["stock"], got["reason"], got["price"]) == (False, "ok", 284.99), got
+            got = check("wall.html")
+            assert (got["stock"], got["reason"]) == (None, "blocked"), "a verification wall is blocked even with a hidden Add to cart behind it"
+            got = check("later.html")
+            assert (got["stock"], got["signal"]) == (True, "browser"), "a buy button that JavaScript adds after load is seen (the Target case)"
+            got = check("blank.html")
+            assert (got["stock"], got["reason"]) == (None, "blocked"), "a blank page is a block page, never out of stock"
+            got = check("hidden.html")
+            assert (got["stock"], got["reason"]) == (None, "no_signal"), "a buy button nobody can see is not stock"
+            got = check("sold.html")
+            assert got["stock"] is False, "Sold Out plus a disabled Add to cart is not stock"
+            got = reader.check("http://127.0.0.1:1/nothing")
+            assert (got["stock"], got["reason"]) == (None, "error"), "an unreachable page is an error, never a reading"
+            # the same reader keeps working after an error
+            assert check("buyable.html")["stock"] is True
+        finally:
+            reader.close()
+            server.shutdown()
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -1731,6 +1793,7 @@ if __name__ == "__main__":
     test_browser_reader_decides_from_the_visible_buy_button_on_real_pages()
     test_browser_stores_are_read_by_the_browser_and_the_rest_over_http()
     test_the_browser_starts_only_when_enabled_and_failure_is_harmless()
+    test_the_real_browser_reads_real_pages()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()

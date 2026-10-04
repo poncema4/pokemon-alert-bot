@@ -44,7 +44,13 @@ jobs:
           cache: "pip"
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Install the browser for the real-browser tests
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
       - name: Run deterministic tests
+        env:
+          POKEPING_REQUIRE_BROWSER: "1"
         run: python -u tests/test_accuracy.py
       - uses: actions/setup-node@v4
         with:
