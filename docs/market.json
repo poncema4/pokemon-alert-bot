@@ -21,7 +21,7 @@
     "listings": 197,
     "name": "Destined Rivals Elite Trainer Box",
     "product_id": 624676,
-    "updated_at": "2026-10-04T21:03:12.551610+00:00"
+    "updated_at": "2026-10-04T21:18:01.963603+00:00"
   },
   "watch:30th-celebration": {
     "market": 148.2,
@@ -264,5 +264,21 @@
     "updated_at": "2026-10-04T21:03:19.414305+00:00",
     "label": "30th Celebration UPC (Night, Umbreon)",
     "msrp": 179.99
+  },
+  "auto:pitch black elite trainer box": {
+    "market": 75.89,
+    "low": 25.0,
+    "listings": 212,
+    "name": "Pitch Black Elite Trainer Box",
+    "product_id": 692947,
+    "updated_at": "2026-10-04T21:18:07.256670+00:00"
+  },
+  "auto:30th celebration elite trainer box": {
+    "market": 146.76,
+    "low": 3.5,
+    "listings": 320,
+    "name": "30th Celebration Elite Trainer Box",
+    "product_id": 704143,
+    "updated_at": "2026-10-04T21:18:13.333338+00:00"
   }
 }
