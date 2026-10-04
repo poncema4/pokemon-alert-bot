@@ -176,3 +176,20 @@ def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, 
         "market_url": f"https://www.tcgplayer.com/product/{market['product_id']}" if market else "",
         "verdict": verdict(price, msrp, market["market"] if market else None),
     }
+
+
+def refresh_watchlist(config, cache, fetch=None, now=None):
+    """Cache the live TCGplayer market price of every watched Elite Trainer Box under "watch:<id>". Returns how many refreshed."""
+    now = now or datetime.now(timezone.utc)
+    refreshed = 0
+    for item in config.get("watchlist", []):
+        include = [w.lower() for w in item["include"]] + ["elite trainer box"]
+        exclude = [w for w in DEFAULT_EXCLUDE] + [w.lower() for w in item.get("exclude", [])]
+        try:
+            found = lookup(item["query"], include, exclude, fetch, now)
+        except Exception:
+            continue
+        if found:
+            cache[f"watch:{item['id']}"] = {**found, "label": item["label"], "msrp": item.get("msrp")}
+            refreshed += 1
+    return refreshed

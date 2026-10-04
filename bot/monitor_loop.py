@@ -26,7 +26,7 @@ DISCOVER_EVERY = int(os.environ.get("MONITOR_DISCOVER_EVERY", "10"))
 COMMIT_EVERY = float(os.environ.get("MONITOR_COMMIT_EVERY", "300"))
 PRICE_EVERY = int(os.environ.get("MONITOR_PRICE_EVERY", "20"))  # cycles between 30th price refreshes (about 20 minutes)
 MARKET_EVERY = int(os.environ.get("MONITOR_MARKET_EVERY", "10"))  # cycles between TCGplayer market refreshes for tracked listings
-TRACKED = ("data/state.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json", "docs/market.json")
+TRACKED = ("data/state.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json", "docs/market.json", "docs/coverage.json")
 
 
 def signature():
@@ -40,7 +40,8 @@ def signature():
     health = {r: {f: v for f, v in e.items() if f != "last_run"} for r, e in load("docs/health.json").items()}
     prices = {k: v for k, v in load("docs/30th_prices.json").items() if k not in ("checked_at",)}
     market = {k: {f: v for f, v in e.items() if f != "updated_at"} for k, e in load("docs/market.json").items()}
-    return json.dumps([state, load("docs/alerts.json"), health, prices, market], sort_keys=True), json.dumps(load("docs/alerts.json"), sort_keys=True)
+    coverage = {k: v for k, v in load("docs/coverage.json").items() if k != "updated_at"}
+    return json.dumps([state, load("docs/alerts.json"), health, prices, market, coverage], sort_keys=True), json.dumps(load("docs/alerts.json"), sort_keys=True)
 
 
 def run_cycle(number):
@@ -59,6 +60,11 @@ def run_cycle(number):
         except Exception as exc:  # the advisor is a nicety: it must never stop stock checks
             print(f"market refresh failed: {exc}")
     monitor.main(discover=number % DISCOVER_EVERY == 0)
+    try:
+        import coverage
+        coverage.main()
+    except Exception as exc:  # the board is informational and must never stop stock checks
+        print(f"coverage board failed: {exc}")
     refresh_live_hits.main()
     notify_new_listings.main()
 
@@ -71,9 +77,9 @@ def refresh_market():
     state = monitor.load_json(monitor.STATE_FILE, {})
     cache = monitor.load_json(monitor.MARKET_FILE, {})
     items = [(entry.get("title", ""), key.split("::", 1)[1]) for key, entry in state.items() if isinstance(entry, dict) and "::" in key and entry.get("last_ok")]
-    refreshed = advisor.refresh_cache(config, cache, items)
+    refreshed = advisor.refresh_cache(config, cache, items) + advisor.refresh_watchlist(config, cache)
     monitor.save_json(monitor.MARKET_FILE, cache)
-    print(f"market prices refreshed: {refreshed} of {len(items)} tracked listings")
+    print(f"market prices refreshed: {refreshed} (tracked listings and watched ETBs)")
 
 
 def commit_and_push():

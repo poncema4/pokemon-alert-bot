@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PokePing · ETBs</title>
+  <meta name="description" content="Every watched Pokémon Elite Trainer Box against every retailer: in stock, out of stock, can't read, or not tracked, with live TCGplayer market prices.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/etbs.css">
+</head>
+<body class="page">
+  <header class="topbar">
+    <a class="brand" href="index.html"><img src="favicon.svg" alt="" width="28" height="28"><span>PokePing</span></a>
+    <div class="lamps" id="lamps" aria-label="Which retailers the bot can currently read"></div>
+    <nav class="nav" aria-label="Pages">
+      <a href="index.html">Map</a>
+      <a href="etbs.html" aria-current="page">ETBs</a>
+      <a href="route.html">Route</a>
+      <a href="30th.html">30th guide</a>
+    </nav>
+  </header>
+  <main class="content">
+    <section class="intro">
+      <h1>ETB board</h1>
+      <p>Each watched Elite Trainer Box at each store. <b class="k-in">In stock</b> shows the price and links to the product. <b class="k-out">Out</b> means the bot read the page and it is not in stock. <b class="k-cant">Can't read</b> means the store blocks the bot, so it is not "out of stock", it is unknown. <b class="k-none">Not tracked</b> means the bot has no listing for it there yet.</p>
+      <p class="muted" id="updated"></p>
+    </section>
+    <section class="board" id="board" aria-live="polite"><div class="empty">Loading the board…</div></section>
+  </main>
+<script src="js/common.js"></script>
+<script src="js/lamps.js"></script>
+<script>
+(function () {
+  const C = window.PokeCommon;
+  const COLS = ["gamestop", "walmart", "bestbuy", "target", "pokemoncenter"];
+  function cell(c) {
+    if (c.state === "in_stock") return '<a class="pill in" target="_blank" rel="noopener" href="' + C.safeUrl(c.url) + '">In stock' + (c.price ? " · $" + Number(c.price).toFixed(2) : "") + "</a>";
+    if (c.state === "out") return '<span class="pill out">Out' + (c.price ? " · $" + Number(c.price).toFixed(2) : "") + "</span>";
+    if (c.state === "unreadable") return '<span class="pill cant" title="' + C.escapeHtml(c.reason || "The bot cannot read this listing") + '">Can\'t read</span>';
+    return '<span class="pill none">Not tracked</span>';
+  }
+  function row(r) {
+    const premium = r.market && r.msrp ? Math.round((r.market / r.msrp - 1) * 100) : null;
+    const market = r.market ? '<a class="market" target="_blank" rel="noopener" href="' + C.safeUrl(r.market_url) + '">$' + Number(r.market).toFixed(2) + "</a><small>" + (premium === null ? "" : "TCGplayer · " + (premium >= 0 ? "+" : "") + premium + "% vs retail") + "</small>" : '<span class="muted">no price found</span>';
+    return '<article class="etb"><div class="head"><h2>' + C.escapeHtml(r.label) + "</h2><div class=\"price\">" + market + "</div></div><div class=\"cells\">"
+      + COLS.map((k) => '<div class="c"><span class="who">' + C.escapeHtml(C.LABELS[k]) + "</span>" + cell(r.retailers[k] || { state: "not_tracked" }) + "</div>").join("") + "</div></article>";
+  }
+  async function load() {
+    const board = document.getElementById("board");
+    try {
+      const data = await (await fetch("coverage.json?ts=" + Date.now())).json();
+      const sorted = data.rows.slice().sort((a, b) => COLS.filter((k) => b.retailers[k] && b.retailers[k].state === "in_stock").length - COLS.filter((k) => a.retailers[k] && a.retailers[k].state === "in_stock").length);
+      board.innerHTML = sorted.map(row).join("");
+      document.getElementById("updated").textContent = "Board updated " + C.ago(data.updated_at, Date.now()) + ". Prices are live TCGplayer market prices.";
+    } catch (e) {
+      board.innerHTML = '<div class="empty">The board is not available yet. It appears after the first full check.</div>';
+    }
+  }
+  load();
+  setInterval(load, 30000);
+})();
+</script>
+</body>
+</html>

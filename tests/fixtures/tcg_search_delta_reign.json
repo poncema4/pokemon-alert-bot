@@ -1,0 +1,81 @@
+{
+ "results": [
+  {
+   "totalResults": 217,
+   "results": [
+    {
+     "productId": 712102.0,
+     "productName": "Delta Reign Elite Trainer Box",
+     "marketPrice": 133.34,
+     "lowestPrice": 130.17,
+     "totalListings": 28.0,
+     "setName": "ME06: Delta Reign",
+     "productTypeName": null
+    },
+    {
+     "productId": 712103.0,
+     "productName": "Delta Reign Elite Trainer Box Case",
+     "marketPrice": 1262.9,
+     "lowestPrice": 1156.99,
+     "totalListings": 14.0,
+     "setName": "ME06: Delta Reign",
+     "productTypeName": null
+    },
+    {
+     "productId": 712104.0,
+     "productName": "Delta Reign Pokemon Center Elite Trainer Box (Exclusive)",
+     "marketPrice": 531.63,
+     "lowestPrice": 490.0,
+     "totalListings": 4.0,
+     "setName": "ME06: Delta Reign",
+     "productTypeName": null
+    },
+    {
+     "productId": 712105.0,
+     "productName": "Delta Reign Pokemon Center Elite Trainer Box Case (Exclusive)",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "ME06: Delta Reign",
+     "productTypeName": null
+    },
+    {
+     "productId": 236263.0,
+     "productName": "Chilling Reign Elite Trainer Box Case",
+     "marketPrice": null,
+     "lowestPrice": 1999.0,
+     "totalListings": 4.0,
+     "setName": "SWSH06: Chilling Reign",
+     "productTypeName": null
+    },
+    {
+     "productId": 657837.0,
+     "productName": "Chilling Reign Pokemon Center Elite Trainer Box Case (Exclusive)",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "SWSH06: Chilling Reign",
+     "productTypeName": null
+    },
+    {
+     "productId": 236261.0,
+     "productName": "Chilling Reign Elite Trainer Box [Shadow Rider Calyrex]",
+     "marketPrice": 152.04,
+     "lowestPrice": 136.99,
+     "totalListings": 23.0,
+     "setName": "SWSH06: Chilling Reign",
+     "productTypeName": null
+    },
+    {
+     "productId": 236260.0,
+     "productName": "Chilling Reign Elite Trainer Box [Ice Rider Calyrex]",
+     "marketPrice": 140.92,
+     "lowestPrice": 140.0,
+     "totalListings": 11.0,
+     "setName": "SWSH06: Chilling Reign",
+     "productTypeName": null
+    }
+   ]
+  }
+ ]
+}

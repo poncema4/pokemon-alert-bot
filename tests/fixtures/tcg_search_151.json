@@ -1,0 +1,81 @@
+{
+ "results": [
+  {
+   "totalResults": 213,
+   "results": [
+    {
+     "productId": 503313.0,
+     "productName": "151 Elite Trainer Box",
+     "marketPrice": 493.91,
+     "lowestPrice": 499.0,
+     "totalListings": 64.0,
+     "setName": "SV: Scarlet & Violet 151",
+     "productTypeName": null
+    },
+    {
+     "productId": 506640.0,
+     "productName": "151 Elite Trainer Box Case",
+     "marketPrice": 6183.33,
+     "lowestPrice": 5979.0,
+     "totalListings": 7.0,
+     "setName": "SV: Scarlet & Violet 151",
+     "productTypeName": null
+    },
+    {
+     "productId": 528030.0,
+     "productName": "151 Pokemon Center Elite Trainer Box (Exclusive) Case",
+     "marketPrice": 5800.0,
+     "lowestPrice": 5292.77,
+     "totalListings": 17.0,
+     "setName": "SV: Scarlet & Violet 151",
+     "productTypeName": null
+    },
+    {
+     "productId": 501999.0,
+     "productName": "151 Pokemon Center Elite Trainer Box (Exclusive)",
+     "marketPrice": 1253.26,
+     "lowestPrice": 950.0,
+     "totalListings": 54.0,
+     "setName": "SV: Scarlet & Violet 151",
+     "productTypeName": null
+    },
+    {
+     "productId": 242811.0,
+     "productName": "Celebrations Elite Trainer Box",
+     "marketPrice": 356.56,
+     "lowestPrice": 352.0,
+     "totalListings": 85.0,
+     "setName": "Celebrations",
+     "productTypeName": null
+    },
+    {
+     "productId": 97762.0,
+     "productName": "Elite Trainer Box [Groudon]",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "XY - Primal Clash",
+     "productTypeName": null
+    },
+    {
+     "productId": 97763.0,
+     "productName": "Elite Trainer Box [Kyogre]",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "XY - Primal Clash",
+     "productTypeName": null
+    },
+    {
+     "productId": 684450.0,
+     "productName": "Chaos Rising Elite Trainer Box",
+     "marketPrice": 69.63,
+     "lowestPrice": 50.0,
+     "totalListings": 349.0,
+     "setName": "ME04: Chaos Rising",
+     "productTypeName": null
+    }
+   ]
+  }
+ ]
+}

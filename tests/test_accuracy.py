@@ -14,6 +14,7 @@ from datetime import timedelta
 import monitor
 import monitor_loop
 import advisor
+import coverage
 import notify
 import notify_new_listings
 import refresh_live_hits
@@ -102,7 +103,7 @@ def _page_html(name):
     return (ROOT / "docs" / name).read_text(encoding="utf-8")
 
 
-PAGES = {"index.html": ("PokePing · Map", "Map"), "route.html": ("PokePing · Route", "Route"), "30th.html": ("PokePing · 30th guide", "30th guide")}
+PAGES = {"index.html": ("PokePing · Map", "Map"), "etbs.html": ("PokePing · ETBs", "ETBs"), "route.html": ("PokePing · Route", "Route"), "30th.html": ("PokePing · 30th guide", "30th guide")}
 
 
 def test_pages_share_one_shell_and_have_no_broken_local_links():
@@ -450,7 +451,9 @@ def test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure():
     import notify_new_listings as nn
     import refresh_live_hits as rl
     order = []
-    real = (monitor.main, rl.main, nn.main, prices_mod.main)
+    real = (monitor.main, rl.main, nn.main, prices_mod.main, coverage.main, monitor_loop.refresh_market)
+    coverage.main = lambda: None
+    monitor_loop.refresh_market = lambda: None
     monitor.main = lambda discover=True: order.append(("stock", discover))
     rl.main = lambda: order.append("hits")
     nn.main = lambda: order.append("new")
@@ -473,7 +476,7 @@ def test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure():
         monitor_loop.run_cycle(monitor_loop.PRICE_EVERY)
         assert order == ["prices", ("stock", monitor_loop.PRICE_EVERY % monitor_loop.DISCOVER_EVERY == 0), "hits", "new"], "a failing price refresh must not stop the stock checks"
     finally:
-        monitor.main, rl.main, nn.main, prices_mod.main = real
+        monitor.main, rl.main, nn.main, prices_mod.main, coverage.main, monitor_loop.refresh_market = real
 
 
 def test_loop_commits_on_meaningful_change_only():
@@ -745,7 +748,8 @@ def test_price_and_msrp_rules():
     assert monitor.extract_price(_page("gamestop_pitch_black_etb_available.html")) == 84.99
     assert monitor.extract_price("<html>no price</html>") is None
     assert monitor.msrp_for(config, GS_30TH) == 49.99
-    assert monitor.msrp_for(config, "https://www.target.com/p/-/pokemon-booster-bundle/A-1") == 26.94
+    assert monitor.msrp_for(config, "https://www.target.com/p/-/pokemon-booster-bundle/A-1") is None, "no documented retail price, so none is claimed"
+    assert monitor.msrp_for(config, "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html") is None, "other sets' retail prices are not guessed"
     assert monitor.msrp_for(config, "https://www.bestbuy.com/product/some-plush/1") is None, "unknown products get no price rule"
 
 
@@ -770,7 +774,7 @@ def test_main_gamestop_trap_never_alerts_but_a_real_listing_does_at_any_price():
         state = json.loads((tmp / "state.json").read_text())
         entry = state[f"gamestop::{GS_PITCH}"]
         assert len(sent) == 1 and sent[0]["signal"] == "page" and "Verified" in notify.stock_embed(sent[0])["embeds"][0]["fields"][3]["value"], sent
-        assert entry["in_stock"] is True and entry["price"] == 84.99 and entry["msrp"] == 49.99
+        assert entry["in_stock"] is True and entry["price"] == 84.99 and entry["msrp"] is None
         assert sent[0]["market"]["market"] == 75.58 and sent[0]["verdict"]["label"] == "ABOVE MARKET", "the alert carries the live TCGplayer comparison"
         assert "pitch-black-etb" in json.loads((tmp / "market.json").read_text()), "and the price is cached for next time"
         _, sent = _run_main(tmp, _gs_config(GS_PITCH), state, {"gamestop.com": lambda u: _Resp(200, u, _page("gamestop_pitch_black_etb_available.html"))})
@@ -1150,6 +1154,138 @@ def test_monitor_tracks_when_a_stay_in_stock_began():
         assert json.loads((tmp / "state.json").read_text())[url_key]["in_stock_since"] == "2026-09-01T00:00:00+00:00"
 
 
+WATCH = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))["watchlist"]
+
+
+def _watch(item_id):
+    return next(w for w in WATCH if w["id"] == item_id)
+
+
+def test_the_watchlist_covers_the_etbs_marco_named():
+    labels = {w["label"] for w in WATCH}
+    for named in ("30th Celebration", "Delta Reign", "Pitch Black", "Chaos Rising", "Prismatic Evolutions", "Mega Evolution", "Phantasmal Flames", "Ascended Heroes", "Perfect Order", "Destined Rivals"):
+        assert named in labels, f"{named} is missing from the watchlist"
+    assert len({w["id"] for w in WATCH}) == len(WATCH)
+    assert {w["id"]: w["msrp"] for w in WATCH if w["msrp"]} == {"30th-celebration": 49.99}, "a retail price is only stated where it is documented; never a guess"
+    keywords = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))["keywords"]
+    for w in WATCH:
+        assert f"pokemon {w['label'].lower()} elite trainer box" in keywords, f"discovery does not search for {w['label']}"
+
+
+def test_every_watched_etb_a_store_can_be_read_for_has_a_seed_url():
+    cfg = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
+    gamestop = cfg["seed_urls"]["gamestop"]
+    assert len(gamestop) == len(set(gamestop)), "no duplicate seeds"
+    for w in WATCH:
+        if w["id"] == "151":
+            continue  # GameStop does not list a 151 ETB
+        mine = [u for u in gamestop if coverage.matches(w, "", u)]
+        assert mine, f"no GameStop seed for the {w['label']} Elite Trainer Box"
+        assert all(monitor.retailer_url_is_valid("gamestop", u) for u in mine)
+    assert not [u for u in gamestop if coverage.matches(_watch("mega-evolution"), "", u) and "mega-evolution-elite-trainer-box" not in u], "the base-set seed must be the base set only"
+
+
+def test_watchlist_matching_is_by_whole_word_and_regular_boxes_only():
+    m = coverage.matches
+    assert m(_watch("pitch-black"), "Pokemon Trading Card Game: Pitch Black Elite Trainer Box | GameStop", "https://www.gamestop.com/x/445744.html")
+    assert m(_watch("30th-celebration"), "Pokemon TCG 30th Celebration Elite Trainer Box ETB - Walmart.com", "https://www.walmart.com/ip/20754418655")
+    assert m(_watch("delta-reign"), "Pokémon TCG: Mega Evolution Delta Reign ETB", "https://www.target.com/p/-/A-1")
+    assert not m(_watch("pitch-black"), "Pitch Black Pokemon Center Elite Trainer Box", "https://x/1"), "the Pokémon Center box is a different product"
+    assert not m(_watch("pitch-black"), "Pitch Black Elite Trainer Box Case", "https://x/1") and not m(_watch("pitch-black"), "Pitch Black Booster Bundle", "https://x/1"), "cases and other products are not the ETB"
+    assert m(_watch("mega-evolution"), "Mega Evolution Elite Trainer Box [Mega Lucario]", "https://x/1")
+    assert not m(_watch("mega-evolution"), "Mega Evolution Pitch Black Elite Trainer Box", "https://x/1"), "the base set must not swallow the later sets"
+    assert m(_watch("151"), "Pokemon Scarlet & Violet 151 Elite Trainer Box", "https://x/1")
+    assert not m(_watch("151"), "Pokemon Elite Trainer Box", "https://www.target.com/p/-/A-1011514"), "151 inside a product id is not the 151 set"
+    assert not m(_watch("pitch-black"), "Pitch Black Elite Trainer Box Exclusive", "https://x/1")
+
+
+def _entry(title, in_stock, price=None, reason=None, since=None):
+    return {"pokemon": True, "title": title, "in_stock": in_stock, "price": price, "reason": reason, "in_stock_since": since}
+
+
+def test_coverage_cells_never_confuse_unreadable_with_out_of_stock():
+    state = {
+        "schema_version": 4,
+        "gamestop::https://www.gamestop.com/x/pb.html": _entry("Pitch Black Elite Trainer Box | GameStop", True, 84.99, since="2026-10-04T16:00:00+00:00"),
+        "gamestop::https://www.gamestop.com/x/30.html": _entry("30th Celebration Elite Trainer Box | GameStop", False, 99.99),
+        "target::https://www.target.com/p/-/A-1": _entry("Pitch Black Elite Trainer Box : Target", None, reason="cart_disabled"),
+        "walmart::https://www.walmart.com/ip/1": _entry("Pitch Black Elite Trainer Box - Walmart.com", False, 78.99),
+        "walmart::https://www.walmart.com/ip/2": _entry("Pitch Black Elite Trainer Box - Walmart Business Supplies", True, 114.99),
+    }
+    market = {"watch:pitch-black": {"market": 75.58, "updated_at": "2026-10-04T16:00:00+00:00", "product_id": 692947}}
+    out = coverage.build_coverage(state, [_watch("pitch-black"), _watch("30th-celebration"), _watch("delta-reign")], market, now=datetime(2026, 10, 4, 16, 5, tzinfo=timezone.utc))
+    rows = {r["id"]: r for r in out["rows"]}
+    pb = rows["pitch-black"]
+    assert pb["market"] == 75.58 and pb["market_url"].endswith("/692947") and pb["msrp"] is None
+    assert pb["retailers"]["gamestop"] == {"state": "in_stock", "price": 84.99, "url": "https://www.gamestop.com/x/pb.html", "since": "2026-10-04T16:00:00+00:00"}
+    assert pb["retailers"]["target"]["state"] == "unreadable" and pb["retailers"]["target"]["reason"] == "cart_disabled"
+    assert pb["retailers"]["walmart"]["state"] == "in_stock" and pb["retailers"]["walmart"]["price"] == 114.99, "one in-stock listing wins over an out-of-stock one"
+    assert pb["retailers"]["bestbuy"]["state"] == "not_tracked"
+    assert pb["retailers"]["pokemoncenter"]["state"] == "unreadable", "Pokémon Center cannot be read, so it is never shown as out of stock or not tracked"
+    cheaper = dict(state, **{"walmart::https://www.walmart.com/ip/3": _entry("Pitch Black Elite Trainer Box - Walmart.com", True, 79.99), "walmart::https://www.walmart.com/ip/4": _entry("Pitch Black Elite Trainer Box - Walmart.com", True, 140.00)})
+    wm = {r["id"]: r for r in coverage.build_coverage(cheaper, [_watch("pitch-black")], market)["rows"]}["pitch-black"]["retailers"]["walmart"]
+    assert wm["state"] == "in_stock" and wm["price"] == 79.99 and wm["url"].endswith("/ip/3"), "with several in-stock listings the lowest price is shown"
+    assert rows["30th-celebration"]["msrp"] == 49.99
+    assert rows["30th-celebration"]["retailers"]["gamestop"]["state"] == "out" and rows["30th-celebration"]["retailers"]["gamestop"]["price"] == 99.99
+    assert rows["delta-reign"]["retailers"]["gamestop"]["state"] == "not_tracked" and rows["delta-reign"]["market"] is None
+
+
+def test_watchlist_market_prices_come_from_the_right_tcgplayer_product():
+    def fake(query):
+        q = query.lower()
+        for key, name in (("delta reign", "tcg_search_delta_reign.json"), ("chaos rising", "tcg_search_chaos_rising.json"), ("pitch black", "tcg_search_pitch_black.json"), ("30th celebration", "tcg_search_30th_etb.json"), ("destined rivals", "tcg_search_destined.json"), ("phantasmal", "tcg_search_phantasmal.json"), ("151", "tcg_search_151.json")):
+            if key in q:
+                return _fixture(name)
+        return {"results": [{"totalResults": 0, "results": []}]}
+
+    def worst_first(query):
+        """The same real responses, but with the Case and Pokémon Center boxes ahead of the regular ETB."""
+        payload = fake(query)
+        rows = payload["results"][0]["results"]
+        bad = [r for r in rows if "Case" in r["productName"] or "Pokemon Center" in r["productName"]]
+        good = [r for r in rows if r not in bad]
+        return {"results": [{"totalResults": len(rows), "results": bad + good}]}
+
+    cache = {}
+    refreshed = advisor.refresh_watchlist({"watchlist": WATCH}, cache, fetch=worst_first, now=datetime(2026, 10, 4, 16, 0, tzinfo=timezone.utc))
+    assert refreshed == 7, refreshed
+    assert cache["watch:delta-reign"]["market"] == 133.34 and cache["watch:delta-reign"]["name"] == "Delta Reign Elite Trainer Box", "not the Pokémon Center box ($531)"
+    assert cache["watch:chaos-rising"]["market"] == 69.63 and cache["watch:pitch-black"]["market"] == 75.58
+    assert cache["watch:30th-celebration"]["market"] == 156.92 and cache["watch:151"]["name"] == "151 Elite Trainer Box"
+    assert cache["watch:delta-reign"]["label"] == "Delta Reign" and cache["watch:delta-reign"]["msrp"] is None
+    assert "watch:perfect-order" not in cache, "no match, no price (never a guess)"
+
+    def boom(q):
+        raise RuntimeError("down")
+    assert advisor.refresh_watchlist({"watchlist": WATCH}, {}, fetch=boom) == 0, "a TCGplayer outage refreshes nothing and never raises"
+
+
+def test_cycle_writes_the_coverage_board_and_survives_its_failure():
+    import tempfile
+    import notify_new_listings as nn
+    import refresh_live_hits as rl
+    calls = []
+    real = (monitor.main, rl.main, nn.main, coverage.main, prices_mod.main, monitor_loop.refresh_market)
+    monitor.main = lambda discover=True: calls.append("stock")
+    rl.main = lambda: calls.append("hits")
+    nn.main = lambda: calls.append("new")
+    prices_mod.main = lambda: None
+    monitor_loop.refresh_market = lambda: None
+    coverage.main = lambda: calls.append("coverage")
+    try:
+        monitor_loop.run_cycle(1)
+        assert calls == ["stock", "coverage", "hits", "new"], calls
+        calls.clear()
+
+        def boom():
+            raise RuntimeError("board broke")
+        coverage.main = boom
+        monitor_loop.run_cycle(1)
+        assert calls == ["stock", "hits", "new"], "a broken board must not stop stock checks"
+    finally:
+        monitor.main, rl.main, nn.main, coverage.main, prices_mod.main, monitor_loop.refresh_market = real
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -1201,6 +1337,12 @@ if __name__ == "__main__":
     test_new_listing_burst_is_capped_with_one_summary()
     test_a_live_hit_clears_fifteen_minutes_after_it_came_into_stock()
     test_monitor_tracks_when_a_stay_in_stock_began()
+    test_the_watchlist_covers_the_etbs_marco_named()
+    test_every_watched_etb_a_store_can_be_read_for_has_a_seed_url()
+    test_watchlist_matching_is_by_whole_word_and_regular_boxes_only()
+    test_coverage_cells_never_confuse_unreadable_with_out_of_stock()
+    test_watchlist_market_prices_come_from_the_right_tcgplayer_product()
+    test_cycle_writes_the_coverage_board_and_survives_its_failure()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()
