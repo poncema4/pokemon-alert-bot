@@ -114,4 +114,4 @@ function installTrigger() {
   ScriptApp.newTrigger("checkRestockEmails").timeBased().everyMinutes(1).create();
 }
 
-if (typeof module !== "undefined") module.exports = { retailerOf, firstLink, plain, buildPayload, clip, RETAILERS };
+if (typeof module !== "undefined") module.exports = { retailerOf, firstLink, plain, buildPayload, clip, RETAILERS, checkRestockEmails, sendTestToDiscord, installTrigger };

@@ -64,4 +64,72 @@ assert.strictEqual(F.firstLink("go to https://www.walmart.com/ip/1."), "https://
 const noLink = F.buildPayload(email({ plainBody: "It is back in stock, open the app." }), NOW);
 assert.ok(noLink.embeds[0].description.includes("no link found"), "an email with no link still alerts");
 
+// ---- the Apps Script glue (what talks to Gmail and Discord), run against mocks that behave like them ----
+const HOOK = "https://discord.com/api/webhooks/123/abc";
+function world({ props = { DISCORD_WEBHOOK_URL: HOOK }, label = "present", status = 204, messages = [] } = {}) {
+  const w = { posts: [], read: [], triggers: [], deleted: [], labelAsked: [] };
+  const mk = (m, i) => ({ isUnread: () => m.unread !== false, getFrom: () => m.from, getSubject: () => m.subject, getPlainBody: () => m.body, getDate: () => new Date(m.when || Date.now() - 1000), markRead: () => w.read.push(i) });
+  global.PropertiesService = { getScriptProperties: () => ({ getProperty: (k) => props[k] }) };
+  global.GmailApp = { getUserLabelByName: (name) => { w.labelAsked.push(name); return label === "present" ? { getThreads: () => [{ getMessages: () => messages.map(mk) }] } : null; } };
+  global.UrlFetchApp = { fetch: (url, opts) => { w.posts.push({ url, opts, body: JSON.parse(opts.payload) }); return { getResponseCode: () => status }; } };
+  global.Logger = { log: () => {} };
+  global.ScriptApp = { getProjectTriggers: () => [{ getHandlerFunction: () => "checkRestockEmails" }, { getHandlerFunction: () => "other" }], deleteTrigger: (t) => w.deleted.push(t.getHandlerFunction()),
+    newTrigger: (fn) => ({ timeBased: () => ({ everyMinutes: (n) => ({ create: () => w.triggers.push({ fn, minutes: n }) }) }) }) };
+  return w;
+}
+const restock = { from: "Target <no-reply@e.target.com>", subject: "Your item is back in stock", body: "Open https://www.target.com/p/-/A-1" };
+const marketing = { from: "Target <no-reply@e.target.com>", subject: "Weekend deals on toys", body: "Shop https://www.target.com/toys" };
+const stranger = { from: "x@example.com", subject: "back in stock", body: "https://example.com" };
+
+let w = world({ messages: [restock] });
+F.checkRestockEmails();
+assert.strictEqual(w.posts.length, 1, "a store restock email is posted once");
+assert.strictEqual(w.posts[0].url, HOOK, "to the webhook from the script property");
+assert.strictEqual(w.posts[0].opts.method, "post");
+assert.strictEqual(w.posts[0].opts.contentType, "application/json");
+assert.strictEqual(w.posts[0].body.content, "@everyone");
+assert.deepStrictEqual(w.read, [0], "and then marked read so it is never sent twice");
+assert.deepStrictEqual(w.labelAsked, ["PokePing"], "it reads the PokePing label");
+
+w = world({ messages: [{ ...restock, unread: false }] });
+F.checkRestockEmails();
+assert.strictEqual(w.posts.length, 0, "an email already read is not forwarded");
+
+w = world({ messages: [marketing, stranger] });
+F.checkRestockEmails();
+assert.strictEqual(w.posts.length, 0, "marketing mail and other senders are not forwarded");
+assert.deepStrictEqual(w.read, [0, 1], "but they are marked read so they are not looked at again");
+
+w = world({ messages: [restock], status: 500 });
+F.checkRestockEmails();
+assert.strictEqual(w.posts.length, 1);
+assert.deepStrictEqual(w.read, [], "when Discord refuses the email stays unread and is retried on the next run");
+w = world({ messages: [restock], status: 429 });
+F.checkRestockEmails();
+assert.deepStrictEqual(w.read, [], "rate limited: retried later");
+
+w = world({ messages: [restock, { ...restock, subject: "Another item is available now" }] });
+F.checkRestockEmails();
+assert.strictEqual(w.posts.length, 2);
+assert.deepStrictEqual(w.read, [0, 1], "each email is posted once");
+
+w = world({ label: "missing", messages: [restock] });
+F.checkRestockEmails();
+assert.strictEqual(w.posts.length, 0, "no PokePing label yet: nothing happens, no error");
+
+assert.throws(() => { world({ props: {}, messages: [restock] }); F.checkRestockEmails(); }, /DISCORD_WEBHOOK_URL/, "a missing webhook is a clear error, not a silent failure");
+
+w = world();
+F.sendTestToDiscord();
+assert.strictEqual(w.posts.length, 1);
+assert.notStrictEqual(w.posts[0].body.content, "@everyone", "the test message never pings");
+assert.deepStrictEqual(w.posts[0].body.allowed_mentions, { parse: [] });
+assert.ok(JSON.stringify(w.posts[0].body).includes("TEST"), "and is clearly labelled TEST");
+assert.throws(() => { world({ props: {} }); F.sendTestToDiscord(); }, /DISCORD_WEBHOOK_URL/);
+
+w = world();
+F.installTrigger();
+assert.deepStrictEqual(w.deleted, ["checkRestockEmails"], "an old trigger of ours is replaced, never duplicated, and other triggers are left alone");
+assert.deepStrictEqual(w.triggers, [{ fn: "checkRestockEmails", minutes: 1 }], "one trigger, every minute");
+
 console.log("gmail forwarder tests passed");
