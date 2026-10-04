@@ -1681,6 +1681,7 @@ def test_the_real_browser_reads_real_pages():
         "wall.html": f"<html><head><title>Target</title></head><body><div id='px-captcha'></div><h1>Quick verification</h1><p>Press &amp; hold to confirm you're a human</p>{filler}<button style='display:none'>Add to cart</button></body></html>",
         "later.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<div id='slot'>loading</div><script>setTimeout(function(){{document.getElementById('slot').innerHTML='<button>Add to cart</button>';}}, 700);</script></body></html>",
         "blank.html": "<html><head></head><body></body></html>",
+        "many.html": "<html><head><title>Heavy store page</title></head><body>" + filler + "".join(f"<button>Filter option {n}</button>" for n in range(600)) + "<div id='slot'></div><script>setTimeout(function(){document.getElementById('slot').innerHTML='<button>Add to cart</button>';}, 400);</script></body></html>",
         "hidden.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<button style='display:none'>Add to cart</button></body></html>",
         "sold.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<button>Sold Out</button><button>Add to cart</button><script>document.querySelectorAll('button')[1].disabled = true;</script></body></html>",
     }
@@ -1711,6 +1712,13 @@ def test_the_real_browser_reads_real_pages():
             assert (got["stock"], got["signal"]) == (True, "browser"), "a buy button that JavaScript adds after load is seen (the Target case)"
             got = check("blank.html")
             assert (got["stock"], got["reason"]) == (None, "blocked"), "a blank page is a block page, never out of stock"
+            import time as _time
+            reader.wait_ms = 9000
+            started = _time.monotonic()
+            got = reader.check(base + "many.html")
+            took = _time.monotonic() - started
+            reader.wait_ms = 1500
+            assert got["stock"] is True and took < 5, f"600 buttons and a late buy button must be read in one quick pass (took {took:.1f}s of a 9 s allowance)"
             got = check("hidden.html")
             assert (got["stock"], got["reason"]) == (None, "no_signal"), "a buy button nobody can see is not stock"
             got = check("sold.html")
@@ -1722,6 +1730,128 @@ def test_the_real_browser_reads_real_pages():
         finally:
             reader.close()
             server.shutdown()
+
+
+class _Clock2:
+    """A fake `time` for monitor: monotonic() only moves when the test (or a slow read) says so."""
+    def __init__(self):
+        self.t = 1000.0
+    def monotonic(self):
+        return self.t
+    def sleep(self, seconds):
+        pass
+
+
+class _SlowBrowser:
+    def __init__(self, clock, seconds, stock=False, reason="ok"):
+        self.clock, self.seconds, self.stock, self.reason, self.calls = clock, seconds, stock, reason, []
+    def check(self, url):
+        self.calls.append(url)
+        self.clock.t += self.seconds
+        return {"stock": None if self.reason != "ok" else self.stock, "title": "Pokemon ETB", "posted_at": None, "http_status": 200, "reason": self.reason, "signal": None, "price": 49.99}
+
+
+def _browser_config(urls):
+    return {"retailers": ["bestbuy"], "keywords": [], "seed_urls": {"bestbuy": urls}, "browser_retailers": ["bestbuy"], "hot_matches": ["30th-celebration"],
+            "browser_hot_every": 4, "browser_slow_every": 20, "cycle_budget_seconds": 75}
+
+
+BB_HOT = "https://www.bestbuy.com/product/pokemon-30th-celebration-elite-trainer-box/JJG1"
+BB_CALM = "https://www.bestbuy.com/product/pokemon-pitch-black-elite-trainer-box/JJG2"
+
+
+def test_browser_stores_are_read_gently():
+    import tempfile
+    clock = _Clock2()
+    real = (monitor.time, monitor.BROWSER, dict(monitor._BACKOFF_UNTIL))
+    monitor.time = clock
+    try:
+        monitor._BACKOFF_UNTIL.clear()
+        monitor.BROWSER = _SlowBrowser(clock, 1)
+        reads = {}
+        for cycle in range(0, 41):
+            before = len(monitor.BROWSER.calls)
+            with tempfile.TemporaryDirectory() as d:
+                _run_main(Path(d), _browser_config([BB_CALM, BB_HOT]), {"schema_version": 4}, {}, cycle=cycle)
+            reads[cycle] = monitor.BROWSER.calls[before:]
+        assert [c for c, urls in reads.items() if BB_HOT in urls] == [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40], "hot Best Buy pages are read about every 2 minutes (every 4th 30 s cycle)"
+        assert [c for c, urls in reads.items() if BB_CALM in urls] == [0, 20, 40], "calm Best Buy pages about every 10 minutes"
+        assert reads[0] == [BB_HOT, BB_CALM], "hot first"
+    finally:
+        monitor.time, monitor.BROWSER = real[0], real[1]
+        monitor._BACKOFF_UNTIL.clear()
+        monitor._BACKOFF_UNTIL.update(real[2])
+
+
+def test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone():
+    import tempfile
+    clock = _Clock2()
+    urls = [f"https://www.bestbuy.com/product/pokemon-30th-celebration-elite-trainer-box-{n}/JJG{n}" for n in range(5)]
+    real = (monitor.time, monitor.BROWSER, dict(monitor._BACKOFF_UNTIL))
+    monitor.time = clock
+    try:
+        monitor._BACKOFF_UNTIL.clear()
+        # Each read takes 40 s and the budget is 75 s: the budget is checked before every read (at 0 s, 40 s, 80 s), so two fit.
+        monitor.BROWSER = _SlowBrowser(clock, 40)
+        with tempfile.TemporaryDirectory() as d:
+            _run_main(Path(d), _browser_config(urls), {"schema_version": 4}, {}, cycle=0)
+        assert len(monitor.BROWSER.calls) == 2, monitor.BROWSER.calls
+        # Two failed reads in a row put the store on a 5 minute back-off; nothing is read until it passes.
+        clock.t = 5000.0
+        monitor.BROWSER = _SlowBrowser(clock, 1, reason="error")
+        with tempfile.TemporaryDirectory() as d:
+            _run_main(Path(d), _browser_config(urls), {"schema_version": 4}, {}, cycle=0)
+        assert len(monitor.BROWSER.calls) == 2, "the second failure triggers the back-off, so the remaining pages are not tried"
+        clock.t += 100
+        monitor.BROWSER = _SlowBrowser(clock, 1)
+        with tempfile.TemporaryDirectory() as d:
+            _run_main(Path(d), _browser_config(urls), {"schema_version": 4}, {}, cycle=0)
+        assert monitor.BROWSER.calls == [], "still backing off after 100 s"
+        clock.t += 300
+        monitor.BROWSER = _SlowBrowser(clock, 1)
+        with tempfile.TemporaryDirectory() as d:
+            _run_main(Path(d), _browser_config(urls), {"schema_version": 4}, {}, cycle=0)
+        assert len(monitor.BROWSER.calls) == 5, "after the back-off the store is read again"
+        # One failure followed by a success resets the count (no back-off).
+        class Flaky(_SlowBrowser):
+            def check(self, url):
+                self.reason = "error" if len(self.calls) == 0 else "ok"
+                return super().check(url)
+        monitor._BACKOFF_UNTIL.clear()
+        monitor.BROWSER = Flaky(clock, 1)
+        with tempfile.TemporaryDirectory() as d:
+            _run_main(Path(d), _browser_config(urls), {"schema_version": 4}, {}, cycle=0)
+        assert len(monitor.BROWSER.calls) == 5 and not monitor._BACKOFF_UNTIL.get("bestbuy"), "an isolated failure never triggers a back-off"
+    finally:
+        monitor.time, monitor.BROWSER = real[0], real[1]
+        monitor._BACKOFF_UNTIL.clear()
+        monitor._BACKOFF_UNTIL.update(real[2])
+
+
+def test_progress_is_saved_after_each_store():
+    import tempfile
+
+    class Stop(BaseException):
+        pass
+
+    gs = "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-pitch-black-elite-trainer-box/1.html"
+    config = {"retailers": ["gamestop", "target"], "keywords": [], "seed_urls": {"gamestop": [gs], "target": ["https://www.target.com/p/-/A-1"]}}
+
+    def respond(u):
+        if "target.com" in u:
+            raise Stop()  # the second store blows up mid-run
+        return _Resp(200, u, "<title>Pokemon ETB</title>Sold out online")
+
+    with tempfile.TemporaryDirectory() as d:
+        try:
+            _run_main(Path(d), config, {"schema_version": 4}, {"gamestop.com": respond, "target.com": respond})
+            raise AssertionError("expected the simulated crash")
+        except Stop:
+            pass
+        state = json.loads((Path(d) / "state.json").read_text())
+        health = json.loads((Path(d) / "health.json").read_text())
+    assert f"gamestop::{gs}" in state and state[f"gamestop::{gs}"]["in_stock"] is False, "GameStop's fresh reading was saved before Target ran"
+    assert health["gamestop"]["readable"] == 1 and "target" not in health
 
 
 if __name__ == "__main__":
@@ -1794,6 +1924,9 @@ if __name__ == "__main__":
     test_browser_stores_are_read_by_the_browser_and_the_rest_over_http()
     test_the_browser_starts_only_when_enabled_and_failure_is_harmless()
     test_the_real_browser_reads_real_pages()
+    test_browser_stores_are_read_gently()
+    test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone()
+    test_progress_is_saved_after_each_store()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()
