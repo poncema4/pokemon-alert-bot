@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json
 import os
-import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -31,14 +30,6 @@ def load(path: Path, default):
         return default
 
 
-def previous_state():
-    try:
-        raw = subprocess.check_output(["git", "show", "HEAD:state.json"], text=True)
-        return json.loads(raw)
-    except Exception:
-        return {}
-
-
 def format_et(value):
     try:
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -50,15 +41,24 @@ def format_et(value):
 
 
 def main():
+    """Announce each newly discovered listing exactly once, and only if its first reading was in stock.
+
+    The "already announced" flag lives in state.json itself (monitor.py writes new_announced=False for a
+    brand-new listing), so it does not depend on git history and survives batched commits.
+    """
     current = load(STATE_FILE, {})
-    previous = previous_state()
     sent = 0
+    changed = False
 
     for key, entry in current.items():
         if key == "schema_version" or not isinstance(entry, dict) or "::" not in key:
             continue
+        if entry.get("new_announced", True):
+            continue
+        entry["new_announced"] = True  # decided now, whatever the outcome: a later restock is a normal stock alert
+        changed = True
         retailer, url = key.split("::", 1)
-        if retailer not in BIG4 or key in previous or entry.get("pokemon") is not True:
+        if retailer not in BIG4 or entry.get("pokemon") is not True:
             continue
         if entry.get("in_stock") is not True:
             continue
@@ -68,7 +68,9 @@ def main():
         title = entry.get("title") or f"{retailer.title()} Pokémon product"
         lines = [
             f"**{title}**",
-            "New Pokémon product listing with verified stock.",
+            "New Pokémon product listing with verified stock."
+            if entry.get("signal") != "text"
+            else "New Pokémon product listing, likely in stock (cart wording only, no structured data). Confirm on the page.",
             f"Detected: {format_et(detected)}",
             "Map: [Open map](https://poncema4.github.io/pokemon-alert-bot/)",
             f"Product: [Open product page]({url})",
@@ -83,6 +85,8 @@ def main():
         )
         sent += 1
 
+    if changed:
+        STATE_FILE.write_text(json.dumps(current, indent=2) + "\n", encoding="utf-8")
     print(f"New verified Big 4 listing alerts sent: {sent}")
 
 

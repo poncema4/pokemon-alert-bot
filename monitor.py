@@ -378,7 +378,25 @@ def record_alert(alerts, retailer, kind, title, url, verified, posted_at, detect
     })
 
 
-def main():
+def known_urls(state, retailer, exclude, now, cap=30):
+    """Previously discovered listings worth re-checking every fast cycle: readable recently, newest first."""
+    rows = []
+    for key, entry in state.items():
+        if not isinstance(entry, dict) or not key.startswith(retailer + "::"):
+            continue
+        url = key.split("::", 1)[1]
+        if url in exclude or not entry.get("last_ok"):
+            continue
+        try:
+            if now - datetime.fromisoformat(entry["last_ok"]) <= timedelta(days=PRUNE_AFTER_DAYS):
+                rows.append((entry["last_ok"], url))
+        except Exception:
+            continue
+    return [url for _, url in sorted(rows, reverse=True)[:cap]]
+
+
+def main(discover=True):
+    """One monitoring pass. discover=False is the fast pass: only seed + known listings, no searches."""
     config = load_json(CONFIG_FILE, {})
     state = clean_state(load_json(STATE_FILE, {}))
     alerts = load_json(ALERTS_FILE, [])
@@ -423,6 +441,9 @@ def main():
             title = result["title"] if is_pokemon(result["title"] + " " + url) else f"{retailer.title()} Pokémon product"
             posted_at = result.get("posted_at")
             kind = None
+            # Listings from before first_seen existed are not "new": never announce them.
+            first_seen = previous.get("first_seen") or (previous.get("last_seen") if previous else now.isoformat())
+            new_announced = previous.get("new_announced", True) if previous else False
 
             if previous and in_stock is True and previous.get("in_stock") is not True and not recently_stock_alerted(previous, now, cooldown):
                 kind = "stock"
@@ -443,7 +464,8 @@ def main():
                 "title": title,
                 "in_stock": in_stock,
                 "posted_at": posted_at,
-                "first_seen": previous.get("first_seen") or now.isoformat(),
+                "first_seen": first_seen,
+                "new_announced": new_announced,
                 "last_seen": now.isoformat(),
                 "last_ok": now.isoformat() if in_stock is not None else previous.get("last_ok"),
                 "last_stock_alert": last_stock_alert,
@@ -462,8 +484,9 @@ def main():
             print(f"  {retailer}: {streak} checks in a row unreadable; skipping discovery and extra checks this run")
         else:
             seen = set(seeds)
-            extra = []
-            for keyword in keywords:
+            extra = known_urls(state, retailer, seen, now)
+            seen.update(extra)
+            for keyword in (keywords if discover else []):
                 print(f"Checking {retailer} / {keyword}")
                 for url in discover_products(http, retailer, keyword, timeout):
                     if retailer_url_is_valid(retailer, url) and url not in seen:

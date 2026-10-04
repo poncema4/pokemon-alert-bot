@@ -12,6 +12,8 @@ if str(ROOT) not in sys.path:
 from datetime import timedelta
 
 import monitor
+import monitor_loop
+import notify_new_listings
 from monitor import classify_response, extract_structured_availability, is_pokemon, recently_stock_alerted, retailer_url_is_valid, should_prune, update_health
 
 
@@ -164,7 +166,7 @@ class _FakeSession:
         return _Resp(404, url, "")
 
 
-def _run_main(tmp, config, state, answers, discovered=()):
+def _run_main(tmp, config, state, answers, discovered=(), discover=True):
     monitor.STATE_FILE, monitor.ALERTS_FILE, monitor.HEALTH_FILE = tmp / "state.json", tmp / "alerts.json", tmp / "health.json"
     monitor.CONFIG_FILE = tmp / "config.json"
     monitor.CONFIG_FILE.write_text(json.dumps(config), encoding="utf-8")
@@ -174,13 +176,13 @@ def _run_main(tmp, config, state, answers, discovered=()):
     real_session, real_alert, real_discover = monitor.requests.Session, monitor.alert, monitor.discover_products
     monitor.requests.Session = lambda: session
     monitor.alert = lambda title, body, ping=False: sent.append((title, body))
-    def discover(http, retailer, keyword, timeout):
+    def fake_discover(http, retailer, keyword, timeout):
         session.discover_calls += 1
         return list(discovered)
     session.discover_calls = 0
-    monitor.discover_products = discover
+    monitor.discover_products = fake_discover
     try:
-        monitor.main()
+        monitor.main(discover=discover)
     finally:
         monitor.requests.Session, monitor.alert, monitor.discover_products = real_session, real_alert, real_discover
     return session, sent
@@ -236,6 +238,134 @@ def test_main_alert_wording_follows_signal_strength():
         assert len(sent) == 1 and expected in sent[0][1], sent
 
 
+class _Clock:
+    """Fake monotonic clock: sleeping advances it, and a cycle can be told to take time."""
+    def __init__(self):
+        self.t = 0.0
+
+    def now(self):
+        return self.t
+
+    def sleep(self, seconds):
+        self.t += seconds
+        assert self.t < 5000, "the loop is not stopping at its runtime"
+
+
+def test_loop_scheduling():
+    clock = _Clock()
+    ran, commits = [], []
+
+    def cycle(n):
+        ran.append(n)
+        clock.t += 5  # each cycle takes 5 s
+        if n == 3:
+            raise RuntimeError("retailer exploded")
+
+    count = monitor_loop.run_loop(cycle=cycle, commit=lambda: commits.append(clock.t) or True, sig=lambda: ("same", "[]"),
+                                  now=clock.now, sleep=clock.sleep, runtime=600, interval=60, commit_every=300)
+    assert count == len(ran) and ran == list(range(count)), "a failing cycle must not stop the watcher"
+    assert 9 <= count <= 10, f"600 s at a 60 s interval should be about 10 cycles, got {count}"
+    assert clock.t <= 600 + 1, "the loop must end inside its runtime so the next watcher can take over"
+    assert len(commits) == 1, "nothing meaningful changed, so only the final commit attempt runs"
+
+
+def test_loop_commits_on_meaningful_change_only():
+    clock = _Clock()
+    commits = []
+    sigs = iter([("a", "[]"), ("a", "[]"), ("b", "[]"), ("b", "[]"), ("c", "[1]"), ("c", "[1]"), ("c", "[1]"), ("c", "[1]")])
+    last = [("a", "[]")]
+
+    def sig():
+        last[0] = next(sigs, last[0])
+        return last[0]
+
+    monitor_loop.run_loop(cycle=lambda n: None, commit=lambda: commits.append(clock.t) or True, sig=sig,
+                          now=clock.now, sleep=clock.sleep, runtime=240, interval=60, commit_every=300)
+    # "b" differs but it is too soon after the last commit; the live-hit list changing ("c") commits at once; then the final attempt.
+    assert len(commits) == 2 and commits[0] < 240, commits
+
+
+def test_signature_ignores_last_seen():
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        (root / "docs").mkdir()
+        write = lambda seen: (root / "state.json").write_text(json.dumps({"target::u": {"in_stock": False, "last_seen": seen}}))
+        (root / "docs/alerts.json").write_text("[]")
+        (root / "docs/health.json").write_text("{}")
+        old = monitor_loop.ROOT
+        monitor_loop.ROOT = root
+        try:
+            write("t1"); first = monitor_loop.signature()
+            write("t2"); assert monitor_loop.signature() == first, "last_seen moving is not a change"
+            (root / "state.json").write_text(json.dumps({"target::u": {"in_stock": True, "last_seen": "t2"}}))
+            assert monitor_loop.signature() != first, "a stock change is a change"
+        finally:
+            monitor_loop.ROOT = old
+
+
+def test_fast_pass_does_not_search_and_rechecks_known_listings():
+    import tempfile
+    seed = "https://www.target.com/p/-/A-1"
+    known = "https://www.target.com/p/-/A-2"
+    stale = "https://www.target.com/p/-/A-3"
+    now = datetime.now(timezone.utc)
+    config = {"retailers": ["target"], "keywords": ["pokemon"], "seed_urls": {"target": [seed]}}
+    entry = lambda ok: {"pokemon": True, "title": "Pokemon ETB", "in_stock": False, "last_seen": now.isoformat(), "last_ok": ok}
+    state = {"schema_version": 4, f"target::{known}": entry(now.isoformat()), f"target::{stale}": entry((now - timedelta(days=30)).isoformat())}
+    sold_out = lambda u: _Resp(200, u, "<title>Pokemon ETB</title>Sold out online")
+    with tempfile.TemporaryDirectory() as d:
+        session, _ = _run_main(Path(d), config, state, {"target.com": sold_out}, discovered=["https://www.target.com/p/-/A-9"], discover=False)
+    assert session.discover_calls == 0, "the fast pass must not run keyword searches"
+    assert session.calls == [seed, known], session.calls
+    with tempfile.TemporaryDirectory() as d:
+        session, _ = _run_main(Path(d), config, state, {"target.com": sold_out}, discovered=["https://www.target.com/p/-/A-9"], discover=True)
+    assert session.discover_calls == 1 and "https://www.target.com/p/-/A-9" in session.calls
+
+
+def test_new_listing_announced_once_and_only_when_in_stock():
+    import tempfile
+    sent = []
+    real_alert = notify_new_listings.alert
+    notify_new_listings.alert = lambda title, body, ping=False: sent.append((title, body))
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-04T12:00:00+00:00"}
+    state = {
+        "schema_version": 4,
+        "target::https://www.target.com/p/-/A-1": {**base, "in_stock": True, "new_announced": False},
+        "target::https://www.target.com/p/-/A-2": {**base, "in_stock": False, "new_announced": False},
+        "target::https://www.target.com/p/-/A-3": {**base, "in_stock": None, "new_announced": False},
+        "target::https://www.target.com/p/-/A-4": {**base, "in_stock": True},  # legacy entry: never new
+        "target::https://www.target.com/p/-/A-5": {**base, "in_stock": True, "new_announced": False, "signal": "text"},
+    }
+    with tempfile.TemporaryDirectory() as d:
+        notify_new_listings.STATE_FILE = Path(d) / "state.json"
+        notify_new_listings.STATE_FILE.write_text(json.dumps(state))
+        try:
+            notify_new_listings.main()
+            after = json.loads(notify_new_listings.STATE_FILE.read_text())
+            notify_new_listings.main()  # a second run must not announce again
+        finally:
+            notify_new_listings.alert = real_alert
+    assert len(sent) == 2, [s[0] for s in sent]
+    assert "A-1" in sent[0][1] and "verified stock" in sent[0][1]
+    assert "A-5" in sent[1][1] and "likely in stock" in sent[1][1]
+    assert all(v.get("new_announced", True) for k, v in after.items() if k != "schema_version"), "every decided listing is marked, in stock or not"
+
+
+def test_main_marks_new_listings_and_leaves_legacy_ones_alone():
+    import tempfile
+    seed, legacy = "https://www.target.com/p/-/A-1", "https://www.target.com/p/-/A-2"
+    config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": [seed, legacy]}}
+    state = {"schema_version": 4, f"target::{legacy}": {"pokemon": True, "title": "Pokemon ETB", "in_stock": True, "last_seen": "2026-10-01T00:00:00+00:00", "last_stock_alert": "2026-10-01T00:00:00+00:00"}}
+    cart = lambda u: _Resp(200, u, "<title>Pokemon ETB</title><button>Add to cart</button>")
+    with tempfile.TemporaryDirectory() as d:
+        _run_main(Path(d), config, state, {"target.com": cart})
+        after = json.loads((Path(d) / "state.json").read_text())
+    assert after[f"target::{seed}"]["new_announced"] is False, "a brand-new listing waits to be announced"
+    assert after[f"target::{legacy}"]["new_announced"] is True, "a pre-existing listing must never be announced as new"
+    assert after[f"target::{legacy}"]["first_seen"] == "2026-10-01T00:00:00+00:00"
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -250,4 +380,10 @@ if __name__ == "__main__":
     test_main_blocked_retailer_is_silent_but_visible()
     test_main_stops_probing_a_wall_but_keeps_reading_the_rest()
     test_main_alert_wording_follows_signal_strength()
+    test_loop_scheduling()
+    test_loop_commits_on_meaningful_change_only()
+    test_signature_ignores_last_seen()
+    test_fast_pass_does_not_search_and_rechecks_known_listings()
+    test_new_listing_announced_once_and_only_when_in_stock()
+    test_main_marks_new_listings_and_leaves_legacy_ones_alone()
     print("accuracy, detection, health, route integrity, and 30th coverage tests passed")

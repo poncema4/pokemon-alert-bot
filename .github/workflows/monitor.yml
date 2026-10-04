@@ -17,7 +17,7 @@ on:
       - "requirements.txt"
       - ".github/workflows/**"
   schedule:
-    - cron: "2/5 * * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch:
     inputs:
       send_test_alert:
@@ -28,10 +28,11 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: pokemon-stock-monitor-${{ github.event_name == 'pull_request' && github.ref || 'main' }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
@@ -48,13 +49,13 @@ jobs:
       - name: Run deterministic tests
         run: python -u tests/test_accuracy.py
       - name: Compile production Python
-        run: python -m py_compile monitor.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py update_30th_prices.py tests/test_accuracy.py
+        run: python -m py_compile monitor.py monitor_loop.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py update_30th_prices.py tests/test_accuracy.py
 
   check-stock:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 62
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
@@ -65,11 +66,12 @@ jobs:
         run: pip install -r requirements.txt
       - name: Normalize missed first-stock alerts
         run: python -u bootstrap_stock_alerts.py
-      - name: Run stock check
+      - name: Watch stock for about 55 minutes (checks every minute)
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_PING: ${{ secrets.DISCORD_PING }}
           SEND_TEST_ALERT: ${{ inputs.send_test_alert }}
+          MONITOR_RUNTIME_SECONDS: "3300"
         run: |
           python --version
           if [ -n "$DISCORD_WEBHOOK_URL" ]; then
@@ -77,18 +79,9 @@ jobs:
           else
             echo "WARNING: DISCORD_WEBHOOK_URL is not configured; alerts will be skipped."
           fi
-          python -u monitor.py
-      - name: Refresh verified live hits for map
-        run: python -u refresh_live_hits.py
-      - name: Alert on newly discovered Big 4 listings
+          python -u monitor_loop.py
+      - name: Hand over to the next watcher
+        if: always()
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          DISCORD_PING: ${{ secrets.DISCORD_PING }}
-        run: python -u notify_new_listings.py
-      - name: Save state and map pings
-        run: |
-          git config user.name "Pokémon Alert Bot"
-          git config user.email "pokemon-alert-bot@users.noreply.github.com"
-          git add state.json docs/alerts.json docs/health.json
-          git diff --quiet --cached || git commit -m "Update stock state [skip ci]"
-          git push
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run monitor.yml --ref main || echo "dispatch failed; the 30-minute cron will restart the watcher"
