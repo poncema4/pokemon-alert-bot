@@ -1,11 +1,11 @@
 {
   "pitch-black-etb": {
-    "market": 75.58,
+    "market": 76.06,
     "low": 25.0,
     "listings": 213,
     "name": "Pitch Black Elite Trainer Box",
     "product_id": 692947,
-    "updated_at": "2026-10-04T16:52:40.516781+00:00"
+    "updated_at": "2026-10-04T17:09:50.955295+00:00"
   },
   "30th-etb": {
     "market": 156.78,
@@ -179,7 +179,7 @@
     "listings": 349,
     "name": "Chaos Rising Elite Trainer Box",
     "product_id": 684450,
-    "updated_at": "2026-10-04T16:52:40.516781+00:00"
+    "updated_at": "2026-10-04T17:17:23.773424+00:00"
   },
   "auto:delta reign elite trainer box": {
     "market": 133.34,
@@ -206,12 +206,12 @@
     "updated_at": "2026-10-04T16:52:40.516781+00:00"
   },
   "auto:perfect order elite trainer box": {
-    "market": 69.87,
-    "low": 1.0,
+    "market": 70.23,
+    "low": 55.99,
     "listings": 234,
     "name": "Perfect Order Elite Trainer Box",
     "product_id": 672401,
-    "updated_at": "2026-10-04T16:52:40.516781+00:00"
+    "updated_at": "2026-10-04T17:17:24.611131+00:00"
   },
   "auto:ascended heroes elite trainer box": {
     "market": 159.96,

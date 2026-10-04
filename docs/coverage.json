@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-04T16:58:02.388272+00:00",
+  "updated_at": "2026-10-04T17:17:23.726407+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -18,9 +18,9 @@
           "reason": null
         },
         "bestbuy": {
-          "state": "unreadable",
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "reason": "error"
+          "state": "out",
+          "price": 284.99,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ"
         },
         "gamestop": {
           "state": "out",
@@ -48,7 +48,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 49.99,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-delta-reign-elite-trainer-box/JJG2TL8QGY"
         },
         "gamestop": {
           "state": "out",
@@ -78,7 +80,10 @@
           "reason": null
         },
         "bestbuy": {
-          "state": "not_tracked"
+          "state": "in_stock",
+          "price": 96.99,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-chaos-rising-elite-trainer-box/JJG2TL34RT",
+          "since": "2026-10-04T17:08:18.694371+00:00"
         },
         "gamestop": {
           "state": "out",
@@ -108,9 +113,10 @@
           "reason": null
         },
         "bestbuy": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 105.99,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45",
-          "reason": "error"
+          "since": "2026-10-04T17:08:18.694371+00:00"
         },
         "gamestop": {
           "state": "in_stock",
@@ -141,7 +147,10 @@
           "reason": null
         },
         "bestbuy": {
-          "state": "not_tracked"
+          "state": "in_stock",
+          "price": 94.99,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-perfect-order-elite-trainer-box/JJG2TL3W86",
+          "since": "2026-10-04T17:08:18.694371+00:00"
         },
         "gamestop": {
           "state": "out",
@@ -324,7 +333,7 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
+          "state": "gone",
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-black-bolt-elite-trainer-box/426102.html",
           "reason": "http_410"
         },
@@ -384,7 +393,7 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
+          "state": "gone",
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-journey-together-elite-trainer-box/420196.html",
           "reason": "http_410"
         },
@@ -438,6 +447,128 @@
         "walmart": {
           "state": "unreadable",
           "url": "https://www.walmart.com/ip/Pokemon-ITM0013380-Trading-Card-Games-Scarlet-Violet-3-5-151-Elite-Trainer-Box/3417089291",
+          "reason": null
+        },
+        "bestbuy": {
+          "state": "not_tracked"
+        },
+        "gamestop": {
+          "state": "not_tracked"
+        },
+        "pokemoncenter": {
+          "state": "unreadable",
+          "reason": "Pok\u00e9mon Center blocks automated visitors"
+        }
+      }
+    },
+    {
+      "id": "30th-upc-day",
+      "label": "30th Celebration UPC (Day, Espeon)",
+      "msrp": 179.99,
+      "market": null,
+      "market_updated_at": null,
+      "market_url": null,
+      "retailers": {
+        "target": {
+          "state": "not_tracked"
+        },
+        "walmart": {
+          "state": "unreadable",
+          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Ultra-Premium-Collection-Day/20703923926",
+          "reason": null
+        },
+        "bestbuy": {
+          "state": "out",
+          "price": 179.99,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
+        },
+        "gamestop": {
+          "state": "out",
+          "price": 399.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html"
+        },
+        "pokemoncenter": {
+          "state": "unreadable",
+          "reason": "Pok\u00e9mon Center blocks automated visitors"
+        }
+      }
+    },
+    {
+      "id": "30th-upc-night",
+      "label": "30th Celebration UPC (Night, Umbreon)",
+      "msrp": 179.99,
+      "market": null,
+      "market_updated_at": null,
+      "market_url": null,
+      "retailers": {
+        "target": {
+          "state": "not_tracked"
+        },
+        "walmart": {
+          "state": "unreadable",
+          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Ultra-Premium-Collection-Day/20703923926",
+          "reason": null
+        },
+        "bestbuy": {
+          "state": "out",
+          "price": 179.99,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
+        },
+        "gamestop": {
+          "state": "out",
+          "price": 399.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html"
+        },
+        "pokemoncenter": {
+          "state": "unreadable",
+          "reason": "Pok\u00e9mon Center blocks automated visitors"
+        }
+      }
+    },
+    {
+      "id": "auto:robot-or-human",
+      "label": "Robot Or Human?",
+      "auto": true,
+      "msrp": null,
+      "market": null,
+      "market_updated_at": null,
+      "market_url": null,
+      "retailers": {
+        "target": {
+          "state": "not_tracked"
+        },
+        "walmart": {
+          "state": "unreadable",
+          "url": "https://www.walmart.com/ip/Pokemon-Scarlet-Violet-3-Obsidian-Flames-Elite-Trainer-Box/3280189864",
+          "reason": null
+        },
+        "bestbuy": {
+          "state": "not_tracked"
+        },
+        "gamestop": {
+          "state": "not_tracked"
+        },
+        "pokemoncenter": {
+          "state": "unreadable",
+          "reason": "Pok\u00e9mon Center blocks automated visitors"
+        }
+      }
+    },
+    {
+      "id": "auto:walmart-product",
+      "label": "Walmart Product",
+      "auto": true,
+      "msrp": null,
+      "market": null,
+      "market_updated_at": null,
+      "market_url": null,
+      "retailers": {
+        "target": {
+          "state": "not_tracked"
+        },
+        "walmart": {
+          "state": "unreadable",
+          "url": "https://www.walmart.com/ip/Pok-mon-Sun-and-Moon-Elite-Trainer-Box-Trading-Card-Game/55381298",
           "reason": null
         },
         "bestbuy": {
