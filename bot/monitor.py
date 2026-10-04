@@ -377,6 +377,24 @@ def clean_state(state):
     return cleaned
 
 
+def rearm_state(previous, in_stock, now, rearm_minutes):
+    """(armed, out_since) after this reading. Armed = the next move to in stock may alert. Disarmed by an alert (see the caller),
+    re-armed only by confirmed out-of-stock readings that have lasted rearm_minutes; unknown readings change nothing."""
+    previous = previous or {}
+    armed = previous.get("armed", True)
+    out_since = previous.get("out_since")
+    if in_stock is False:
+        out_since = out_since or now.isoformat()
+        try:
+            if now - datetime.fromisoformat(out_since) >= timedelta(minutes=rearm_minutes):
+                armed = True
+        except Exception:
+            out_since = now.isoformat()
+    elif in_stock is True:
+        out_since = None   # back in stock: the out-of-stock streak is over
+    return armed, out_since
+
+
 def recently_stock_alerted(entry, now, hours):
     if not entry or not entry.get("last_stock_alert"):
         return False
@@ -442,6 +460,7 @@ def main(discover=True, cycle=0):
     keywords = config.get("keywords", [])
     retailers = [r for r in config.get("retailers", []) if r in SEARCH_URLS]
     cooldown = float(config.get("alert_cooldown_hours", 1))
+    rearm_minutes = float(config.get("rearm_minutes", 20))
     timeout = int(config.get("search_timeout_seconds", 8))
     browser_retailers = set(config.get("browser_retailers", []))
     hot = [h.lower() for h in config.get("hot_matches", [])]
@@ -530,12 +549,17 @@ def main(discover=True, cycle=0):
             first_seen = previous.get("first_seen") or (previous.get("last_seen") if previous else now.isoformat())
             new_announced = previous.get("new_announced", True) if previous else False
 
-            if previous and in_stock is True and previous.get("in_stock") is not True and not recently_stock_alerted(previous, now, cooldown):
+            # ONE alert per stay in stock. After an alert the item is disarmed; it is armed again only by confirmed out-of-stock readings
+            # lasting rearm_minutes. An unknown reading (a blocked or half-loaded page) neither arms nor disarms it, so a flickering
+            # in stock / unknown / in stock page cannot ping again while the item never actually left.
+            armed, out_since = rearm_state(previous, in_stock, now, rearm_minutes)
+            if previous and in_stock is True and previous.get("in_stock") is not True and armed and ("armed" in previous or not recently_stock_alerted(previous, now, cooldown)):   # the old cooldown only guards entries from before the arm rule
                 kind = "stock"
             elif previous and in_stock is None:
                 sent["unknown"] += 1
 
             if kind == "stock":
+                armed, out_since = False, None
                 detected_at = now.isoformat()
                 record_alert(alerts, retailer, kind, title, url, True, posted_at, detected_at, True)
                 market = advisor.market_for(config, market_cache, title, url)
@@ -563,6 +587,8 @@ def main(discover=True, cycle=0):
                 "price": price,
                 "msrp": msrp,
                 "sku": sku,
+                "armed": armed,
+                "out_since": out_since,
             }
 
         for url in by_hot(seeds):

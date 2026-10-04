@@ -559,6 +559,80 @@ def test_fast_pass_does_not_search_and_rechecks_known_listings():
     assert session.discover_calls == 1 and "https://www.target.com/p/-/A-9" in session.calls
 
 
+def test_one_alert_per_stay_in_stock_and_rearming_needs_confirmed_out_of_stock():
+    """Marco: do not ping again and again for the same ETB. A flickering page (in stock / blocked / in stock) is still one stay."""
+    import tempfile
+    from datetime import timedelta
+    url = "https://www.target.com/p/-/A-1"
+    key = f"target::{url}"
+    config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": [url]}}
+    in_stock = lambda u: _Resp(200, u, '<title>Pokemon ETB</title>"availability":"https://schema.org/InStock"')
+    sold_out = lambda u: _Resp(200, u, "<title>Pokemon ETB</title>Sold out online")
+    blocked = lambda u: _Resp(403, u, "Access denied")
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-03T00:00:00+00:00", "in_stock": False}
+
+    def run(tmp, answer, mutate=None):
+        state = json.loads((tmp / "state.json").read_text()) if (tmp / "state.json").exists() else {"schema_version": 4, key: dict(base)}
+        if mutate:
+            mutate(state[key])
+        _, sent = _run_main(tmp, config, state, {"target.com": answer})
+        return [c for c in sent if isinstance(c, dict)], json.loads((tmp / "state.json").read_text())[key]
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        cards, entry = run(tmp, in_stock)
+        assert len(cards) == 1 and entry["armed"] is False, "the first move to in stock alerts, then disarms"
+        cards, entry = run(tmp, blocked)
+        assert cards == [] and entry["in_stock"] is None and entry["armed"] is False, "an unknown reading does not re-arm"
+        cards, entry = run(tmp, in_stock)
+        assert cards == [], "in stock again after an unknown reading is the SAME stay: no second ping"
+        cards, entry = run(tmp, in_stock)
+        assert cards == [] and entry["armed"] is False
+        cards, entry = run(tmp, sold_out)
+        assert cards == [] and entry["out_since"] and entry["armed"] is False, "out of stock starts the streak but does not arm at once"
+        cards, entry = run(tmp, in_stock)
+        assert cards == [], "a sell-out blip of seconds is not a new stay"
+        # a confirmed out-of-stock streak that has lasted 20+ minutes re-arms; then the next restock alerts again
+        long_ago = (datetime.now(timezone.utc) - timedelta(minutes=30)).isoformat()
+        cards, entry = run(tmp, sold_out, mutate=lambda e: e.update({"out_since": long_ago}))
+        assert cards == [] and entry["armed"] is True, "30 minutes of confirmed out-of-stock re-arms"
+        cards, entry = run(tmp, in_stock)
+        assert len(cards) == 1 and entry["armed"] is False, "a real restock after a real sell-out alerts again, once"
+        # unknown readings in the middle of an out-of-stock streak never count towards re-arming
+        cards, entry = run(tmp, blocked, mutate=lambda e: e.update({"in_stock": False, "armed": False, "out_since": datetime.now(timezone.utc).isoformat()}))
+        assert entry["armed"] is False
+
+
+def test_rearm_state_rules():
+    now = datetime(2026, 10, 4, 18, 0, tzinfo=timezone.utc)
+    assert monitor.rearm_state(None, False, now, 20) == (True, now.isoformat()), "no history: armed (the first alert is allowed)"
+    assert monitor.rearm_state({"armed": False}, None, now, 20) == (False, None), "unknown changes nothing"
+    assert monitor.rearm_state({"armed": False, "out_since": "2026-10-04T17:50:00+00:00"}, False, now, 20) == (False, "2026-10-04T17:50:00+00:00"), "10 minutes out is not enough"
+    assert monitor.rearm_state({"armed": False, "out_since": "2026-10-04T17:40:00+00:00"}, False, now, 20)[0] is True, "exactly 20 minutes out re-arms"
+    assert monitor.rearm_state({"armed": False, "out_since": "2026-10-04T17:30:00+00:00"}, True, now, 20) == (False, None), "back in stock ends the streak"
+    assert monitor.rearm_state({"armed": False, "out_since": "garbage"}, False, now, 20) == (False, now.isoformat()), "a corrupt timestamp restarts the streak, never crashes"
+
+
+def test_a_new_listing_alert_uses_up_that_stay():
+    import tempfile
+    sent = []
+    real = (notify_new_listings.send_card, advisor.fetch_query)
+    notify_new_listings.send_card = lambda card: sent.append(card)
+    advisor.fetch_query = _fake_tcg_search
+    url = "https://www.target.com/p/-/A-1"
+    state = {"schema_version": 4, f"target::{url}": {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-04T12:00:00+00:00", "in_stock": True, "new_announced": False, "signal": "page"}}
+    with tempfile.TemporaryDirectory() as d:
+        notify_new_listings.STATE_FILE, notify_new_listings.MARKET_FILE, notify_new_listings.CONFIG_FILE = Path(d) / "state.json", Path(d) / "market.json", Path(d) / "config.json"
+        notify_new_listings.CONFIG_FILE.write_text(json.dumps({"map_url": "https://m"}))
+        notify_new_listings.STATE_FILE.write_text(json.dumps(state))
+        try:
+            notify_new_listings.main()
+            entry = json.loads(notify_new_listings.STATE_FILE.read_text())[f"target::{url}"]
+        finally:
+            notify_new_listings.send_card, advisor.fetch_query = real
+    assert len(sent) == 1 and entry["armed"] is False and entry["last_stock_alert"] and entry["out_since"] is None, "the announced stay is disarmed so it is not announced again as a restock"
+
+
 def test_new_listing_announced_once_and_only_when_in_stock():
     import tempfile
     sent = []
@@ -2172,6 +2246,9 @@ if __name__ == "__main__":
     test_loop_commits_on_meaningful_change_only()
     test_signature_ignores_last_seen()
     test_fast_pass_does_not_search_and_rechecks_known_listings()
+    test_one_alert_per_stay_in_stock_and_rearming_needs_confirmed_out_of_stock()
+    test_rearm_state_rules()
+    test_a_new_listing_alert_uses_up_that_stay()
     test_new_listing_announced_once_and_only_when_in_stock()
     test_main_marks_new_listings_and_leaves_legacy_ones_alone()
     print("accuracy, detection, health, route integrity, and 30th coverage tests passed")
