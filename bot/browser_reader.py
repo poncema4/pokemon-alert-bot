@@ -57,7 +57,16 @@ class BrowserReader:
         if (buttons.length >= 40) break;
       }
       const skuMatch = /(?:"skuId"\\s*:\\s*"?|data-sku-id="|\\bSKU:?\\s*(?:<[^>]*>\\s*)*)(\\d{7})\\b/.exec(document.documentElement.innerHTML);
-      return {sku: skuMatch ? skuMatch[1] : null, title: document.title.slice(0, 160), text: (document.body ? document.body.innerText : '').slice(0, 150000),
+      let ldSku = null;   // the page's own product, from its structured data: the most trustworthy SKU
+      for (const el of document.querySelectorAll('script[type="application/ld+json"]')) {
+        try {
+          const j = JSON.parse(el.textContent);
+          for (const o of (Array.isArray(j) ? j : [j]).flatMap((x) => (x && x['@graph']) || [x])) {
+            if (o && o['@type'] === 'Product' && /^\\d{7}$/.test(String(o.sku || ''))) ldSku = String(o.sku);
+          }
+        } catch (e) {}
+      }
+      return {sku: ldSku || (skuMatch ? skuMatch[1] : null), sku_ld: ldSku, sku_text: skuMatch ? skuMatch[1] : null, title: document.title.slice(0, 160), text: (document.body ? document.body.innerText : '').slice(0, 150000),
               captchaNode: !!document.querySelector('#px-captcha, [id*=captcha], iframe[src*=captcha]'), buttons};
     }"""
     READY = "() => Array.from(document.querySelectorAll('button')).some(b => /^(add to (cart|bag|basket)|sold out|unavailable|coming soon|check stores|notify me)$/i.test((b.innerText||'').trim()))"
@@ -78,6 +87,7 @@ class BrowserReader:
             text = data["text"]
             row["title"] = data["title"]
             row["sku"] = data.get("sku")
+            row["sku_ld"], row["sku_text"] = data.get("sku_ld"), data.get("sku_text")
             row["body_chars"] = len(text)
             haystack = text + (" px-captcha" if data["captchaNode"] else "")
             row["walls"] = [w for w in WALLS if re.search(w, haystack, re.I)]
