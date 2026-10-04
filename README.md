@@ -13,6 +13,7 @@ Site: <https://poncema4.github.io/pokemon-alert-bot/> (Map, Route, 30th guide).
 - **The page's own signal beats generic data.** GameStop's `data-available` flag overrides its JSON-LD (which says `InStock` for items that are not). A disabled "Add to cart" button (Target's loading placeholder) is not stock.
 - **Proof is stated.** *Verified* means the page's own flag or structured data says in stock; *Likely* means only cart or pickup wording was found.
 - **New listings alert once**, only if the first reading is in stock, at most 5 per run (a summary covers the rest).
+- **One alert per stay in stock.** After an alert the item is disarmed. It can alert again only after confirmed out-of-stock readings lasting 20 minutes (`rearm_minutes`); unknown readings (blocked or half-loaded pages) never re-arm it, so a flickering page cannot ping twice for the same stay.
 - **One listing, one URL.** Fragments, query strings and trailing slashes are dropped, so a product linked several ways is not counted several times.
 - **Repeat alerts are cooled down** per listing, and a blocked check can never suppress a later real restock.
 

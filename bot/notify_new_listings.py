@@ -78,6 +78,8 @@ def main():
         market = advisor.market_for(config, market_cache, title, url)
         send_card(advisor.build_card(retailer, "new", title, url, config.get("map_url", ""), detected, entry.get("signal"), entry.get("price"), entry.get("msrp"), market,
                                      confirmed=bool(entry.get("confirmed")), sku=advisor.sku_for(config, url, entry.get("sku")), ping=os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")))
+        # This stay in stock has now been announced: disarm it, so the stock path does not alert for the same stay as a "restock".
+        entry["armed"], entry["out_since"], entry["last_stock_alert"] = False, None, datetime.now(timezone.utc).isoformat()
         sent += 1
 
     if overflow:
