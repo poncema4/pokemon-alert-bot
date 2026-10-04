@@ -311,5 +311,14 @@
       "query": "151 Elite Trainer Box",
       "msrp": null
     }
-  ]
+  ],
+  "listing_pages": {
+    "gamestop": [
+      "https://www.gamestop.com/pokemon/new?prefn1=brand&prefv1=The+Pokemon+Company+International&srule=release-date-descending",
+      "https://www.gamestop.com/toys-games/trading-cards?prefn1=franchise&prefv1=Pokemon&view=new&tileView=list&hybrid=true",
+      "https://www.gamestop.com/toys-games?q=pokemon+elite+trainer+boxes",
+      "https://www.gamestop.com/search/?q=pokemon+elite+trainer+box&lang=default",
+      "https://www.gamestop.com/pokemon?prefn1=bvConsolidatedRating&prefn2=lifecycleStatus&prefv1=2+and+up&prefv2=Shop+Pre-Orders"
+    ]
+  }
 }

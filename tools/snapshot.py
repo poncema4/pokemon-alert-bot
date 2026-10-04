@@ -43,6 +43,20 @@ def main():
                 row = {"file": name, "url": url, "error": str(exc)[:200]}
             index.append(row)
             print(json.dumps(row)[:600])
+    # Listing pages: do they load over plain HTTP, and how many product links does the bot's extractor find on them?
+    for retailer, pages in config.get("listing_pages", {}).items():
+        for n, url in enumerate(pages):
+            name = f"listing_{retailer}_{n}"
+            try:
+                response = http.get(url, timeout=25, allow_redirects=True)
+                (OUT / f"{name}.html").write_text(response.text, encoding="utf-8")
+                links = monitor.extract_retailer_urls(retailer, response.text) if response.status_code < 400 else []
+                etbs = [u for u in links if "elite-trainer-box" in u]
+                row = {"file": name, "url": url, "status": response.status_code, "bytes": len(response.text), "product_links": len(links), "etb_links": etbs[:25]}
+            except Exception as exc:
+                row = {"file": name, "url": url, "error": str(exc)[:200]}
+            index.append(row)
+            print(json.dumps(row)[:700])
     (OUT / "index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")
 
 

@@ -131,7 +131,7 @@ def retailer_url_is_valid(retailer, url):
     return False
 
 
-def extract_retailer_urls(retailer, text):
+def extract_retailer_urls(retailer, text, limit=20):
     candidates = re.findall(r'href=[\"\']([^\"\']+)', text, flags=re.I) + re.findall(r'https?://[^\"\'<>\\ ]+', text)
     patterns = {
         "walmart": r"/ip/(?:[^\"\'<>\\ ]+/)?\d+",
@@ -146,7 +146,7 @@ def extract_retailer_urls(retailer, text):
         if retailer_url_is_valid(retailer, full) and full not in seen:
             seen.add(full)
             links.append(full)
-    return links[:20]
+    return links[:limit]
 
 
 def fallback_search(http, retailer, keyword):
