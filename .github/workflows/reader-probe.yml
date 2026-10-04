@@ -1,0 +1,23 @@
+name: Reader probe
+
+# Manual: reads the Best Buy pages with the watcher's own browser reader from a GitHub runner and prints what it saw and how long it took.
+# It loads pages like a visitor and never tries to get past a wall.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r requirements.txt playwright
+      - run: playwright install --with-deps chromium
+      - run: python -u tools/reader_probe.py
