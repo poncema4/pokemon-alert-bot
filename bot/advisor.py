@@ -22,6 +22,8 @@ NOISE = (
     r"\bwalmart\.com\b", r"\bmega evolution\b\s*\d*\s*[-—:]?", r"scarlet\s*(&|and)\s*violet\s*\d*\s*[-—:]?", r"\bsv\d+\b", r"\bpok[eé]mon\b", r"\btcg\b", r"[\[\]()®™:]",
 )
 DEFAULT_EXCLUDE = ("case", "pokemon center", "exclusive", "display")
+CART_URLS = {"target": "https://www.target.com/co-cart", "walmart": "https://www.walmart.com/cart", "bestbuy": "https://www.bestbuy.com/cart",
+             "gamestop": "https://www.gamestop.com/cart/", "pokemoncenter": "https://www.pokemoncenter.com/cart"}
 RETAILER_NAMES = {"target": "Target", "walmart": "Walmart", "bestbuy": "Best Buy", "gamestop": "GameStop", "pokemoncenter": "Pokémon Center"}
 
 
@@ -54,8 +56,10 @@ def pick(rows, include, exclude):
     """First search row whose name has every include word, none of the exclude words, and a real market price."""
     if not include:  # nothing to match on (e.g. an untitled listing): never guess a product
         return None
+    include = [w.replace("-", " ") for w in include]
+    exclude = [w.replace("-", " ") for w in exclude]
     for row in rows:
-        name = (row.get("productName") or "").lower()
+        name = (row.get("productName") or "").lower().replace("-", " ")  # "Ultra-Premium" and "ultra premium" are the same product
         if all(w in name for w in include) and not any(w in name for w in exclude) and (row.get("marketPrice") or 0) > 0:
             return row
     return None
@@ -175,6 +179,7 @@ def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, 
         "market": market, "market_age": age_text(market["updated_at"], now) if market else "",
         "market_url": f"https://www.tcgplayer.com/product/{market['product_id']}" if market else "",
         "verdict": verdict(price, msrp, market["market"] if market else None),
+        "cart_url": CART_URLS.get(retailer, ""),
     }
 
 
@@ -183,7 +188,7 @@ def refresh_watchlist(config, cache, fetch=None, now=None):
     now = now or datetime.now(timezone.utc)
     refreshed = 0
     for item in config.get("watchlist", []):
-        include = [w.lower() for w in item["include"]] + ["elite trainer box"]
+        include = [w.lower() for w in item["include"]] + [item.get("product", "elite trainer box")] + [w.lower() for w in item.get("market_include", [])]
         exclude = [w for w in DEFAULT_EXCLUDE] + [w.lower() for w in item.get("exclude", [])]
         try:
             found = lookup(item["query"], include, exclude, fetch, now)

@@ -19,6 +19,7 @@
 .pill.in { background: var(--live); color: var(--ink); border-color: var(--live); }
 .pill.out { color: var(--text); background: var(--panel-2); }
 .pill.cant { color: var(--blind); border-color: var(--blind); }
+.pill.gone { color: var(--muted); background: var(--ink); border-style: dotted; font-weight: 400; }
 .pill.none { color: var(--muted); border-style: dashed; font-weight: 400; }
 .empty { padding: 30px; text-align: center; color: var(--muted); grid-column: 1 / -1; }
 

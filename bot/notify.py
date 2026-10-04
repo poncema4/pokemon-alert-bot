@@ -42,7 +42,7 @@ def stock_embed(card):
         {"name": "Retail", "value": money(card.get("msrp")) + (f"\n{verdict['retail']}" if verdict.get("retail") else ""), "inline": True},
         {"name": "TCGplayer market", "value": (money(card["market"]["market"]) + f"\n{card['market_age']}") if card.get("market") else "not found", "inline": True},
         {"name": "Proof", "value": PROOF.get(card.get("signal"), PROOF["text"]), "inline": False},
-        {"name": "Links", "value": f"[Open product]({card['url']})  ·  [Map]({card['map_url']})" + (f"  ·  [TCGplayer]({card['market_url']})" if card.get("market_url") else ""), "inline": False},
+        {"name": "Links", "value": f"[Open product]({card['url']})" + (f"  ·  [Cart]({card['cart_url']})" if card.get("cart_url") else "") + f"  ·  [Map]({card['map_url']})" + (f"  ·  [TCGplayer]({card['market_url']})" if card.get("market_url") else ""), "inline": False},
     ]
     embed = {
         "title": clip(f"{heading} · {retailer}", LIMITS["title"]),

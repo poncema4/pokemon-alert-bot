@@ -26,7 +26,7 @@ DISCOVER_EVERY = int(os.environ.get("MONITOR_DISCOVER_EVERY", "10"))
 COMMIT_EVERY = float(os.environ.get("MONITOR_COMMIT_EVERY", "300"))
 PRICE_EVERY = int(os.environ.get("MONITOR_PRICE_EVERY", "20"))  # cycles between 30th price refreshes (about 20 minutes)
 MARKET_EVERY = int(os.environ.get("MONITOR_MARKET_EVERY", "10"))  # cycles between TCGplayer market refreshes for tracked listings
-TRACKED = ("data/state.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json", "docs/market.json", "docs/coverage.json")
+TRACKED = ("data/state.json", "data/gamestop_pids.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json", "docs/market.json", "docs/coverage.json")
 
 
 def signature():
