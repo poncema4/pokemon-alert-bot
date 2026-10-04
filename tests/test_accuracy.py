@@ -572,6 +572,28 @@ def test_new_listing_announced_once_and_only_when_in_stock():
     assert all(v.get("new_announced", True) for k, v in after.items() if k != "schema_version"), "every decided listing is marked, in stock or not"
 
 
+def test_a_new_best_buy_listing_alert_also_carries_the_add_to_cart_sku():
+    import tempfile
+    sent = []
+    real = (notify_new_listings.send_card, advisor.fetch_query)
+    notify_new_listings.send_card = lambda card: sent.append(card)
+    advisor.fetch_query = _fake_tcg_search
+    pb = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45"
+    other = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-chaos-rising-elite-trainer-box/JJG2TL34RT"
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-04T12:00:00+00:00", "in_stock": True, "new_announced": False, "signal": "browser"}
+    state = {"schema_version": 4, f"bestbuy::{pb}": dict(base), f"bestbuy::{other}": {**base, "sku": "6600001"}}
+    with tempfile.TemporaryDirectory() as d:
+        notify_new_listings.STATE_FILE, notify_new_listings.MARKET_FILE, notify_new_listings.CONFIG_FILE = Path(d) / "state.json", Path(d) / "market.json", Path(d) / "config.json"
+        notify_new_listings.CONFIG_FILE.write_text(json.dumps({"map_url": "https://m", "bestbuy_skus": {"JJG2TL8J45": "6678361"}}))
+        notify_new_listings.STATE_FILE.write_text(json.dumps(state))
+        try:
+            notify_new_listings.main()
+        finally:
+            notify_new_listings.send_card, advisor.fetch_query = real
+    got = {c["url"]: c["add_url"] for c in sent}
+    assert got == {pb: "https://api.bestbuy.com/click/-/6678361/cart", other: "https://api.bestbuy.com/click/-/6600001/cart"}, got
+
+
 def test_main_marks_new_listings_and_leaves_legacy_ones_alone():
     import tempfile
     seed, legacy = "https://www.target.com/p/-/A-1", "https://www.target.com/p/-/A-2"
@@ -1215,24 +1237,31 @@ def test_walmart_alerts_carry_a_real_add_to_cart_link_and_the_links_are_plainly_
     assert walmart["add_url"] == "https://affil.walmart.com/cart/addToCart?items=15718673510"
     links = {f["name"]: f["value"] for f in notify.stock_embed(walmart)["embeds"][0]["fields"]}["Links"]
     assert "[Add to cart](https://affil.walmart.com/cart/addToCart?items=15718673510)" in links
-    assert links.index("[Product page]") < links.index("[Add to cart]") < links.index("[My cart]") < links.index("[Map]"), links
+    assert links.index("[Product page]") < links.index("[Add to cart]") < links.index("[Map]"), links
+    assert "[My cart]" not in links and "cart_url" not in walmart, "the plain cart page link was useless and is gone"
     assert advisor.add_to_cart_url("walmart", "https://www.walmart.com/ip/15718673510") == "https://affil.walmart.com/cart/addToCart?items=15718673510", "id-only product URL"
-    for retailer in ("target", "bestbuy", "gamestop", "pokemoncenter", "walmart"):
+    for retailer in ("target", "bestbuy", "gamestop", "pokemoncenter", "walmart"):  # no SKU / id given here
         other = advisor.build_card(retailer, "stock", "Pokemon ETB", "https://example.test/p/1", "https://m", "2026-10-04T16:00:00+00:00", "page", None, None, None)
         assert other["add_url"] == "" and "[Add to cart]" not in {f["name"]: f["value"] for f in notify.stock_embed(other)["embeds"][0]["fields"]}["Links"], retailer + " has no public add-to-cart link, so none is shown"
     assert "Open product" not in (ROOT / "bot" / "notify.py").read_text(encoding="utf-8"), "the confusing old labels are gone"
 
 
-def test_every_alert_links_straight_to_the_stores_cart():
-    expected = {"target": "https://www.target.com/co-cart", "walmart": "https://www.walmart.com/cart", "bestbuy": "https://www.bestbuy.com/cart",
-                "gamestop": "https://www.gamestop.com/cart/", "pokemoncenter": "https://www.pokemoncenter.com/cart"}
-    for retailer, cart in expected.items():
-        card = advisor.build_card(retailer, "stock", "Pokemon ETB", "https://example.test/p/1", "https://m", "2026-10-04T16:00:00+00:00", "page", 59.99, None, None)
-        assert card["cart_url"] == cart
-        links = {f["name"]: f["value"] for f in notify.stock_embed(card)["embeds"][0]["fields"]}["Links"]
-        assert f"[My cart]({cart})" in links and links.index("[Product page]") < links.index("[My cart]") < links.index("[Map]"), links
-    unknown = advisor.build_card("somewhere", "stock", "Pokemon ETB", "https://example.test/p/1", "https://m", "2026-10-04T16:00:00+00:00", "page", None, None, None)
-    assert unknown["cart_url"] == "" and "[My cart]" not in {f["name"]: f["value"] for f in notify.stock_embed(unknown)["embeds"][0]["fields"]}["Links"]
+def test_best_buy_alerts_add_to_cart_with_the_numeric_sku():
+    cfg = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
+    pb = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45"
+    thirtieth = "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ"
+    # SKUs verified against Best Buy's own /sku/ pages and model numbers on 2026-10-04
+    assert advisor.sku_for(cfg, pb) == "6678361" and advisor.sku_for(cfg, thirtieth) == "6685559"
+    assert advisor.sku_for(cfg, pb, "6678361") == "6678361", "a SKU read from the page is used"
+    assert advisor.sku_for(cfg, "https://www.bestbuy.com/product/x/JJG2TL0000") is None, "an unknown product has no SKU, so no add link"
+    assert advisor.sku_for(cfg, pb, "JJG2TL8J45") == "6678361", "a product code is not a SKU: Best Buy answers Invalid SKU, so the verified one is used"
+    assert advisor.sku_for({}, pb, "abc") is None
+    card = advisor.build_card("bestbuy", "stock", "Pokemon Pitch Black ETB", pb, "https://m", "2026-10-04T16:00:00+00:00", "browser", 49.99, 49.99, None, sku="6678361")
+    assert card["add_url"] == "https://api.bestbuy.com/click/-/6678361/cart"
+    links = {f["name"]: f["value"] for f in notify.stock_embed(card)["embeds"][0]["fields"]}["Links"]
+    assert "[Add to cart](https://api.bestbuy.com/click/-/6678361/cart)" in links and "[Product page](" in links and "[My cart]" not in links
+    assert [x.split("](")[0] for x in links.split("  ·  ")] == ["[Product page", "[Add to cart", "[Map"], links   # exactly these, no TCGplayer without a market price
+    assert advisor.add_to_cart_url("bestbuy", pb, None) == "" and advisor.add_to_cart_url("bestbuy", pb, "JJG2TL8J45") == "", "never link a code Best Buy rejects"
 
 
 def test_watchlist_matching_is_by_whole_word_and_regular_boxes_only():
@@ -1693,6 +1722,8 @@ def test_the_real_browser_reads_real_pages():
         "unavailable.html": f"<html><head><title>Pokemon 30th ETB - Best Buy</title></head><body><span>$284.99</span>{filler}<button disabled>Unavailable</button></body></html>",
         "wall.html": f"<html><head><title>Target</title></head><body><div id='px-captcha'></div><h1>Quick verification</h1><p>Press &amp; hold to confirm you're a human</p>{filler}<button style='display:none'>Add to cart</button></body></html>",
         "later.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<div id='slot'>loading</div><script>setTimeout(function(){{document.getElementById('slot').innerHTML='<button>Add to cart</button>';}}, 700);</script></body></html>",
+        "sku.html": f"<html><head><title>Pokemon ETB - Best Buy</title></head><body>{filler}<div data-sku-id=\"6678361\"></div><button>Add to cart</button></body></html>",
+        "skustub.html": f"<html><head><title>Pokemon ETB - Best Buy</title></head><body>{filler}<script>var x = {{\"skuId\":\"6685559\"}};</script></body></html>",
         "blank.html": "<html><head></head><body></body></html>",
         "many.html": "<html><head><title>Heavy store page</title></head><body>" + filler + "".join(f"<button>Filter option {n}</button>" for n in range(600)) + "<div id='slot'></div><script>setTimeout(function(){document.getElementById('slot').innerHTML='<button>Add to cart</button>';}, 400);</script></body></html>",
         "hidden.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<button style='display:none'>Add to cart</button></body></html>",
@@ -1732,6 +1763,11 @@ def test_the_real_browser_reads_real_pages():
             took = _time.monotonic() - started
             reader.wait_ms = 1500
             assert got["stock"] is True and took < 5, f"600 buttons and a late buy button must be read in one quick pass (took {took:.1f}s of a 9 s allowance)"
+            got = check("sku.html")
+            assert got["stock"] is True and got["sku"] == "6678361", "the SKU is read from the page next to the buy button"
+            got = check("skustub.html")
+            assert got["stock"] is None and got["sku"] == "6685559", "a half-loaded page still yields the SKU, but never counts as stock"
+            assert check("buyable.html")["sku"] is None
             got = check("hidden.html")
             assert (got["stock"], got["reason"]) == (None, "no_signal"), "a buy button nobody can see is not stock"
             got = check("sold.html")
@@ -1865,6 +1901,24 @@ def test_progress_is_saved_after_each_store():
         health = json.loads((Path(d) / "health.json").read_text())
     assert f"gamestop::{gs}" in state and state[f"gamestop::{gs}"]["in_stock"] is False, "GameStop's fresh reading was saved before Target ran"
     assert health["gamestop"]["readable"] == 1 and "target" not in health
+
+
+def test_the_best_buy_sku_reaches_the_alert_and_is_remembered_in_state():
+    import tempfile
+    pb = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45"
+    other = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-chaos-rising-elite-trainer-box/JJG2TL34RT"
+    config = {"retailers": ["bestbuy"], "keywords": [], "seed_urls": {"bestbuy": [pb, other]}, "bestbuy_skus": {"JJG2TL8J45": "6678361"}}
+    in_stock = lambda u: _Resp(200, u, '<title>Pokemon ETB</title>"availability":"https://schema.org/InStock"')
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-03T00:00:00+00:00", "in_stock": False}
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        state = {"schema_version": 4, f"bestbuy::{pb}": dict(base), f"bestbuy::{other}": {**base, "sku": "6600001"}}
+        _, sent = _run_main(tmp, config, state, {"bestbuy.com": in_stock})
+        cards = {c["url"]: c for c in sent if isinstance(c, dict)}
+        assert cards[pb]["add_url"] == "https://api.bestbuy.com/click/-/6678361/cart", "the verified SKU from the config reaches the alert"
+        assert cards[other]["add_url"] == "https://api.bestbuy.com/click/-/6600001/cart", "a SKU remembered from an earlier page read reaches the alert"
+        saved = json.loads((tmp / "state.json").read_text())
+        assert saved[f"bestbuy::{pb}"]["sku"] == "6678361" and saved[f"bestbuy::{other}"]["sku"] == "6600001", "the SKU is kept in state for the next stay"
 
 
 def test_store_hours_flip_to_open_and_closed_live_in_a_real_browser():
@@ -2049,7 +2103,9 @@ if __name__ == "__main__":
     test_every_watched_etb_a_store_can_be_read_for_has_a_seed_url()
     test_ultra_premium_collections_are_watched_and_priced()
     test_walmart_alerts_carry_a_real_add_to_cart_link_and_the_links_are_plainly_named()
-    test_every_alert_links_straight_to_the_stores_cart()
+    test_best_buy_alerts_add_to_cart_with_the_numeric_sku()
+    test_the_best_buy_sku_reaches_the_alert_and_is_remembered_in_state()
+    test_a_new_best_buy_listing_alert_also_carries_the_add_to_cart_sku()
     test_watchlist_matching_is_by_whole_word_and_regular_boxes_only()
     test_coverage_cells_never_confuse_unreadable_with_out_of_stock()
     test_auto_discovered_products_get_their_own_rows()

@@ -371,5 +371,9 @@
   ],
   "browser_hot_every": 4,
   "browser_slow_every": 20,
-  "cycle_budget_seconds": 75
+  "cycle_budget_seconds": 75,
+  "bestbuy_skus": {
+    "JJG2TL8XCJ": "6685559",
+    "JJG2TL8J45": "6678361"
+  }
 }

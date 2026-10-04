@@ -22,18 +22,32 @@ NOISE = (
     r"\bwalmart\.com\b", r"\bmega evolution\b\s*\d*\s*[-—:]?", r"scarlet\s*(&|and)\s*violet\s*\d*\s*[-—:]?", r"\bsv\d+\b", r"\bpok[eé]mon\b", r"\btcg\b", r"[\[\]()®™:]",
 )
 DEFAULT_EXCLUDE = ("case", "pokemon center", "exclusive", "display")
-CART_URLS = {"target": "https://www.target.com/co-cart", "walmart": "https://www.walmart.com/cart", "bestbuy": "https://www.bestbuy.com/cart",
-             "gamestop": "https://www.gamestop.com/cart/", "pokemoncenter": "https://www.pokemoncenter.com/cart"}
 WALMART_ITEM = re.compile(r"walmart\.com/ip/(?:[^/?#]+/)?(\d{6,})")
 
 
-def add_to_cart_url(retailer, url):
+BESTBUY_CODE = re.compile(r"bestbuy\.com/product/[^/?#]+/([A-Za-z0-9]{8,12})(?:[/?#]|$)")
+SKU = re.compile(r"\d{7}")
+
+
+def sku_for(config, url, seen=None):
+    """The Best Buy numeric SKU for a product page: one read from the page earlier (kept in state), else the verified list in the config."""
+    if seen and SKU.fullmatch(str(seen)):
+        return str(seen)
+    m = BESTBUY_CODE.search(url or "")
+    known = (config or {}).get("bestbuy_skus", {}).get(m.group(1)) if m else None
+    return known if known and SKU.fullmatch(str(known)) else None
+
+
+def add_to_cart_url(retailer, url, sku=None):
     """A link that puts the item in YOUR cart when you tap it (you still check out yourself). Only where the store publishes one:
-    Walmart's add-to-cart link takes the item id from the product URL. Other stores have no public link, so the product page's own button is used."""
+    Walmart's takes the item id from the product URL, Best Buy's takes the numeric SKU (its product codes like JJG2TL8XCJ are rejected).
+    Other stores have no public link, so the product page's own button is used."""
     if retailer == "walmart":
         m = WALMART_ITEM.search(url or "")
         if m:
             return f"https://affil.walmart.com/cart/addToCart?items={m.group(1)}"
+    if retailer == "bestbuy" and sku and SKU.fullmatch(str(sku)):
+        return f"https://api.bestbuy.com/click/-/{sku}/cart"
     return ""
 
 
@@ -183,7 +197,7 @@ def eastern(iso):
         return iso
 
 
-def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, msrp, market, ping=False, now=None, confirmed=False):
+def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, msrp, market, ping=False, now=None, confirmed=False, sku=None):
     """Everything the Discord embed needs, as a plain dict (see notify.stock_embed)."""
     now = now or datetime.now(timezone.utc)
     return {
@@ -192,8 +206,7 @@ def build_card(retailer, kind, title, url, map_url, detected_at, signal, price, 
         "market": market, "market_age": age_text(market["updated_at"], now) if market else "",
         "market_url": f"https://www.tcgplayer.com/product/{market['product_id']}" if market else "",
         "verdict": verdict(price, msrp, market["market"] if market else None),
-        "cart_url": CART_URLS.get(retailer, ""),
-        "add_url": add_to_cart_url(retailer, url),
+        "add_url": add_to_cart_url(retailer, url, sku),
         "confirmed": confirmed,
     }
 

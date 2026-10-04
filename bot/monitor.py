@@ -519,6 +519,7 @@ def main(discover=True, cycle=0):
             kind = None
             price = result.get("price")
             msrp = msrp_for(config, url)
+            sku = advisor.sku_for(config, url, result.get("sku") or previous.get("sku"))   # remembered once seen: a half-loaded page must not lose it
             # When this stay in stock began: kept while it stays in stock, cleared when it is not. Older entries without the
             # field fall back to when we first saw them, so a long-standing in-stock item is never mistaken for a fresh hit.
             if in_stock is True:
@@ -538,7 +539,7 @@ def main(discover=True, cycle=0):
                 detected_at = now.isoformat()
                 record_alert(alerts, retailer, kind, title, url, True, posted_at, detected_at, True)
                 market = advisor.market_for(config, market_cache, title, url)
-                send_card(advisor.build_card(retailer, kind, title, url, map_url, detected_at, result.get("signal"), price, msrp, market, ping, confirmed=bool(confirmed)))
+                send_card(advisor.build_card(retailer, kind, title, url, map_url, detected_at, result.get("signal"), price, msrp, market, ping, confirmed=bool(confirmed), sku=sku))
                 sent["stock"] += 1
                 last_stock_alert = detected_at
             else:
@@ -561,6 +562,7 @@ def main(discover=True, cycle=0):
                 "signal": result.get("signal"),
                 "price": price,
                 "msrp": msrp,
+                "sku": sku,
             }
 
         for url in by_hot(seeds):
