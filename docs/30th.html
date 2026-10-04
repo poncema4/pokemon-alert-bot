@@ -8,8 +8,8 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css">
-  <link rel="stylesheet" href="css/guide.css">
+  <link rel="stylesheet" href="css/site.css?v=7d6c4bca">
+  <link rel="stylesheet" href="css/guide.css?v=8d822c71">
 </head>
 <body class="page">
   <header class="topbar">
@@ -54,8 +54,8 @@
     </section>
     <p class="footer">Prices come from TCGplayer's marketplace search and refresh about every 20 minutes while the bot is running. Release dates and MSRP follow TCGplayer's product facts and published lineup references.</p>
   </main>
-<script src="js/common.js"></script>
-<script src="js/lamps.js"></script>
+<script src="js/common.js?v=f84d713a"></script>
+<script src="js/lamps.js?v=ee33c6d5"></script>
 <script>
 const money=v=>v==null?'—':('$'+Number(v).toFixed(2));
 const ago=iso=>{const t=Date.parse(iso);if(!iso||Number.isNaN(t))return 'unknown';const m=Math.max(0,Math.round((Date.now()-t)/60000));return m<1?'just now':m<60?m+' min ago':m<1440?Math.floor(m/60)+' h ago':Math.floor(m/1440)+' d ago'};

@@ -1,0 +1,30 @@
+name: Verify deployed site
+
+# After every GitHub Pages build, load the live PokePing site in a real browser and check it works (no script errors, Open/Closed shown on the
+# map and route, deployed files equal the repo). Also runnable by hand. A failure here means the site people see is broken even if CI was green.
+on:
+  page_build:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r requirements.txt playwright
+      - run: playwright install --with-deps chromium
+      - name: Wait for the new build to be served, then verify
+        run: |
+          for i in 1 2 3 4 5 6; do
+            python -u tools/verify_deployed.py && exit 0
+            echo "not ready yet, retrying in 40 s"; sleep 40
+          done
+          python -u tools/verify_deployed.py
