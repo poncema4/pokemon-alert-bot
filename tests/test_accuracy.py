@@ -2329,6 +2329,49 @@ def test_ci_runs_the_end_to_end_test():
     assert "python -u tests/test_end_to_end.py" in step and 'POKEPING_REQUIRE_BROWSER: "1"' in step, "CI must run the end-to-end test with a real browser required"
 
 
+def test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import ensure_watcher
+    run = lambda event, status: {"event": event, "status": status}
+    assert ensure_watcher.watcher_alive([run("workflow_dispatch", "in_progress")]), "a running watcher"
+    assert ensure_watcher.watcher_alive([run("push", "completed"), run("workflow_dispatch", "pending")]), "a queued successor counts"
+    assert ensure_watcher.watcher_alive([run("schedule", "queued")]) and ensure_watcher.watcher_alive([run("schedule", "waiting")])
+    assert not ensure_watcher.watcher_alive([]), "no runs at all: start one"
+    assert not ensure_watcher.watcher_alive([run("workflow_dispatch", "completed"), run("schedule", "completed")]), "finished watchers are not alive"
+    assert not ensure_watcher.watcher_alive([run("push", "in_progress"), run("pull_request", "queued")]), "test runs on push / PR are not watchers"
+    started = []
+    real = ensure_watcher.gh
+    try:
+        def fake(*args):
+            if args[0] == "run":
+                return type("R", (), {"returncode": 0, "stdout": json.dumps(fake.runs), "stderr": ""})()
+            started.append(args)
+            return type("R", (), {"returncode": 0, "stdout": "", "stderr": ""})()
+        ensure_watcher.gh = fake
+        fake.runs = [run("workflow_dispatch", "in_progress")]
+        ensure_watcher.main()
+        assert started == [], "a watcher is alive: the watchdog does nothing"
+        fake.runs = [run("push", "completed"), run("workflow_dispatch", "completed")]
+        ensure_watcher.main()
+        assert started == [("workflow", "run", "monitor.yml", "--ref", "main")], f"no live watcher: one is started, got {started}"
+        started.clear()
+        def failing(*args):
+            if args[0] == "run":
+                return type("R", (), {"returncode": 1, "stdout": "", "stderr": "boom"})()
+            started.append(args)
+            return type("R", (), {"returncode": 0, "stdout": "", "stderr": ""})()
+        ensure_watcher.gh = failing
+        ensure_watcher.main()
+        assert len(started) == 1, "if the run list cannot be read, start a watcher to be safe (the concurrency group keeps it to one)"
+    finally:
+        ensure_watcher.gh = real
+    workflow = (ROOT / ".github" / "workflows" / "watchdog.yml").read_text(encoding="utf-8")
+    assert 'workflows: ["Pokemon Stock Monitor"]' in workflow and "types: [completed]" in workflow, "runs whenever any monitor run ends"
+    assert "actions: write" in workflow and "python tools/ensure_watcher.py" in workflow
+    monitor_name = re.search(r"^name: (.+)$", (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8"), re.M).group(1)
+    assert monitor_name == "Pokemon Stock Monitor", "the watchdog listens for the monitor workflow by name"
+
+
 def test_the_watcher_never_shares_a_concurrency_group_with_test_runs():
     """GitHub keeps one PENDING run per group. The watcher's queued handover shared a group with push test runs, so every merge replaced it
     (cancelled) and the watcher chain broke: the data went stale after each merge until the 30-minute cron."""
@@ -2459,6 +2502,7 @@ if __name__ == "__main__":
     test_store_hours_data_is_complete_and_sourced()
     test_page_assets_are_versioned_so_a_browser_never_mixes_releases()
     test_ci_runs_the_end_to_end_test()
+    test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued()
     test_the_watcher_never_shares_a_concurrency_group_with_test_runs()
     test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
     test_browser_stores_are_read_gently()
