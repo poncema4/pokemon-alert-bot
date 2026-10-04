@@ -1,0 +1,29 @@
+name: Watcher watchdog
+
+# The stock watcher (monitor.yml) starts its own successor in its last step, but that step does not run when a job is killed outright (lost
+# runner, job timeout), and GitHub's cron is best effort. This runs whenever ANY monitor run ends and starts a watcher if none is running or queued.
+on:
+  workflow_run:
+    workflows: ["Pokemon Stock Monitor"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: pokeping-watchdog
+  cancel-in-progress: false
+
+jobs:
+  ensure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Start a watcher if none is running or queued
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python tools/ensure_watcher.py

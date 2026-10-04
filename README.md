@@ -66,6 +66,8 @@ Home is hard-set in `docs/stores.json`. Store pins come from each store's own Op
 
 `.github/workflows/monitor.yml` runs the tests, then one long-lived watcher job (`bot/monitor_loop.py`, about 55 minutes) that starts its own successor. GitHub's cron is best effort (measured median gap between scheduled runs was 239 minutes), so the job polls inside itself every 30 seconds and the 30-minute cron is only a safety net.
 
+If a watcher job is killed outright (a lost runner, the job timeout) its hand-over step never runs, so `watchdog.yml` runs whenever any monitor run ends and `tools/ensure_watcher.py` starts a watcher if none is running or queued. Hand-over, watchdog and the 30-minute cron are three independent ways the watcher comes back.
+
 The watcher runs in its own concurrency group (`pokeping-watcher`), separate from the test runs on push and PR. GitHub keeps only one *pending* run per group, so when they shared one, every merge to `main` replaced the watcher's queued handover and the chain broke until the next cron run (the data went stale after each merge).
 
 Each cycle checks the seed and recently readable listings, refreshes the live-hit list and announces new listings. Every 10th cycle also searches by keyword for new listings and refreshes market prices, and about every 20 cycles the 30th guide prices refresh from TCGplayer. State is committed every 5 minutes as a heartbeat (even when nothing changed, so the site's "checked N min ago" stays current) and at once when the live-hit list changes. On an always-on machine, `python bot/monitor_loop.py` does the same.
@@ -75,6 +77,7 @@ Each cycle checks the seed and recently readable listings, refreshes the live-hi
 | `monitor.yml` | tests on every PR and push; the watcher on schedule or manual dispatch |
 | `30th-prices.yml` | hourly fallback refresh of the 30th guide prices |
 | `snapshot.yml` | manual: saves the retailer pages exactly as the runner receives them |
+| `watchdog.yml` | whenever a monitor run ends: starts a watcher if none is running or queued |
 | `verify-deployed.yml` | after every Pages build: loads the live site in a real browser and checks it works and matches the repo (`tools/verify_deployed.py`) |
 | `reader-probe.yml` | manual: shows what the browser reader sees on Best Buy from a runner |
 | `test-alert.yml` | manual: posts clearly labelled TEST alerts and prints Discord's answer |
