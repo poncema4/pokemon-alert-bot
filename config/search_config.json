@@ -356,5 +356,10 @@
   "discover_titles": [
     "elite trainer box",
     "ultra-premium collection"
-  ]
+  ],
+  "hot_matches": [
+    "30th-celebration",
+    "ultra-premium"
+  ],
+  "slow_every": 3
 }

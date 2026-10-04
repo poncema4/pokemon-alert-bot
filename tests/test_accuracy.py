@@ -12,6 +12,7 @@ if str(ROOT / "bot") not in sys.path:
 from datetime import timedelta
 
 import monitor
+monitor.CONFIRM_DELAY = 0  # tests never wait
 import monitor_loop
 import advisor
 import coverage
@@ -329,7 +330,7 @@ def _fake_tcg_search(query):
     return {"results": [{"totalResults": 0, "results": []}]}
 
 
-def _run_main(tmp, config, state, answers, discovered=(), discover=True):
+def _run_main(tmp, config, state, answers, discovered=(), discover=True, cycle=0):
     monitor.STATE_FILE, monitor.ALERTS_FILE, monitor.HEALTH_FILE, monitor.MARKET_FILE, monitor.PIDS_FILE = tmp / "state.json", tmp / "alerts.json", tmp / "health.json", tmp / "market.json", tmp / "pids.json"
     monitor.CONFIG_FILE = tmp / "config.json"
     monitor.CONFIG_FILE.write_text(json.dumps(config), encoding="utf-8")
@@ -347,7 +348,7 @@ def _run_main(tmp, config, state, answers, discovered=(), discover=True):
     session.discover_calls = 0
     monitor.discover_products = fake_discover
     try:
-        monitor.main(discover=discover)
+        monitor.main(discover=discover, cycle=cycle)
     finally:
         monitor.requests.Session, monitor.alert, monitor.send_card, monitor.discover_products, advisor.fetch_query = real_session, real_alert, real_card, real_discover, real_fetch
     return session, sent
@@ -455,7 +456,7 @@ def test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure():
     real = (monitor.main, rl.main, nn.main, prices_mod.main, coverage.main, monitor_loop.refresh_market)
     coverage.main = lambda: None
     monitor_loop.refresh_market = lambda: None
-    monitor.main = lambda discover=True: order.append(("stock", discover))
+    monitor.main = lambda discover=True, cycle=0: order.append(("stock", discover))
     rl.main = lambda: order.append("hits")
     nn.main = lambda: order.append("new")
     state = {"fail": False}
@@ -544,7 +545,7 @@ def test_new_listing_announced_once_and_only_when_in_stock():
     base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-04T12:00:00+00:00"}
     state = {
         "schema_version": 4,
-        "target::https://www.target.com/p/-/A-1": {**base, "in_stock": True, "new_announced": False, "signal": "structured"},
+        "target::https://www.target.com/p/-/A-1": {**base, "in_stock": True, "new_announced": False, "signal": "structured", "confirmed": True},
         "target::https://www.target.com/p/-/A-2": {**base, "in_stock": False, "new_announced": False},
         "target::https://www.target.com/p/-/A-3": {**base, "in_stock": None, "new_announced": False},
         "target::https://www.target.com/p/-/A-4": {**base, "in_stock": True},  # legacy entry: never new
@@ -565,6 +566,7 @@ def test_new_listing_announced_once_and_only_when_in_stock():
     assert [c["url"][-3:] for c in sent] == ["A-1", "A-5"], [c["url"] for c in sent]
     assert all(c["kind"] == "new" for c in sent)
     assert sent[0]["signal"] == "structured" and sent[1]["signal"] == "text" and sent[1]["price"] == 59.99
+    assert sent[0]["confirmed"] is True and sent[1]["confirmed"] is False, "a new-listing card carries whether the in-stock reading was confirmed"
     assert notify.stock_embed(sent[0])["embeds"][0]["title"].startswith("🆕")
     assert all(v.get("new_announced", True) for k, v in after.items() if k != "schema_version"), "every decided listing is marked, in stock or not"
 
@@ -1332,7 +1334,7 @@ def test_cycle_writes_the_coverage_board_and_survives_its_failure():
     import refresh_live_hits as rl
     calls = []
     real = (monitor.main, rl.main, nn.main, coverage.main, prices_mod.main, monitor_loop.refresh_market)
-    monitor.main = lambda discover=True: calls.append("stock")
+    monitor.main = lambda discover=True, cycle=0: calls.append("stock")
     rl.main = lambda: calls.append("hits")
     nn.main = lambda: calls.append("new")
     prices_mod.main = lambda: None
@@ -1488,6 +1490,69 @@ def test_main_tracks_a_newly_discovered_etb_and_announces_it_once():
             monitor.requests.Session, monitor.alert, monitor.send_card, advisor.fetch_query = real
 
 
+def test_an_alert_needs_two_agreeing_readings():
+    import tempfile
+    url = "https://www.target.com/p/-/A-7"
+    config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": [url]}}
+    prior = {"schema_version": 4, f"target::{url}": {"pokemon": True, "title": "Pokemon ETB", "in_stock": False, "last_seen": "2026-10-03T00:00:00+00:00"}}
+    in_stock = '<title>Pokemon ETB</title>"availability":"https://schema.org/InStock"'
+    sold_out = "<title>Pokemon ETB</title>Sold out online"
+    blocked = "<title>Pokemon ETB</title><div id='px-captcha'></div>"
+
+    def sequence(*bodies):
+        it = iter(bodies)
+        return lambda u: _Resp(200, u, next(it))
+
+    # in stock then sold out a moment later (a flapping page): no alert, and the state follows the second reading
+    with tempfile.TemporaryDirectory() as d:
+        session, sent = _run_main(Path(d), config, dict(prior), {"target.com": sequence(in_stock, sold_out)})
+        entry = json.loads((Path(d) / "state.json").read_text())[f"target::{url}"]
+    assert sent == [] and entry["in_stock"] is False and not entry["confirmed"] and len(session.calls) == 2
+    # the second reading is blocked: not confirmed, no alert
+    with tempfile.TemporaryDirectory() as d:
+        _, sent = _run_main(Path(d), config, dict(prior), {"target.com": sequence(in_stock, blocked)})
+        entry = json.loads((Path(d) / "state.json").read_text())[f"target::{url}"]
+    assert sent == [] and entry["in_stock"] is None
+    # two agreeing readings: one alert, marked confirmed, and the proof says so
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        session, sent = _run_main(tmp, config, dict(prior), {"target.com": sequence(in_stock, in_stock)})
+        state = json.loads((tmp / "state.json").read_text())
+        assert len(sent) == 1 and sent[0]["confirmed"] is True and state[f"target::{url}"]["confirmed"] is True and len(session.calls) == 2
+        proof = {f["name"]: f["value"] for f in notify.stock_embed(sent[0])["embeds"][0]["fields"]}["Proof"]
+        assert "Confirmed by a second reading" in proof
+        assert "Confirmed" not in {f["name"]: f["value"] for f in notify.stock_embed(dict(sent[0], confirmed=False))["embeds"][0]["fields"]}["Proof"]
+        # staying in stock costs one request per check, not two, and keeps the confirmation
+        session, sent = _run_main(tmp, config, state, {"target.com": sequence(in_stock)})
+        assert len(session.calls) == 1 and sent == [] and json.loads((tmp / "state.json").read_text())[f"target::{url}"]["confirmed"] is True
+    # a brand-new listing is confirmed too (first observation in stock)
+    with tempfile.TemporaryDirectory() as d:
+        session, _ = _run_main(Path(d), config, {"schema_version": 4}, {"target.com": sequence(in_stock, sold_out)})
+        entry = json.loads((Path(d) / "state.json").read_text())[f"target::{url}"]
+    assert entry["in_stock"] is False and len(session.calls) == 2, "a first reading of in stock must also be confirmed before it is trusted"
+
+
+def test_hot_listings_are_checked_every_cycle_and_the_rest_less_often():
+    import tempfile
+    hot, calm = "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-30th-celebration-elite-trainer-box/1.html", "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-pitch-black-elite-trainer-box/2.html"
+    config = {"retailers": ["gamestop"], "keywords": [], "seed_urls": {"gamestop": [hot, calm]}, "hot_matches": ["30th-celebration"], "slow_every": 3}
+    sold = lambda u: _Resp(200, u, "<title>Pokemon ETB</title>Sold out online")
+    seen = {}
+    for cycle in range(6):
+        with tempfile.TemporaryDirectory() as d:
+            session, _ = _run_main(Path(d), config, {"schema_version": 4}, {"gamestop.com": sold}, cycle=cycle)
+        seen[cycle] = session.calls
+    for cycle in (1, 2, 4, 5):
+        assert seen[cycle] == [hot], f"cycle {cycle}: only the hot listing is checked"
+    for cycle in (0, 3):
+        assert seen[cycle] == [hot, calm], f"cycle {cycle}: everything is checked"
+    # with no hot list configured, everything is checked every cycle
+    plain = {k: v for k, v in config.items() if k not in ("hot_matches",)}
+    with tempfile.TemporaryDirectory() as d:
+        session, _ = _run_main(Path(d), plain, {"schema_version": 4}, {"gamestop.com": sold}, cycle=1)
+    assert session.calls == [hot, calm], "without a hot list there is no slow rhythm: everything is checked every cycle"
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -1552,6 +1617,8 @@ if __name__ == "__main__":
     test_only_pokemon_etbs_and_upcs_are_wanted()
     test_discovery_finds_a_brand_new_set_once_and_caches_every_id()
     test_main_tracks_a_newly_discovered_etb_and_announces_it_once()
+    test_an_alert_needs_two_agreeing_readings()
+    test_hot_listings_are_checked_every_cycle_and_the_rest_less_often()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()
