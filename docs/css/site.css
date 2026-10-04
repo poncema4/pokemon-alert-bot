@@ -42,3 +42,12 @@ h1, h2, h3 { font-family: var(--display); margin: 0; letter-spacing: .01em; }
 .btn:hover { filter: brightness(1.1); }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* Phones: thumb-reachable bottom tab bar, 44 px minimum tap targets, no sideways scrolling. */
+@media (max-width: 800px) {
+  body { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; gap: 0; background: var(--panel); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
+  .nav a { flex: 1; text-align: center; border-radius: 0; padding: 14px 6px; min-height: 56px; font-size: .95rem; }
+  .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 10px 14px; }
+  .lamp { padding: 7px 12px 7px 10px; }
+}

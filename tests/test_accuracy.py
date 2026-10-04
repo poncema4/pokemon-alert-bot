@@ -93,6 +93,14 @@ def test_pages_share_the_site_assets_and_have_no_broken_local_links():
     closed = re.search(r"\.tag\.closed\s*\{([^}]*)\}", css).group(1)
     assert "var(--alert)" in closed and "muted" not in closed and "opacity" not in closed, "a closed store must be red, never grey or dimmed"
     assert "state-closed" in (docs / "js" / "map.js").read_text(encoding="utf-8"), "the popup must also say Closed in red"
+    site = (docs / "css" / "site.css").read_text(encoding="utf-8")
+    phone_site = site[site.index("@media (max-width: 800px)"):]
+    assert "position: fixed" in phone_site and "bottom: 0" in phone_site, "phones need the bottom tab bar"
+    assert "min-height: 44px" in phone_site, "tap targets must be at least 44 px on phones"
+    phone_map = css[css.index("@media (max-width: 800px)"):]
+    assert re.search(r"\.rail\s*\{[^}]*position:\s*relative", css), "the rail must contain its .sr-only label or the whole page scrolls on phones"
+    assert "font-size: 16px" in phone_map, "inputs under 16 px make iOS zoom the page on focus"
+    assert "min-height: 64px" in phone_map and "overflow-x: auto" in phone_map
     index = (docs / "index.html").read_text(encoding="utf-8")
     for needed in ('id="lamps"', 'id="live"', 'id="stores"', 'id="map"', "js/common.js", "js/map.js"):
         assert needed in index, f"index.html lost {needed}"

@@ -1,12 +1,15 @@
 .map-page { display: flex; flex-direction: column; height: 100%; }
 .layout { flex: 1; min-height: 0; display: grid; grid-template-columns: 380px minmax(0, 1fr); }
-.rail { overflow-y: auto; background: var(--panel); border-right: 1px solid var(--line); padding: 14px 14px 28px; }
+.rail { position: relative; /* contains the .sr-only label, otherwise the whole page scrolls */ overflow-y: auto; background: var(--panel); border-right: 1px solid var(--line); padding: 14px 14px 28px; }
 #map { min-width: 0; background: var(--ink); }
 .rail section + section { margin-top: 22px; }
 .rail-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .rail-head h2 { font-size: 1.2rem; }
 .muted { color: var(--muted); font-size: .8rem; }
 
+.home { display: flex; gap: 6px; margin-bottom: 4px; }
+.home input { flex: 1; min-width: 0; background: var(--ink); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font: inherit; font-size: .9rem; }
+#home-clear { margin-bottom: 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .chip { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 4px 11px; font: inherit; font-size: .82rem; cursor: pointer; }
 .chip[aria-pressed="true"] { color: var(--ink); background: var(--text); border-color: var(--text); font-weight: 700; }
@@ -41,12 +44,19 @@
 .leaflet-popup-content b { font-family: var(--display); font-size: 1.05rem; }
 
 @media (max-width: 800px) {
-  .layout { grid-template-columns: 1fr; grid-template-rows: 46vh minmax(0, 1fr); }
-  #map { order: -1; }
-  .rail { border-right: 0; border-top: 1px solid var(--line); }
-  .topbar { gap: 8px; padding: 8px 12px; }
-  .brand { width: auto; }
-  .lamps { order: 3; width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+  .map-page { height: 100dvh; }
+  .topbar { gap: 6px; padding: 8px 12px; flex-wrap: nowrap; overflow: hidden; }
+  .brand { font-size: 1.15rem; margin-right: 4px; white-space: nowrap; }
+  .lamps { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; flex: 1; }
   .lamp { flex: none; }
   .lamp small { display: none; }
+  .layout { grid-template-columns: 1fr; grid-template-rows: 40% minmax(0, 1fr); }
+  #map { order: -1; }
+  .rail { border-right: 0; border-top: 1px solid var(--line); padding: 12px 12px 20px; -webkit-overflow-scrolling: touch; }
+  .store { min-height: 64px; padding: 12px 8px; }
+  .chip { min-height: 40px; padding: 8px 14px; }
+  .home input { min-height: 44px; font-size: 16px; } /* 16 px stops iOS zooming the page on focus */
+  .leaflet-control-zoom a { width: 40px; height: 40px; line-height: 40px; }
+  .leaflet-popup-content { max-width: 70vw; }
+  .live-card .actions .btn { flex: 1 1 140px; }
 }

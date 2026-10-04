@@ -1,14 +1,41 @@
 /* Restock Radar: draws the stores, the live online hits and the retailer status lamps. */
 (function () {
   const C = window.PokeCommon;
-  const HOME = [40.7884, -74.1332]; // North Arlington
+  let HOME = [40.7884, -74.1332]; // town centre until stores.json (and then this browser's saved home) says otherwise
+  let homeMarker = null, homeIsCustom = false;
   const COLORS = { target: "#e4352b", walmart: "#2d8cf0", bestbuy: "#4f6bed", gamestop: "#c9ced6", pokemoncenter: "#ffd23f", lgs: "#d99a2b" };
   const $ = (id) => document.getElementById(id);
 
   const map = L.map("map", { zoomControl: true }).setView(HOME, 12);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap" }).addTo(map);
-  L.marker(HOME, { icon: L.divIcon({ className: "", html: '<div class="pin home"></div>', iconSize: [16, 16] }) }).addTo(map).bindTooltip("Home");
+  function placeHome() {
+    if (homeMarker) map.removeLayer(homeMarker);
+    homeMarker = L.marker(HOME, { icon: L.divIcon({ className: "", html: '<div class="pin home"></div>', iconSize: [16, 16] }) }).addTo(map).bindTooltip("Home");
+    $("home-note").textContent = homeIsCustom ? "Distances are from your saved home (kept only in this browser)." : "Distances are from the town centre. Set your home for exact miles.";
+    $("home-clear").hidden = !homeIsCustom;
+  }
 
+  /* Home is private: the repo and site are public, so the exact spot is saved only in this browser. */
+  function useHome(townDefault) {
+    const fromLink = C.parseHomeParam(location.search);
+    if (fromLink) { C.saveHome(localStorage, fromLink[0], fromLink[1]); history.replaceState(null, "", location.pathname + location.hash); }
+    const h = C.loadHome(localStorage, townDefault);
+    HOME = [h.lat, h.lng]; homeIsCustom = h.custom; origin = HOME;
+    placeHome();
+  }
+
+  async function setHomeFromAddress(text) {
+    const note = $("home-note");
+    note.textContent = "Looking that up…";
+    try {
+      const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=" + encodeURIComponent(text);
+      const hit = (await (await fetch(url)).json())[0];
+      if (!hit || !C.saveHome(localStorage, Number(hit.lat), Number(hit.lon))) { note.textContent = "Could not find that address in the North Jersey / NYC area. Try the street and town."; return; }
+      useHome(HOME); drawLive(); drawStores(); fitAll();
+    } catch (e) { note.textContent = "Address lookup failed. Try again, or use my location."; }
+  }
+
+  const TOWN = HOME.slice();
   let stores = [], alerts = [], health = {}, origin = HOME, filter = "all", selected = null;
   const markers = new Map();
 
@@ -101,8 +128,10 @@
   $("chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; filter = b.dataset.k; drawChips(); drawStores(); fitAll(); });
   $("locate").addEventListener("click", () => {
     if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition((p) => { origin = [p.coords.latitude, p.coords.longitude]; drawLive(); drawStores(); }, () => { $("locate").textContent = "Location blocked"; });
+    navigator.geolocation.getCurrentPosition((p) => { origin = [p.coords.latitude, p.coords.longitude]; $("home-note").textContent = "Distances are from your current location."; drawLive(); drawStores(); }, () => { $("locate").textContent = "Location blocked"; });
   });
+  $("home-form").addEventListener("submit", (e) => { e.preventDefault(); const v = $("home-input").value.trim(); if (v) setHomeFromAddress(v); });
+  $("home-clear").addEventListener("click", () => { C.clearHome(localStorage); useHome(TOWN); drawLive(); drawStores(); fitAll(); });
 
   async function getJson(name, fallback) {
     try { return await (await fetch(name + "?ts=" + Date.now())).json(); } catch (e) { return fallback; }
@@ -111,6 +140,7 @@
   async function load(first) {
     const [s, a, h] = await Promise.all([getJson("stores.json", { stores: [] }), getJson("alerts.json", []), getJson("health.json", {})]);
     stores = s.stores || []; alerts = a || []; health = h || {};
+    if (first && s.home) { TOWN[0] = s.home.lat; TOWN[1] = s.home.lng; useHome(TOWN); }
     drawLamps(); drawLive(); drawChips(); drawStores();
     if (first) {
       fitAll();
@@ -119,6 +149,7 @@
     }
   }
 
+  placeHome();
   load(true);
   setInterval(() => load(false), 30000);
 })();
