@@ -57,19 +57,19 @@ def main():
                 row = {"file": name, "url": url, "error": str(exc)[:200]}
             index.append(row)
             print(json.dumps(row)[:700])
-    # GameStop fills its listing tiles from this JSON endpoint, keyed by product id: can the bot ask it directly?
+    # Can a GameStop product page be fetched by its product id alone? (the listing page lists ids server-side)
     try:
         listing = (OUT / "listing_gamestop_0.html").read_text(encoding="utf-8")
-        pids = list(dict.fromkeys(re.findall(r'data-pid="(\d+)"', listing)))[:20]
-        endpoint = "https://www.gamestop.com/on/demandware.store/Sites-gamestop-us-Site/default/Tile-GetProductsJSON"
-        for params in ({"pids": ",".join(pids)}, {"pid": pids[0]}):
-            response = http.get(endpoint, params=params, timeout=25)
-            (OUT / f"tile_{len(params)}.json").write_text(response.text[:200000], encoding="utf-8")
-            row = {"file": "tile_endpoint", "params": list(params), "status": response.status_code, "bytes": len(response.text), "head": response.text[:600]}
-            index.append(row)
-            print(json.dumps(row)[:900])
+        pids = list(dict.fromkeys(re.findall(r'data-pid="(\d+)"', listing)))[:4]
+        for pid in pids[:3]:
+            for form in (f"https://www.gamestop.com/products/-/{pid}.html", f"https://www.gamestop.com/product/{pid}", f"https://www.gamestop.com/toys-games/trading-cards/products/-/{pid}.html"):
+                response = http.get(form, timeout=25, allow_redirects=True)
+                title = re.search(r"<title[^>]*>(.*?)</title>", response.text, re.S)
+                row = {"file": "pid_probe", "pid": pid, "form": form, "status": response.status_code, "final": response.url, "title": re.sub(r"\s+", " ", title.group(1)).strip()[:90] if title else None, "data_available": re.findall(r'data-available="(true|false)"', response.text)[:2]}
+                index.append(row)
+                print(json.dumps(row)[:500])
     except Exception as exc:
-        index.append({"file": "tile_endpoint", "error": str(exc)[:200]})
+        index.append({"file": "pid_probe", "error": str(exc)[:200]})
     (OUT / "index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")
 
 
