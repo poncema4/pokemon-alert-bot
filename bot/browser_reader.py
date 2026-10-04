@@ -35,13 +35,15 @@ def classify_rendered(snapshot):
 class BrowserReader:
     """One headless Chromium kept open across cycles (starting it costs seconds, reading a page costs a few)."""
 
-    def __init__(self):
+    def __init__(self, wait_ms=4500):
         from playwright.sync_api import sync_playwright
+        self.wait_ms = wait_ms
         self._pw = sync_playwright().start()
         self._browser = self._pw.chromium.launch(headless=True)
         self._context = self._browser.new_context(viewport={"width": 1280, "height": 900}, locale="en-US", timezone_id="America/New_York")
 
-    def snapshot(self, url, wait_ms=4500):
+    def snapshot(self, url, wait_ms=None):
+        wait_ms = self.wait_ms if wait_ms is None else wait_ms
         page = self._context.new_page()
         row = {"url": url}
         try:
