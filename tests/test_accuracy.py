@@ -2329,6 +2329,17 @@ def test_ci_runs_the_end_to_end_test():
     assert "python -u tests/test_end_to_end.py" in step and 'POKEPING_REQUIRE_BROWSER: "1"' in step, "CI must run the end-to-end test with a real browser required"
 
 
+def test_every_tool_script_can_be_imported_the_way_its_workflow_runs_it():
+    """reader_probe broke when browser_reader started importing sellers by plain name: the workflow ran it from the repo root and got
+    ModuleNotFoundError. Every script in tools/ must at least import cleanly (running it is not needed)."""
+    import subprocess
+    tools = sorted((ROOT / "tools").glob("*.py"))
+    assert len(tools) >= 6, tools
+    for tool in tools:
+        run = subprocess.run([sys.executable, "-B", "-c", f"import runpy; runpy.run_path({str(tool)!r}, run_name='import_check')"], cwd=ROOT, capture_output=True, text=True, timeout=60)
+        assert run.returncode == 0, f"tools/{tool.name} cannot be imported:\n{run.stderr[-600:]}"
+
+
 def test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued():
     sys.path.insert(0, str(ROOT / "tools"))
     import ensure_watcher
@@ -2502,6 +2513,7 @@ if __name__ == "__main__":
     test_store_hours_data_is_complete_and_sourced()
     test_page_assets_are_versioned_so_a_browser_never_mixes_releases()
     test_ci_runs_the_end_to_end_test()
+    test_every_tool_script_can_be_imported_the_way_its_workflow_runs_it()
     test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued()
     test_the_watcher_never_shares_a_concurrency_group_with_test_runs()
     test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
