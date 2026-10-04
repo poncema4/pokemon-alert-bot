@@ -21,7 +21,7 @@ PAGES = {
 }
 
 
-STRATEGIES = [("commit", 12000), ("commit", 20000), ("commit", 30000)] * 2  # two repeats each: hydration timing varies between loads
+STRATEGIES = [("commit", 20000)] * 3  # repeats: hydration timing varies between loads
 
 
 def main() -> int:
@@ -33,7 +33,7 @@ def main() -> int:
                 row = reader.snapshot(url)
                 row.pop("url", None)
                 stock, reason, signal = classify_rendered(row)
-                print(json.dumps({"strategy": f"{wait_until}+{wait_ms}", "page": name, "seconds": round(time.time() - started, 1), "stock": stock, "reason": reason, "signal": signal, "status": row.get("status"), "chars": row.get("body_chars"), "buttons": row.get("buttons"), "error": row.get("error")}))
+                print(json.dumps({"strategy": f"{wait_until}+{wait_ms}", "page": name, "seconds": round(time.time() - started, 1), "stock": stock, "reason": reason, "signal": signal, "status": row.get("status"), "chars": row.get("body_chars"), "buttons": row.get("buttons"), "error": row.get("error"), "sku": row.get("sku")}))
         finally:
             reader.close()
     return 0

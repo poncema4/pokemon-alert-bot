@@ -56,7 +56,8 @@ class BrowserReader:
         if (label && wanted.test(label)) buttons.push({label, visible: visible(el), enabled: !el.disabled && el.getAttribute('aria-disabled') !== 'true'});
         if (buttons.length >= 40) break;
       }
-      return {title: document.title.slice(0, 160), text: (document.body ? document.body.innerText : '').slice(0, 150000),
+      const skuMatch = /(?:"skuId"\\s*:\\s*"?|data-sku-id="|\\bSKU:?\\s*(?:<[^>]*>\\s*)*)(\\d{7})\\b/.exec(document.documentElement.innerHTML);
+      return {sku: skuMatch ? skuMatch[1] : null, title: document.title.slice(0, 160), text: (document.body ? document.body.innerText : '').slice(0, 150000),
               captchaNode: !!document.querySelector('#px-captcha, [id*=captcha], iframe[src*=captcha]'), buttons};
     }"""
     READY = "() => Array.from(document.querySelectorAll('button')).some(b => /^(add to (cart|bag|basket)|sold out|unavailable|coming soon|check stores|notify me)$/i.test((b.innerText||'').trim()))"
@@ -76,6 +77,7 @@ class BrowserReader:
             data = page.evaluate(self.COLLECT)
             text = data["text"]
             row["title"] = data["title"]
+            row["sku"] = data.get("sku")
             row["body_chars"] = len(text)
             haystack = text + (" px-captcha" if data["captchaNode"] else "")
             row["walls"] = [w for w in WALLS if re.search(w, haystack, re.I)]
@@ -92,7 +94,7 @@ class BrowserReader:
         """Same shape as monitor.check_product_page."""
         row = self.snapshot(url)
         stock, reason, signal = classify_rendered(row)
-        return {"stock": stock, "title": row.get("title") or "", "posted_at": None, "http_status": row.get("status"), "reason": reason, "signal": signal, "price": row.get("price")}
+        return {"stock": stock, "title": row.get("title") or "", "posted_at": None, "http_status": row.get("status"), "reason": reason, "signal": signal, "price": row.get("price"), "sku": row.get("sku")}
 
     def close(self):
         try:
