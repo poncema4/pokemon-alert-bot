@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "ts": "2026-10-04T17:17:59.507949+00:00",
+    "detected_at": "2026-10-04T17:17:59.507949+00:00",
+    "posted_at": null,
+    "expires_at": "2026-10-04T17:32:59.507949+00:00",
+    "kind": "stock",
+    "retailer": "bestbuy",
+    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
+    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "stores": [],
+    "price": 284.99,
+    "msrp": 49.99,
+    "signal": "browser"
+  }
+]
