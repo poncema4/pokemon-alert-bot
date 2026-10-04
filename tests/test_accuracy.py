@@ -2010,6 +2010,19 @@ def test_page_assets_are_versioned_so_a_browser_never_mixes_releases():
             assert re.fullmatch(r"(?:css|js)/[A-Za-z0-9_.-]+\.(?:css|js)\?v=[0-9a-f]{8}", ref), f"{page.name}: {ref} has no version stamp"
 
 
+def test_the_watcher_never_shares_a_concurrency_group_with_test_runs():
+    """GitHub keeps one PENDING run per group. The watcher's queued handover shared a group with push test runs, so every merge replaced it
+    (cancelled) and the watcher chain broke: the data went stale after each merge until the 30-minute cron."""
+    workflow = (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
+    block = workflow[workflow.index("concurrency:"):workflow.index("jobs:")]
+    group = re.search(r"group: (.+)", block).group(1)
+    assert "'schedule'" in group and "'workflow_dispatch'" in group and "pokeping-watcher" in group, "the watcher (schedule / dispatch) has its own group"
+    assert "pokeping-tests-" in group and "github.ref" in group, "test runs (push / pull_request) use a different group per ref"
+    assert "cancel-in-progress: ${{ github.event_name == 'pull_request' }}" in block, "a running watcher is never cancelled by a newer run; only superseded PR test runs are"
+    names = re.findall(r"^\s+group: (.+)$", "\n".join((p.read_text(encoding="utf-8") for p in (ROOT / ".github" / "workflows").glob("*.yml"))), re.M)
+    assert len([n for n in names if "pokeping-watcher" in n]) == 1, "no other workflow joins the watcher's group"
+
+
 def test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one():
     import os
     import shutil
@@ -2125,6 +2138,7 @@ if __name__ == "__main__":
     test_the_map_re_reads_the_clock_by_itself()
     test_store_hours_data_is_complete_and_sourced()
     test_page_assets_are_versioned_so_a_browser_never_mixes_releases()
+    test_the_watcher_never_shares_a_concurrency_group_with_test_runs()
     test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
     test_browser_stores_are_read_gently()
     test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone()
