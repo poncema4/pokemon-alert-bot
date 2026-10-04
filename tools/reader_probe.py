@@ -21,7 +21,7 @@ PAGES = {
 }
 
 
-STRATEGIES = [("commit", 12000), ("domcontentloaded", 12000), ("load", 12000), ("load", 25000)]
+STRATEGIES = [("commit", 12000), ("commit", 20000), ("commit", 30000)] * 2  # two repeats each: hydration timing varies between loads
 
 
 def main() -> int:
