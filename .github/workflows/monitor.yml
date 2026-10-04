@@ -56,7 +56,7 @@ jobs:
       - name: Run web helper tests
         run: node tests/web/common.test.js
       - name: Compile production Python
-        run: python -m py_compile monitor.py monitor_loop.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py update_30th_prices.py tests/test_accuracy.py
+        run: python -m py_compile tools/snapshot.py tools/check_pins.py monitor.py monitor_loop.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py update_30th_prices.py tests/test_accuracy.py
 
   check-stock:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
