@@ -79,7 +79,7 @@ The route page can use the device's current coordinates as its origin. Google Ma
 ## GitHub Actions
 
 ### Stock monitor
-`.github/workflows/monitor.yml` runs every five minutes (`2/5 * * * *`) plus manual dispatch. The job runs tests first, normalizes missed first-stock alerts, checks retailers, refreshes verified live hits, processes new listings, then commits runtime state.
+`.github/workflows/monitor.yml` runs tests first, then one long-lived watcher job (`monitor_loop.py`, about 55 minutes). GitHub's cron is best effort (measured median gap between scheduled runs: 239 minutes), so the job polls inside itself every 60 seconds and starts its own successor when it ends; a 30-minute cron is only the safety net. Each cycle checks the seed and known listings, refreshes the live-hit map and announces new listings; every 10th cycle also runs the slower keyword searches. State is committed when something meaningful changed (never just because `last_seen` moved), and at once when the live-hit list changes. On an always-on machine, `python monitor_loop.py` does the same.
 
 ### 30th prices
 `.github/workflows/30th-prices.yml` runs hourly at minute 17 plus manual dispatch and updates the existing price JSON rather than creating timestamped copies.
