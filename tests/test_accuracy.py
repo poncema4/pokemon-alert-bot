@@ -780,7 +780,7 @@ def test_main_gamestop_trap_never_alerts_but_a_real_listing_does_at_any_price():
 def test_live_hits_show_every_in_stock_item_with_its_price():
     import tempfile
     now = datetime.now(timezone.utc).isoformat()
-    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": now, "in_stock": True, "signal": "page"}
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": now, "in_stock": True, "in_stock_since": now, "signal": "page"}
     state = {
         "schema_version": 4,
         "gamestop::https://www.gamestop.com/toys-games/trading-cards/products/a/1.html": {**base, "price": 49.99, "msrp": 49.99},
@@ -1077,6 +1077,79 @@ def test_new_listing_burst_is_capped_with_one_summary():
     assert len(sent) == 5 and len(notices) == 1, "a second run adds nothing"
 
 
+def _run_live_hits(tmp, state, alerts, now):
+    (tmp / "state.json").write_text(json.dumps(state))
+    (tmp / "alerts.json").write_text(json.dumps(alerts))
+    (tmp / "config.json").write_text(json.dumps({"alert_ttl_minutes": 15}))
+    old = (refresh_live_hits.STATE_FILE, refresh_live_hits.ALERTS_FILE, refresh_live_hits.CONFIG_FILE)
+    refresh_live_hits.STATE_FILE, refresh_live_hits.ALERTS_FILE, refresh_live_hits.CONFIG_FILE = tmp / "state.json", tmp / "alerts.json", tmp / "config.json"
+    try:
+        refresh_live_hits.main(now=now)
+    finally:
+        refresh_live_hits.STATE_FILE, refresh_live_hits.ALERTS_FILE, refresh_live_hits.CONFIG_FILE = old
+    return json.loads((tmp / "alerts.json").read_text())
+
+
+def test_a_live_hit_clears_fifteen_minutes_after_it_came_into_stock():
+    import tempfile
+    t0 = datetime(2026, 10, 4, 16, 0, tzinfo=timezone.utc)
+    url = "https://www.gamestop.com/toys-games/trading-cards/products/a/1.html"
+    key = f"gamestop::{url}"
+    entry = lambda since, stock=True, seen=t0 + timedelta(minutes=0): {"pokemon": True, "title": "Pokemon ETB", "in_stock": stock, "in_stock_since": since, "last_seen": seen.isoformat(), "signal": "page"}
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        # 5 minutes in: live, and the expiry is fixed at in-stock time + 15 minutes.
+        now = t0 + timedelta(minutes=5)
+        live = _run_live_hits(tmp, {"schema_version": 4, key: entry(t0.isoformat(), seen=now)}, [], now)
+        assert len(live) == 1 and live[0]["expires_at"] == (t0 + timedelta(minutes=15)).isoformat() and live[0]["detected_at"] == t0.isoformat()
+        # 14 minutes in: still live, expiry NOT extended by the later check.
+        now = t0 + timedelta(minutes=14)
+        live = _run_live_hits(tmp, {"schema_version": 4, key: entry(t0.isoformat(), seen=now)}, live, now)
+        assert len(live) == 1 and live[0]["expires_at"] == (t0 + timedelta(minutes=15)).isoformat(), "checking again must not extend the 15 minutes"
+        # 16 minutes in: still in stock, but the hit clears.
+        now = t0 + timedelta(minutes=16)
+        live = _run_live_hits(tmp, {"schema_version": 4, key: entry(t0.isoformat(), seen=now)}, live, now)
+        assert live == [], "after 15 minutes the live section must not show it, even though it is still in stock"
+        # Going out of stock clears it at once, even inside the window.
+        now = t0 + timedelta(minutes=3)
+        live = _run_live_hits(tmp, {"schema_version": 4, key: entry(t0.isoformat(), seen=now)}, [], now)
+        assert len(live) == 1
+        live = _run_live_hits(tmp, {"schema_version": 4, key: entry(None, stock=False, seen=now)}, live, now)
+        assert live == [], "out of stock is not live"
+        # Back in stock later (a new stay) is a fresh hit with a fresh 15 minutes.
+        later = t0 + timedelta(minutes=40)
+        live = _run_live_hits(tmp, {"schema_version": 4, key: entry((t0 + timedelta(minutes=38)).isoformat(), seen=later)}, [], later)
+        assert len(live) == 1 and live[0]["expires_at"] == (t0 + timedelta(minutes=53)).isoformat()
+        # An entry with no known start (older than this feature) is never shown as live; neither is one not checked for 5+ minutes.
+        assert _run_live_hits(tmp, {"schema_version": 4, key: {**entry(None), "in_stock_since": None}}, [], t0) == []
+        assert _run_live_hits(tmp, {"schema_version": 4, key: entry(t0.isoformat(), seen=t0)}, [], t0 + timedelta(minutes=6)) == [], "stale checks are not live"
+
+
+def test_monitor_tracks_when_a_stay_in_stock_began():
+    import tempfile
+    config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": ["https://www.target.com/p/-/A-1"]}}
+    url_key = "target::https://www.target.com/p/-/A-1"
+    in_stock = lambda u: _Resp(200, u, '<title>Pokemon ETB</title>"availability":"https://schema.org/InStock"')
+    sold_out = lambda u: _Resp(200, u, "<title>Pokemon ETB</title>Sold out online")
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-03T00:00:00+00:00"}
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        # transition from not in stock: starts now
+        _run_main(tmp, config, {"schema_version": 4, url_key: {**base, "in_stock": False}}, {"target.com": in_stock})
+        started = json.loads((tmp / "state.json").read_text())[url_key]["in_stock_since"]
+        assert started and started > "2026-10-04"
+        # stays in stock: unchanged
+        _run_main(tmp, config, json.loads((tmp / "state.json").read_text()), {"target.com": in_stock})
+        assert json.loads((tmp / "state.json").read_text())[url_key]["in_stock_since"] == started
+        # goes out of stock: cleared
+        _run_main(tmp, config, json.loads((tmp / "state.json").read_text()), {"target.com": sold_out})
+        assert json.loads((tmp / "state.json").read_text())[url_key]["in_stock_since"] is None
+        # legacy in-stock entry with no in_stock_since: falls back to when it was first seen (old), never "just now"
+        legacy = {"schema_version": 4, url_key: {**base, "in_stock": True, "first_seen": "2026-09-01T00:00:00+00:00"}}
+        _run_main(tmp, config, legacy, {"target.com": in_stock})
+        assert json.loads((tmp / "state.json").read_text())[url_key]["in_stock_since"] == "2026-09-01T00:00:00+00:00"
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -1126,6 +1199,8 @@ if __name__ == "__main__":
     test_seed_urls_with_tracking_junk_are_requested_and_stored_canonically()
     test_state_merges_url_variants_and_keeps_the_newest_reading()
     test_new_listing_burst_is_capped_with_one_summary()
+    test_a_live_hit_clears_fifteen_minutes_after_it_came_into_stock()
+    test_monitor_tracks_when_a_stay_in_stock_began()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()

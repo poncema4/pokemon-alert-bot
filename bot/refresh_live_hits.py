@@ -37,13 +37,17 @@ def parse_time(value):
         return None
 
 
-def main():
+def main(now=None):
+    """Refresh the live-hit list. A hit is live for alert_ttl_minutes (15) after it came into stock, then it clears,
+    even if the item stays in stock; it comes back only if the item goes out of stock and returns. The expiry is fixed,
+    never extended by later checks."""
     state = load(STATE_FILE, {})
     alerts = load(ALERTS_FILE, [])
     config = load(CONFIG_FILE, {})
-    ttl_minutes = max(5, int(config.get("alert_ttl_minutes", 30)))
-    now = datetime.now(timezone.utc)
-    freshness_cutoff = now - timedelta(minutes=ttl_minutes)
+    ttl_minutes = max(5, int(config.get("alert_ttl_minutes", 15)))
+    now = now or datetime.now(timezone.utc)
+    ttl = timedelta(minutes=ttl_minutes)
+    freshness_cutoff = now - timedelta(minutes=5)  # the item must also have been checked within the last few minutes
 
     live_keys = set()
     refreshed = 0
@@ -57,15 +61,18 @@ def main():
         last_seen = parse_time(entry.get("last_seen", ""))
         if not last_seen or last_seen < freshness_cutoff:
             continue
+        came_in = parse_time(entry.get("in_stock_since") or "")
+        if not came_in or now - came_in > ttl:
+            continue  # unknown start (old entry) or live for longer than the window: not a live hit
 
         live_keys.add(key)
         existing = next((a for a in alerts if a.get("kind") == "stock" and a.get("retailer") == retailer and a.get("url") == url), None)
         if existing is None:
             alerts.insert(0, {
-                "ts": now.isoformat(),
-                "detected_at": now.isoformat(),
+                "ts": came_in.isoformat(),
+                "detected_at": came_in.isoformat(),
                 "posted_at": entry.get("posted_at"),
-                "expires_at": (now + timedelta(minutes=ttl_minutes)).isoformat(),
+                "expires_at": (came_in + ttl).isoformat(),
                 "kind": "stock",
                 "retailer": retailer,
                 "title": entry.get("title") or f"{retailer.title()} Pokémon product",
@@ -80,7 +87,7 @@ def main():
             })
         else:
             existing.update({
-                "expires_at": (now + timedelta(minutes=ttl_minutes)).isoformat(),
+                "expires_at": (came_in + ttl).isoformat(),
                 "verified": True,
                 "stock": True,
                 "online": True,
@@ -89,8 +96,8 @@ def main():
                 "msrp": entry.get("msrp"),
                 "signal": entry.get("signal"),
                 "posted_at": entry.get("posted_at"),
-                "detected_at": existing.get("detected_at") or now.isoformat(),
-                "ts": existing.get("ts") or existing.get("detected_at") or now.isoformat(),
+                "detected_at": came_in.isoformat(),
+                "ts": came_in.isoformat(),
             })
         refreshed += 1
 
