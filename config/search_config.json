@@ -376,5 +376,6 @@
     "JJG2TL8XCJ": "6685559",
     "JJG2TL8J45": "6678361"
   },
-  "rearm_minutes": 20
+  "rearm_minutes": 20,
+  "discovery_budget_seconds": 120
 }
