@@ -1,0 +1,44 @@
+/* Shared design tokens and chrome for the map, route and 30th pages. */
+:root {
+  --ink: #0e1620;
+  --panel: #162231;
+  --panel-2: #1c2b3d;
+  --line: #263649;
+  --text: #eaf0f7;
+  --muted: #8fa1b8;
+  --live: #ffd23f;
+  --alert: #e4352b;
+  --ok: #2bd4a0;
+  --blind: #f2a33a;
+  --radius: 10px;
+  --display: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--ink); color: var(--text); font: 15px/1.45 var(--body); }
+a { color: inherit; }
+h1, h2, h3 { font-family: var(--display); margin: 0; letter-spacing: .01em; }
+:focus-visible { outline: 2px solid var(--live); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.topbar { display: flex; align-items: center; gap: 14px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); flex-wrap: wrap; }
+.brand { font-family: var(--display); font-size: 1.35rem; font-weight: 700; margin-right: auto; }
+.nav { display: flex; gap: 4px; }
+.nav a { padding: 7px 12px; border-radius: 8px; text-decoration: none; color: var(--muted); font-weight: 600; }
+.nav a:hover { color: var(--text); background: var(--panel-2); }
+.nav a[aria-current="page"] { color: var(--ink); background: var(--live); }
+
+.lamps { display: flex; gap: 8px; flex-wrap: wrap; }
+.lamp { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border: 1px solid var(--line); border-radius: 999px; font-size: .82rem; background: var(--ink); }
+.lamp i { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+.lamp[data-state="ok"] i { background: var(--ok); box-shadow: 0 0 0 3px rgba(43, 212, 160, .18); }
+.lamp[data-state="blind"] i { background: var(--blind); }
+.lamp[data-state="stale"] i { background: var(--alert); }
+.lamp small { color: var(--muted); }
+
+.btn { display: inline-block; padding: 7px 12px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: .85rem; border: 1px solid var(--line); background: var(--panel-2); color: var(--text); cursor: pointer; }
+.btn.primary { background: var(--live); color: var(--ink); border-color: var(--live); }
+.btn:hover { filter: brightness(1.1); }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

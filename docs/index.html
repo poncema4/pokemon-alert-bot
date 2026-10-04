@@ -1,1 +1,44 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>North Jersey Pokémon Snipe Map</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{--bg:#0f1115;--panel:#171a21;--line:#2a3140;--text:#eef1f6;--muted:#a6afbe;--gold:#ffcb05;--accent:#e3350d;--green:#34d27b;--red:#f04444}*{box-sizing:border-box}html,body{height:100%;margin:0}body{font:14px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}header{height:72px;padding:13px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1c1410,var(--bg));position:relative}h1{font-size:1.1rem;margin:0 0 3px}.sub{color:var(--muted);font-size:.8rem}.nav{position:absolute;right:12px;top:12px;display:flex;gap:6px}.nav a{padding:8px 10px;border-radius:7px;text-decoration:none;font-weight:800;background:var(--gold);color:#151515;font-size:.78rem}.nav a.route{background:#222733;color:var(--text);border:1px solid var(--line)}.layout{display:grid;grid-template-columns:360px minmax(0,1fr);height:calc(100% - 72px)}aside{overflow-y:auto;border-right:1px solid var(--line);background:var(--panel)}#map{height:100%;min-width:0}.filters{display:flex;flex-wrap:wrap;gap:6px;padding:10px}.filter{padding:6px 9px;color:var(--text);background:#222733;border:1px solid var(--line);border-radius:999px;cursor:pointer}.filter.active{background:var(--accent);border-color:var(--accent)}.card{margin:9px;padding:10px;background:#12151c;border:1px solid var(--line);border-radius:10px}.card h3{margin:0 0 4px;font-size:.9rem}.meta,.note{color:var(--muted);font-size:.78rem}.btn{display:inline-block;margin-top:8px;margin-right:5px;padding:6px 8px;border-radius:6px;text-decoration:none;background:var(--gold);color:#151515;font-weight:800;font-size:.76rem}.product{background:#fff}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.open{background:var(--green)}.closed{background:var(--red)}.ping{background:var(--gold);border:2px solid var(--accent)}@media(max-width:800px){body{overflow:auto}header{height:auto;min-height:105px;padding-right:10px}.nav{position:static;margin-top:7px}.layout{grid-template-columns:1fr;height:auto}aside{max-height:46vh}#map{height:54vh;min-height:360px}}</style></head><body><header><h1>North Jersey Pokémon Snipe Map</h1><div class="sub">Verified online hits from Target, Walmart, Best Buy and GameStop. Unknown/blocked pages never become alerts.</div><div class="nav"><a href="30th.html">🎴 30th Guide</a><a class="route" href="route.html">🗺️ Route</a></div></header><div class="layout"><aside><div class="filters"><button class="filter active" data-kind="all">All</button><button class="filter" data-kind="alerts">Live Hits</button><button class="filter" data-kind="target">Target</button><button class="filter" data-kind="walmart">Walmart</button><button class="filter" data-kind="bestbuy">Best Buy</button><button class="filter" data-kind="gamestop">GameStop</button><button class="filter" data-kind="lgs">Shops</button></div><div id="list"></div></aside><div id="map"></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>const home=[40.7884,-74.1332];let map=L.map('map').setView(home,12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);let stores=[],alerts=[],layers=[],kind='all';const colors={target:'#cc0000',walmart:'#0071ce',bestbuy:'#0046be',gamestop:'#333',lgs:'#b8860b'};function openNow(s){if(!s.open||!s.close)return true;const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());const n=Number(p.find(x=>x.type==='hour').value)*60+Number(p.find(x=>x.type==='minute').value),a=s.open.split(':').map(Number),b=s.close.split(':').map(Number);return n>=a[0]*60+a[1]&&n<b[0]*60+b[1]}function live(a){return a&&a.verified===true&&a.kind==='stock'&&a.expires_at&&new Date(a.expires_at)>new Date()&&['target','walmart','bestbuy','gamestop'].includes(a.retailer)}function dir(s){return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(s.address)}function clear(){layers.forEach(x=>map.removeLayer(x));layers=[]}function render(){clear();const list=document.getElementById('list');list.innerHTML='';L.circleMarker(home,{radius:10,color:'#a97d00',fillColor:'#ffcb05',fillOpacity:.95,weight:2}).addTo(map).bindPopup('<b>You — North Arlington</b>');const shown=stores.filter(s=>kind==='all'||kind==='alerts'||kind==='lgs'&&s.retailer==='lgs'||s.retailer===kind);shown.forEach(s=>{const c=colors[s.retailer]||'#b8860b';const m=L.circleMarker([s.lat,s.lng],{radius:8,color:c,fillColor:c,fillOpacity:.9,weight:2}).addTo(map).bindPopup('<b>'+s.name+'</b><br>'+s.address+'<br>'+(s.hours||'')+'<br><a class="btn" href="'+dir(s)+'" target="_blank">Directions</a>');layers.push(m);if(kind!=='alerts'){const el=document.createElement('div');el.className='card';el.innerHTML='<h3><span class="dot '+(openNow(s)?'open':'closed')+'"></span>'+s.name+'</h3><div class="meta">'+s.address+'<br>'+s.hours+'<br>'+(openNow(s)?'Open now (approx)':'Closed (approx)')+'</div><a class="btn" href="'+dir(s)+'" target="_blank">Directions</a>';list.appendChild(el)}});const shownAlerts=alerts.filter(live).filter(a=>kind==='all'||kind==='alerts'||a.retailer===kind);if(kind==='all'||kind==='alerts'){if(!shownAlerts.length){const n=document.createElement('div');n.className='card note';n.textContent='No verified live hits right now.';list.appendChild(n)}shownAlerts.slice(0,20).forEach(a=>{const s=stores.find(x=>x.retailer===a.retailer&&x.monitored);if(s)L.circleMarker([s.lat,s.lng],{radius:17,color:'#e3350d',fillColor:'#ffcb05',fillOpacity:.25,weight:3}).addTo(map).bindPopup('<b>LIVE ONLINE HIT — '+a.retailer.toUpperCase()+'</b><br>'+a.title+'<br><a class="btn product" href="'+a.url+'" target="_blank">Product</a>');const el=document.createElement('div');el.className='card';el.innerHTML='<h3>🟢 LIVE ONLINE HIT — '+a.retailer+'</h3><div class="meta">Detected: '+new Date(a.detected_at||a.ts).toLocaleString()+'</div><p>'+a.title+'</p><a class="btn product" href="'+a.url+'" target="_blank">Product</a>';list.appendChild(el)})}if(shown.length)map.fitBounds([[home[0],home[1]],...shown.map(s=>[s.lat,s.lng])],{padding:[30,30],maxZoom:12});setTimeout(()=>map.invalidateSize(),100)}async function load(){try{const [s,a]=await Promise.all([fetch('stores.json?ts='+Date.now()).then(r=>r.json()),fetch('alerts.json?ts='+Date.now()).then(r=>r.json()).catch(()=>[])]);stores=s.stores||[];alerts=a||[];render()}catch(e){document.getElementById('list').innerHTML='<div class="card note">Could not load map data. Refresh once.</div>'}}document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');kind=b.dataset.kind;render()});load();setInterval(load,30000)</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pokémon Restock Radar — North Jersey</title>
+  <link rel="icon" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/map.css">
+</head>
+<body class="map-page">
+  <header class="topbar">
+    <div class="brand">Restock Radar</div>
+    <div class="lamps" id="lamps" aria-label="Which retailers the bot can currently read"></div>
+    <nav class="nav" aria-label="Pages">
+      <a href="index.html" aria-current="page">Map</a>
+      <a href="route.html">Route</a>
+      <a href="30th.html">30th guide</a>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <aside class="rail" aria-label="Live hits and nearby stores">
+      <section aria-labelledby="live-title">
+        <div class="rail-head"><h2 id="live-title">Live online</h2><span id="checked" class="muted"></span></div>
+        <div id="live"></div>
+      </section>
+      <section aria-labelledby="near-title">
+        <div class="rail-head"><h2 id="near-title">Stores near you</h2><button class="btn" id="locate" type="button">Use my location</button></div>
+        <div class="chips" id="chips" role="group" aria-label="Filter stores"></div>
+        <div id="stores"></div>
+      </section>
+    </aside>
+    <main id="map" aria-label="Map of stores"></main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/map.js"></script>
+</body>
+</html>
