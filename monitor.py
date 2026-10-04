@@ -23,7 +23,8 @@ from pathlib import Path
 from urllib.parse import quote_plus, unquote, urljoin, urlparse
 
 import requests
-from notify import alert
+import advisor
+from notify import alert, send_card
 
 try:
     from zoneinfo import ZoneInfo
@@ -34,6 +35,7 @@ ROOT = Path(__file__).parent
 STATE_FILE = ROOT / "state.json"
 CONFIG_FILE = ROOT / "search_config.json"
 ALERTS_FILE = ROOT / "docs/alerts.json"
+MARKET_FILE = ROOT / "docs/market.json"
 
 SEARCH_URLS = {
     "target": "https://www.target.com/s?searchTerm={q}",
@@ -371,24 +373,6 @@ def format_et(value):
         return value
 
 
-def send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, signal="structured", price=None, msrp=None):
-    if kind != "stock":
-        return
-    verdict = (
-        "Verified in stock — the retailer page exposed structured availability data."
-        if signal in ("structured", "page")
-        else "Likely in stock — cart/pickup wording was found but there is no structured availability data. Confirm on the page."
-    )
-    lines = [
-        f"**{title}**",
-        verdict,
-        f"Detected: {format_et(detected_at)}",
-        f"Map: [Open map]({map_url})",
-        f"Product: [Open product page]({url})",
-    ]
-    alert(f"🟢 IN STOCK — {retailer.title()}", "\n".join(lines), ping=ping)
-
-
 def record_alert(alerts, retailer, kind, title, url, verified, posted_at, detected_at, stock=None):
     now = datetime.now(timezone.utc)
     alerts.insert(0, {
@@ -446,6 +430,7 @@ def main(discover=True):
     print("Niche shops: MAP ONLY — no Discord alerts")
 
     health = load_json(HEALTH_FILE, {})
+    market_cache = load_json(MARKET_FILE, {})
     notices = []
 
     for retailer in retailers:
@@ -484,7 +469,8 @@ def main(discover=True):
             if kind == "stock":
                 detected_at = now.isoformat()
                 record_alert(alerts, retailer, kind, title, url, True, posted_at, detected_at, True)
-                send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, result.get("signal"), price, msrp)
+                market = advisor.market_for(config, market_cache, title, url)
+                send_card(advisor.build_card(retailer, kind, title, url, map_url, detected_at, result.get("signal"), price, msrp, market, ping))
                 sent["stock"] += 1
                 last_stock_alert = detected_at
             else:
@@ -535,8 +521,9 @@ def main(discover=True):
         print(f"  {retailer} health: {counts}")
 
     for kind, retailer, message in notices:
-        alert(f"{'⚠️ BLIND SPOT' if kind == 'blind' else '✅ RECOVERED'} — {retailer.title()}", message, ping=ping if kind == "blind" else False)
+        alert(f"{'⚠️ BLIND SPOT' if kind == 'blind' else '✅ RECOVERED'} · {retailer.title()}", message, ping=ping if kind == "blind" else False, tone="blind" if kind == "blind" else "ok")
     save_json(HEALTH_FILE, health)
+    save_json(MARKET_FILE, market_cache)
 
     seed_keys = {f"{r}::{u}" for r, urls in config.get("seed_urls", {}).items() for u in urls}
     before = len(state)

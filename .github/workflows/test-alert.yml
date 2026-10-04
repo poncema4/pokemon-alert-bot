@@ -1,0 +1,25 @@
+name: Send test alerts
+
+# Manual: posts three clearly-labelled TEST stock alerts (BUY: LOW, ABOVE MARKET, FAIR) and a blind-spot notice to the
+# Discord webhook, then prints what Discord answered. Test alerts never @everyone.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - name: Post the test alerts
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python -u tools/send_test_alert.py

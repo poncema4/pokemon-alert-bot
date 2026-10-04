@@ -1,0 +1,81 @@
+{
+ "results": [
+  {
+   "totalResults": 222,
+   "results": [
+    {
+     "productId": 692947.0,
+     "productName": "Pitch Black Elite Trainer Box",
+     "marketPrice": 75.58,
+     "lowestPrice": 25.0,
+     "totalListings": 213.0,
+     "setName": "ME05: Pitch Black",
+     "productTypeName": null
+    },
+    {
+     "productId": 692948.0,
+     "productName": "Pitch Black Elite Trainer Box Case",
+     "marketPrice": 714.52,
+     "lowestPrice": 775.0,
+     "totalListings": 23.0,
+     "setName": "ME05: Pitch Black",
+     "productTypeName": null
+    },
+    {
+     "productId": 692949.0,
+     "productName": "Pitch Black Pokemon Center Elite Trainer Box (Exclusive)",
+     "marketPrice": 119.43,
+     "lowestPrice": 109.31,
+     "totalListings": 188.0,
+     "setName": "ME05: Pitch Black",
+     "productTypeName": null
+    },
+    {
+     "productId": 692950.0,
+     "productName": "Pitch Black Pokemon Center Elite Trainer Box Case (Exclusive)",
+     "marketPrice": null,
+     "lowestPrice": 300.0,
+     "totalListings": 4.0,
+     "setName": "ME05: Pitch Black",
+     "productTypeName": null
+    },
+    {
+     "productId": 630686.0,
+     "productName": "Black Bolt Elite Trainer Box",
+     "marketPrice": 161.67,
+     "lowestPrice": 128.36,
+     "totalListings": 89.0,
+     "setName": "SV: Black Bolt",
+     "productTypeName": null
+    },
+    {
+     "productId": 630690.0,
+     "productName": "Black Bolt Elite Trainer Box Case",
+     "marketPrice": 1873.08,
+     "lowestPrice": 1684.78,
+     "totalListings": 12.0,
+     "setName": "SV: Black Bolt",
+     "productTypeName": null
+    },
+    {
+     "productId": 630687.0,
+     "productName": "Black Bolt Pokemon Center Elite Trainer Box (Exclusive)",
+     "marketPrice": 268.42,
+     "lowestPrice": 250.0,
+     "totalListings": 44.0,
+     "setName": "SV: Black Bolt",
+     "productTypeName": null
+    },
+    {
+     "productId": 242811.0,
+     "productName": "Celebrations Elite Trainer Box",
+     "marketPrice": 356.56,
+     "lowestPrice": 339.99,
+     "totalListings": 85.0,
+     "setName": "Celebrations",
+     "productTypeName": null
+    }
+   ]
+  }
+ ]
+}
