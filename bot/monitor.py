@@ -26,6 +26,7 @@ from urllib.parse import quote_plus, unquote, urljoin, urlparse, urlsplit, urlun
 import requests
 import advisor
 import gamestop_discovery
+import sellers
 from notify import alert, send_card
 
 try:
@@ -324,7 +325,10 @@ def check_product_page(http, retailer, url, timeout):
         print(f"  product page {reason} (HTTP {response.status_code}): {url}")
         return {"stock": None, "title": fallback_title, "posted_at": None, "http_status": response.status_code, "reason": reason, "signal": None}
     text = response.text
-    return {"stock": stock, "title": extract_title(text, retailer), "posted_at": extract_posted_time(text), "http_status": response.status_code, "reason": reason, "signal": signal, "price": extract_price(text)}
+    named = sellers.json_sellers(text)
+    if stock is True and sellers.marketplace_only(response.url, named):
+        stock, reason, signal = False, "marketplace_only", None   # in stock only from a third-party seller: the store itself has none
+    return {"stock": stock, "title": extract_title(text, retailer), "posted_at": extract_posted_time(text), "http_status": response.status_code, "reason": reason, "signal": signal, "price": extract_price(text), "seller": named[0] if named else None}
 
 
 HEALTH_FILE = ROOT / "docs/health.json"
@@ -602,6 +606,7 @@ def main(discover=True, cycle=0):
                 "price": price,
                 "msrp": msrp,
                 "sku": sku,
+                "seller": result.get("seller"),
                 "armed": armed,
                 "out_since": out_since,
             }

@@ -613,6 +613,55 @@ def test_rearm_state_rules():
     assert monitor.rearm_state({"armed": False, "out_since": "garbage"}, False, now, 20) == (False, now.isoformat()), "a corrupt timestamp restarts the streak, never crashes"
 
 
+def test_a_marketplace_reseller_is_not_the_store_restocking():
+    """Measured 2026-10-04: every Best Buy 'in stock' reading (Chaos Rising, Perfect Order, Pitch Black) was a third-party seller
+    ('Sold & shipped by Shopville Inc / Collectors Emporium', 'More options from Marketplace sellers $94.99 - $155.94'), not Best Buy."""
+    import sellers
+    bb = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-chaos-rising-elite-trainer-box/JJG2TL34RT"
+    assert sellers.is_store_seller(bb, "Best Buy") and sellers.is_store_seller(bb, "Best Buy Marketplace Direct") is True
+    assert not sellers.is_store_seller(bb, "Shopville Inc") and not sellers.is_store_seller(bb, "Collectors Emporium")
+    assert sellers.is_store_seller(bb, None) and sellers.is_store_seller(bb, ""), "no seller named: a first-party restock must never be missed"
+    assert sellers.is_store_seller("https://example.test/p/1", "Anyone"), "a store we do not know is not filtered"
+    assert sellers.marketplace_only(bb, ["Shopville Inc"]) and sellers.marketplace_only(bb, ["Shopville Inc", "Collectors Emporium"])
+    assert not sellers.marketplace_only(bb, ["Shopville Inc", "Best Buy"]) and not sellers.marketplace_only(bb, []), "any first-party offer, or no seller info, is not marketplace-only"
+    assert sellers.json_sellers('"offers":{"seller":{"@type":"Organization","name":"GameStop"},"price":"84.99"}') == ["GameStop"]
+    buy = {"label": "Add to cart", "visible": True, "enabled": True}
+    page = {"url": bb, "title": "Pokemon ETB - Best Buy", "body_chars": 3300, "walls": [], "buttons": [buy]}
+    assert browser_reader.classify_rendered({**page, "seller": "Shopville Inc"}) == (False, "marketplace_only", None)
+    assert browser_reader.classify_rendered({**page, "seller": "Collectors Emporium"}) == (False, "marketplace_only", None)
+    assert browser_reader.classify_rendered({**page, "seller": "Best Buy"}) == (True, "ok", "browser")
+    assert browser_reader.classify_rendered(page) == (True, "ok", "browser"), "no seller named: still a restock"
+    # HTTP stores: the page's own seller data
+    def read(retailer, url, seller, available="InStock"):
+        body = f'<title>Pokemon ETB</title><script type="application/ld+json">{{"@type":"Product","offers":{{"availability":"https://schema.org/{available}","price":"96.99","seller":{{"@type":"Organization","name":"{seller}"}}}}}}</script>'
+        return monitor.check_product_page(_FakeSession({url.split("/")[2].replace("www.", ""): lambda u: _Resp(200, u, body)}), retailer, url, 5)
+    for retailer, url, own in (("target", "https://www.target.com/p/-/A-1", "Target"), ("walmart", "https://www.walmart.com/ip/1", "Walmart.com"), ("gamestop", "https://www.gamestop.com/toys-games/trading-cards/products/x/1.html", "GameStop")):
+        mine, other = read(retailer, url, own), read(retailer, url, "Some Reseller LLC")
+        assert mine["stock"] is True and mine["reason"] == "ok", f"{retailer}: sold by the store itself is in stock"
+        assert other["stock"] is False and other["reason"] == "marketplace_only" and other["seller"] == "Some Reseller LLC", f"{retailer}: a reseller is not the store restocking"
+        assert read(retailer, url, "Some Reseller LLC", available="OutOfStock")["stock"] is False
+    # the real captured GameStop page names GameStop as the seller and stays in stock
+    gs = (ROOT / "tests" / "fixtures" / "pages" / "gamestop_pitch_black_etb_available.html").read_text(encoding="utf-8")
+    assert monitor.check_product_page(_FakeSession({"gamestop.com": lambda u: _Resp(200, u, gs)}), "gamestop", "https://www.gamestop.com/toys-games/trading-cards/products/x/445744.html", 5)["stock"] is True
+
+
+def test_a_reseller_listing_never_alerts_and_clears_a_stale_in_stock_state():
+    import tempfile
+    url = "https://www.target.com/p/-/A-1"
+    key = f"target::{url}"
+    config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": [url]}}
+    reseller = lambda u: _Resp(200, u, '<title>Pokemon ETB</title><script type="application/ld+json">{"@type":"Product","offers":{"availability":"https://schema.org/InStock","price":"96.99","seller":{"@type":"Organization","name":"Collectors Emporium"}}}</script>')
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-03T00:00:00+00:00"}
+    with tempfile.TemporaryDirectory() as d:
+        _, sent = _run_main(Path(d), config, {"schema_version": 4, key: {**base, "in_stock": False}}, {"target.com": reseller})
+        entry = json.loads((Path(d) / "state.json").read_text())[key]
+    assert [c for c in sent if isinstance(c, dict)] == [] and entry["in_stock"] is False and entry["reason"] == "marketplace_only" and entry["seller"] == "Collectors Emporium"
+    with tempfile.TemporaryDirectory() as d:   # an item an older version wrongly called in stock is corrected on the next read
+        _, sent = _run_main(Path(d), config, {"schema_version": 4, key: {**base, "in_stock": True, "in_stock_since": "2026-10-04T10:00:00+00:00"}}, {"target.com": reseller})
+        entry = json.loads((Path(d) / "state.json").read_text())[key]
+    assert entry["in_stock"] is False and entry["in_stock_since"] is None, "the false in-stock state is cleared"
+
+
 def test_a_new_listing_alert_uses_up_that_stay():
     import tempfile
     sent = []
@@ -1832,6 +1881,8 @@ def test_the_real_browser_reads_real_pages():
         "later.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<div id='slot'>loading</div><script>setTimeout(function(){{document.getElementById('slot').innerHTML='<button>Add to cart</button>';}}, 700);</script></body></html>",
         "sku.html": f"<html><head><title>Pokemon ETB - Best Buy</title></head><body>{filler}<div data-sku-id=\"6678361\"></div><button>Add to cart</button></body></html>",
         "skustub.html": f"<html><head><title>Pokemon ETB - Best Buy</title></head><body>{filler}<script>var x = {{\"skuId\":\"6685559\"}};</script></body></html>",
+        "market.html": f"<html><head><title>Pokemon ETB - Best Buy</title></head><body>{filler}<div>An account is required to purchase this item.</div><button>Add to cart</button><div>Sold &amp; shipped by</div><div>Shopville Inc</div><div>4.31</div><div>More options from Marketplace sellers</div><div>New</div><div>$96.99 - $155.94</div></body></html>",
+        "firstparty.html": f"<html><head><title>Pokemon ETB - Best Buy</title></head><body>{filler}<button>Add to cart</button><div>Sold &amp; shipped by</div><div>Best Buy</div></body></html>",
         "blank.html": "<html><head></head><body></body></html>",
         "many.html": "<html><head><title>Heavy store page</title></head><body>" + filler + "".join(f"<button>Filter option {n}</button>" for n in range(600)) + "<div id='slot'></div><script>setTimeout(function(){document.getElementById('slot').innerHTML='<button>Add to cart</button>';}, 400);</script></body></html>",
         "hidden.html": f"<html><head><title>Pokemon ETB</title></head><body>{filler}<button style='display:none'>Add to cart</button></body></html>",
@@ -1871,6 +1922,13 @@ def test_the_real_browser_reads_real_pages():
             took = _time.monotonic() - started
             reader.wait_ms = 1500
             assert got["stock"] is True and took < 5, f"600 buttons and a late buy button must be read in one quick pass (took {took:.1f}s of a 9 s allowance)"
+            bb = "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-chaos-rising-elite-trainer-box/JJG2TL34RT"
+            row = reader.snapshot(base + "market.html")   # the page is served locally, so classify it as the Best Buy page it stands in for
+            assert row["seller"] == "Shopville Inc", f"the seller named after the buy button is read from the rendered page: {row['seller']!r}"
+            assert browser_reader.classify_rendered({**row, "url": bb}) == (False, "marketplace_only", None), "a marketplace seller's Add to cart is not Best Buy restocking"
+            row = reader.snapshot(base + "firstparty.html")
+            assert row["seller"] == "Best Buy" and browser_reader.classify_rendered({**row, "url": bb}) == (True, "ok", "browser"), "Best Buy as the seller is a real restock"
+            assert reader.snapshot(base + "buyable.html")["seller"] is None, "a page that names no seller gives none"
             got = check("sku.html")
             assert got["stock"] is True and got["sku"] == "6678361", "the SKU is read from the page next to the buy button"
             got = check("skustub.html")
@@ -2375,6 +2433,8 @@ if __name__ == "__main__":
     test_fast_pass_does_not_search_and_rechecks_known_listings()
     test_one_alert_per_stay_in_stock_and_rearming_needs_confirmed_out_of_stock()
     test_rearm_state_rules()
+    test_a_marketplace_reseller_is_not_the_store_restocking()
+    test_a_reseller_listing_never_alerts_and_clears_a_stale_in_stock_state()
     test_a_new_listing_alert_uses_up_that_stay()
     test_new_listing_announced_once_and_only_when_in_stock()
     test_main_marks_new_listings_and_leaves_legacy_ones_alone()
