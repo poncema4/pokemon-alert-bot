@@ -25,7 +25,7 @@ One embed per alert, coloured by the price verdict, with `@everyone` in the mess
 | Title | `🟢 IN STOCK · GameStop` (`🆕 NEW LISTING IN STOCK`, `🧪 TEST ALERT`) |
 | Product | the name, as a bold hyperlink (no giant image preview) |
 | Verdict | `BUY: LOW`, `FAIR PRICE`, `ABOVE MARKET`, or `AT RETAIL` / `ABOVE MSRP` when no market price exists |
-| Fields | price, retail (and `above MSRP (+70%)`), TCGplayer market with its age, proof, links to product / map / TCGplayer |
+| Fields | price, retail (and `above MSRP (+70%)`), TCGplayer market with its age, proof, links: **Product page**, **Add to cart** (Walmart and Best Buy only: tapping it puts the item in your cart, you check out yourself), **Map**, **TCGplayer price** |
 
 The verdict compares the listed price with the live TCGplayer market price: 10% or more under is `BUY: LOW`, within 10% is `FAIR PRICE`, more than 10% over is `ABOVE MARKET`. The market price is looked up by product name (`bot/advisor.py`), cached in `docs/market.json` and never older than 10 minutes when an alert is sent. If TCGplayer cannot be reached the alert simply omits the comparison.
 
@@ -52,6 +52,8 @@ A retailer that cannot be read looks exactly like "nothing in stock", so each ru
 - **30th guide**: every 30th Celebration product with live TCGplayer market price, premium over MSRP, target buy price, verdict, and the real top chase cards.
 
 Open/closed comes from each store's weekly schedule in `docs/stores.json` (`hours`, with `hours_source` and `hours_checked`), read in Eastern time by one shared reader in `docs/js/common.js`; the pages re-read the clock every 15 seconds so a store flips at its opening and closing minute. A store whose schedule cannot be read shows "Hours?", never "Open".
+
+**Add to cart links.** Walmart's is built from the item id in the product URL. Best Buy's needs the 7-digit SKU (its product codes such as `JJG2TL8XCJ` are rejected as "Invalid SKU"): the browser reader takes it from the page and the watcher remembers it in `state.json`; `bestbuy_skus` in `config/search_config.json` holds the ones verified against Best Buy's own `/sku/` pages. Target, GameStop and Pokémon Center publish no such link, so their alerts use the product page's own button.
 
 Every script and stylesheet link in `docs/*.html` carries a content hash (`js/common.js?v=1a2b3c4d`) so a browser can never pair an old script with a new page. After changing anything in `docs/js` or `docs/css`, run `python tools/stamp_assets.py` (the tests fail if you forget).
 
