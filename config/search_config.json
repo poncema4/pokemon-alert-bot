@@ -368,5 +368,8 @@
   "slow_every": 3,
   "browser_retailers": [
     "bestbuy"
-  ]
+  ],
+  "browser_hot_every": 4,
+  "browser_slow_every": 20,
+  "cycle_budget_seconds": 75
 }

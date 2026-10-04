@@ -35,31 +35,50 @@ def classify_rendered(snapshot):
 class BrowserReader:
     """One headless Chromium kept open across cycles (starting it costs seconds, reading a page costs a few)."""
 
-    def __init__(self, wait_ms=4500):
+    def __init__(self, wait_ms=12000):
         from playwright.sync_api import sync_playwright
         self.wait_ms = wait_ms
         self._pw = sync_playwright().start()
         self._browser = self._pw.chromium.launch(headless=True)
         self._context = self._browser.new_context(viewport={"width": 1280, "height": 900}, locale="en-US", timezone_id="America/New_York")
+        # Reading a button needs no pictures, fonts or video: skipping them makes heavy store pages load in a fraction of the time.
+        self._context.route("**/*", lambda route: route.abort() if route.request.resource_type in ("image", "media", "font") else route.continue_())
+
+    # One call into the page collects everything: asking the browser about hundreds of buttons one at a time (three round trips each)
+    # made a single Best Buy page take about a minute.
+    COLLECT = """() => {
+      const visible = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+      const wanted = /^(add to (cart|bag|basket)|sold out|unavailable|currently unavailable|out of stock|coming soon|notify me|check stores|find in store|see details)$/i;
+      const buttons = [];
+      for (const el of document.querySelectorAll('button, a[role=button]')) {   // every button is looked at; only buy/unavailable ones are kept
+        const label = (el.innerText || '').trim().replace(/\\s+/g, ' ').slice(0, 50);
+        if (label && wanted.test(label)) buttons.push({label, visible: visible(el), enabled: !el.disabled && el.getAttribute('aria-disabled') !== 'true'});
+        if (buttons.length >= 40) break;
+      }
+      return {title: document.title.slice(0, 160), text: (document.body ? document.body.innerText : '').slice(0, 150000),
+              captchaNode: !!document.querySelector('#px-captcha, [id*=captcha], iframe[src*=captcha]'), buttons};
+    }"""
+    READY = "() => Array.from(document.querySelectorAll('button')).some(b => /^(add to (cart|bag|basket)|sold out|unavailable|coming soon|check stores|notify me)$/i.test((b.innerText||'').trim()))"
 
     def snapshot(self, url, wait_ms=None):
         wait_ms = self.wait_ms if wait_ms is None else wait_ms
         page = self._context.new_page()
+        page.set_default_timeout(15000)
         row = {"url": url}
         try:
-            response = page.goto(url, wait_until="domcontentloaded", timeout=40000)
-            page.wait_for_timeout(wait_ms)
+            response = page.goto(url, wait_until="commit", timeout=25000)  # do not wait for the whole page to finish loading
+            try:  # return the moment a buy/unavailable button exists; a page that never shows one waits the full time
+                page.wait_for_function(self.READY, timeout=wait_ms)
+            except Exception:
+                pass
             row["status"] = response.status if response else None
-            row["title"] = page.title()[:160]
-            text = page.inner_text("body") if page.query_selector("body") else ""
+            data = page.evaluate(self.COLLECT)
+            text = data["text"]
+            row["title"] = data["title"]
             row["body_chars"] = len(text)
-            haystack = text + page.content()[:400000]
+            haystack = text + (" px-captcha" if data["captchaNode"] else "")
             row["walls"] = [w for w in WALLS if re.search(w, haystack, re.I)]
-            row["buttons"] = []
-            for el in page.query_selector_all("button, a[role=button]")[:400]:
-                label = (el.inner_text() or "").strip().replace("\n", " ")[:50]
-                if label and (BUY.match(label) or NOT_AVAILABLE.match(label)):
-                    row["buttons"].append({"label": label, "visible": el.is_visible(), "enabled": el.is_enabled()})
+            row["buttons"] = [b for b in data["buttons"] if BUY.match(b["label"]) or NOT_AVAILABLE.match(b["label"])]
             price = re.search(r"\$\s?([0-9]{1,4}(?:,[0-9]{3})*\.[0-9]{2})", text)
             row["price"] = float(price.group(1).replace(",", "")) if price else None
         except Exception as exc:

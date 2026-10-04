@@ -40,6 +40,8 @@ ALERTS_FILE = ROOT / "docs/alerts.json"
 MARKET_FILE = ROOT / "docs/market.json"
 PIDS_FILE = ROOT / "data" / "gamestop_pids.json"
 BROWSER = None  # a browser_reader.BrowserReader, set by the watcher loop when Playwright is available
+BROWSER_BACKOFF_SECONDS = 300  # after repeated failures a browser-read store is left alone this long (hammering it only gets the bot blocked)
+_BACKOFF_UNTIL = {}
 CONFIRM_DELAY = 2.0  # seconds between the first in-stock reading and the confirming one
 
 SEARCH_URLS = {
@@ -444,7 +446,12 @@ def main(discover=True, cycle=0):
     browser_retailers = set(config.get("browser_retailers", []))
     hot = [h.lower() for h in config.get("hot_matches", [])]
     slow_every = max(1, int(config.get("slow_every", 3))) if hot else 1  # the slow rhythm only exists when something is hot
+    browser_hot_every = max(1, int(config.get("browser_hot_every", 4)))    # a browser read is heavy: hot pages every ~2 minutes,
+    browser_slow_every = max(1, int(config.get("browser_slow_every", 20)))  # the rest every ~10 minutes (30 s cycles)
+    budget = float(config.get("cycle_budget_seconds", 75))
+    started = time.monotonic()
     is_hot = lambda url: any(h in url.lower() for h in hot)
+    by_hot = lambda urls: sorted(urls, key=lambda u: not is_hot(u))  # hot listings first, so a slow cycle never starves them
     ping = os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")
     map_url = config.get("map_url", "")
     http = requests.Session()
@@ -465,16 +472,29 @@ def main(discover=True, cycle=0):
     for retailer in retailers:
         seeds = list(dict.fromkeys(canonical_url(u) for u in config.get("seed_urls", {}).get(retailer, [])))
         counts = {"checked": 0, "readable": 0, "blocked": 0, "errors": 0}
+        browser_run = {"failures": 0}
         streak = 0
 
         def check_url(url):
             nonlocal streak
             key = f"{retailer}::{url}"
             previous = state.get(key, {})
-            if not is_hot(url) and cycle % slow_every != 0:
-                return  # a calmer listing: checked on the slower rhythm
+            via_browser = BROWSER is not None and retailer in browser_retailers
+            period = (browser_hot_every if is_hot(url) else browser_slow_every) if via_browser else (1 if is_hot(url) else slow_every)
+            if cycle % period != 0:
+                return  # a calmer listing, or a browser-read page: checked on its own rhythm
+            if time.monotonic() - started > budget:
+                return  # this cycle has used its time; the rest waits for the next one
+            if via_browser and time.monotonic() < _BACKOFF_UNTIL.get(retailer, 0):
+                return  # the store has been failing: leave it alone for a few minutes
             read = (lambda: BROWSER.check(url)) if (BROWSER is not None and retailer in browser_retailers) else (lambda: check_product_page(http, retailer, url, timeout))
             result = read()
+            if via_browser:
+                failures = browser_run["failures"] + 1 if result["reason"] in ("error", "blocked") else 0
+                browser_run["failures"] = failures
+                if failures >= 2:
+                    _BACKOFF_UNTIL[retailer] = time.monotonic() + BROWSER_BACKOFF_SECONDS
+                    print(f"  {retailer}: {failures} failed reads in a row; backing off {BROWSER_BACKOFF_SECONDS // 60} minutes")
             confirmed = previous.get("confirmed") if previous.get("in_stock") is True else None
             if result["stock"] is True and previous.get("in_stock") is not True:
                 # Coming into stock: read it again a moment later. An alert that is out of stock by the time you click is worse than none.
@@ -543,7 +563,7 @@ def main(discover=True, cycle=0):
                 "msrp": msrp,
             }
 
-        for url in seeds:
+        for url in by_hot(seeds):
             if retailer_url_is_valid(retailer, url):
                 check_url(url)
             else:
@@ -571,7 +591,7 @@ def main(discover=True, cycle=0):
                     if retailer_url_is_valid(retailer, url) and url not in seen:
                         extra.append(url)
                         seen.add(url)
-            for url in extra:
+            for url in by_hot(extra):
                 if streak >= BLOCKED_STREAK_LIMIT:
                     print(f"  {retailer}: {streak} checks in a row unreadable; skipping the rest this run")
                     break
@@ -579,6 +599,9 @@ def main(discover=True, cycle=0):
 
         notices += update_health(health, retailer, counts, now)
         print(f"  {retailer} health: {counts}")
+        # Save as we go: a slow store later in the run must not keep the earlier stores' fresh readings off the site.
+        save_json(STATE_FILE, state)
+        save_json(HEALTH_FILE, health)
 
     for kind, retailer, message in notices:
         alert(f"{'⚠️ BLIND SPOT' if kind == 'blind' else '✅ RECOVERED'} · {retailer.title()}", message, ping=ping if kind == "blind" else False, tone="blind" if kind == "blind" else "ok")
