@@ -1,8 +1,9 @@
 {
   "home": {
-    "name": "North Arlington, NJ",
-    "lat": 40.7884,
-    "lng": -74.1332
+    "name": "Home",
+    "lat": 40.797211,
+    "lng": -74.125219,
+    "pin_source": "us-census-geocoder:2026-10-04"
   },
   "stores": [
     {
@@ -18,142 +19,142 @@
       "notes": "Address-based map query is used for navigation.",
       "monitored": true,
       "maps_query": "Target Kearny, 200 Passaic Ave, Kearny, NJ 07032",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:node12035679422"
     },
     {
       "id": "target-clifton",
       "retailer": "target",
       "name": "Target Clifton",
       "address": "30 Kingsland Rd, Clifton, NJ 07014",
-      "lat": 40.824552,
-      "lng": -74.135133,
+      "lat": 40.824397,
+      "lng": -74.135142,
       "hours": "Mon–Sat 8:00 AM–11:00 PM; Sun 8:00 AM–10:00 PM",
       "open": "08:00",
       "close": "23:00",
       "notes": "Sunday close time retained separately in display hours.",
       "monitored": true,
       "maps_query": "Target Clifton, 30 Kingsland Rd, Clifton, NJ 07014",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:way45791964"
     },
     {
       "id": "target-paramus",
       "retailer": "target",
       "name": "Target Paramus",
       "address": "900 Bergen Town Ctr, Paramus, NJ 07652",
-      "lat": 40.914476,
-      "lng": -74.058126,
+      "lat": 40.91633,
+      "lng": -74.060958,
       "hours": "Mon–Sat 8:00 AM–11:00 PM; Sun closed (current published schedule)",
       "open": "08:00",
       "close": "23:00",
       "notes": "Check holiday exceptions.",
       "monitored": true,
       "maps_query": "Target Paramus, 900 Bergen Town Ctr, Paramus, NJ 07652",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:node2830623175"
     },
     {
       "id": "walmart-kearny",
       "retailer": "walmart",
       "name": "Walmart Supercenter Kearny",
       "address": "150 Harrison Ave, Kearny, NJ 07032",
-      "lat": 40.747667,
-      "lng": -74.137566,
+      "lat": 40.747673,
+      "lng": -74.1375,
       "hours": "Mon–Sun 6:00 AM–11:00 PM",
       "open": "06:00",
       "close": "23:00",
       "notes": "Coordinates aligned to the Walmart property address. Online orders are never blocked by local radius.",
       "monitored": true,
       "maps_query": "Walmart Supercenter Kearny, 150 Harrison Ave, Kearny, NJ 07032",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:way448246752"
     },
     {
       "id": "walmart-secaucus",
       "retailer": "walmart",
       "name": "Walmart Supercenter Secaucus",
       "address": "400 Park Pl, Secaucus, NJ 07094",
-      "lat": 40.791508,
-      "lng": -74.04545,
+      "lat": 40.793002,
+      "lng": -74.042476,
       "hours": "Mon–Sun 6:00 AM–11:00 PM",
       "open": "06:00",
       "close": "23:00",
       "notes": "Official store address.",
       "monitored": true,
       "maps_query": "Walmart Supercenter Secaucus, 400 Park Pl, Secaucus, NJ 07094",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:way234124512"
     },
     {
       "id": "walmart-north-bergen",
       "retailer": "walmart",
       "name": "Walmart Supercenter North Bergen",
       "address": "2100 88th St, North Bergen, NJ 07047",
-      "lat": 40.8141,
-      "lng": -74.013525,
+      "lat": 40.814109,
+      "lng": -74.013532,
       "hours": "Mon–Sun 6:00 AM–11:00 PM",
       "open": "06:00",
       "close": "23:00",
       "notes": "Official store address.",
       "monitored": true,
       "maps_query": "Walmart Supercenter North Bergen, 2100 88th St, North Bergen, NJ 07047",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:way459758525"
     },
     {
       "id": "bestbuy-american-dream",
       "retailer": "bestbuy",
       "name": "Best Buy American Dream",
       "address": "1 American Dream Way, East Rutherford, NJ 07073",
-      "lat": 40.808857,
-      "lng": -74.071561,
+      "lat": 40.809412,
+      "lng": -74.067852,
       "hours": "Mon–Thu 11:00 AM–9:00 PM; Fri–Sat 11:00 AM–10:00 PM; Sun 11:00 AM–7:00 PM",
       "open": "11:00",
       "close": "21:00",
       "notes": "Best Buy store 1217. Level 3 at American Dream. Mall-based hours can change for special dates.",
       "monitored": true,
       "maps_query": "Best Buy American Dream, 1 American Dream Way, East Rutherford, NJ 07073",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:node10977736681"
     },
     {
       "id": "bestbuy-secaucus",
       "retailer": "bestbuy",
       "name": "Best Buy Secaucus",
       "address": "3 Mill Creek Dr, Secaucus, NJ 07094",
-      "lat": 40.791843,
-      "lng": -74.052287,
+      "lat": 40.792316,
+      "lng": -74.051849,
       "hours": "Mon–Sat 10:00 AM–9:00 PM; Sun 11:00 AM–8:00 PM",
       "open": "10:00",
       "close": "21:00",
       "notes": "Official store address.",
       "monitored": true,
       "maps_query": "Best Buy Secaucus, 3 Mill Creek Dr, Secaucus, NJ 07094",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:way1182340094"
     },
     {
       "id": "bestbuy-paramus",
       "retailer": "bestbuy",
       "name": "Best Buy Bergen Town Center",
       "address": "2400 Bergen Town Ctr, Paramus, NJ 07652",
-      "lat": 40.914476,
-      "lng": -74.058126,
+      "lat": 40.913016,
+      "lng": -74.0562,
       "hours": "Mon–Sat 10:00 AM–9:00 PM; Sun 11:00 AM–8:00 PM",
       "open": "10:00",
       "close": "21:00",
       "notes": "Current store listing should be checked for holiday exceptions.",
       "monitored": true,
       "maps_query": "Best Buy Bergen Town Center, 2400 Bergen Town Ctr, Paramus, NJ 07652",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:node12045510049"
     },
     {
       "id": "gamestop-kearny",
       "retailer": "gamestop",
       "name": "GameStop Kearny",
       "address": "220 Harrison Ave Ste A2, Kearny, NJ 07032",
-      "lat": 40.749201,
-      "lng": -74.134908,
+      "lat": 40.74861,
+      "lng": -74.13515,
       "hours": "Sun 11:00 AM–8:00 PM; Mon–Thu 11:00 AM–9:00 PM; Fri 10:00 AM–9:00 PM; Sat 10:00 AM–6:00 PM",
       "open": "11:00",
       "close": "21:00",
       "notes": "Official GameStop store 7742.",
       "monitored": true,
       "maps_query": "GameStop Kearny, 220 Harrison Ave Ste A2, Kearny, NJ 07032",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:node5856628085"
     },
     {
       "id": "gamestop-lyndhurst",
@@ -276,7 +277,7 @@
       "notes": "Destination store, not part of local alerting.",
       "monitored": false,
       "maps_query": "Pokémon Center NYC, 10 Rockefeller Plaza, New York, NY 10020",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "osm-poi:node2676979144"
     }
   ]
 }

@@ -1,43 +1,22 @@
-/* Restock Radar: draws the stores, the live online hits and the retailer status lamps. */
+/* PokePing map: stores, live online hits and the retailer status lamps. */
 (function () {
   const C = window.PokeCommon;
-  let HOME = [40.7884, -74.1332]; // town centre until stores.json (and then this browser's saved home) says otherwise
-  let homeMarker = null, homeIsCustom = false;
   const COLORS = { target: "#e4352b", walmart: "#2d8cf0", bestbuy: "#4f6bed", gamestop: "#c9ced6", pokemoncenter: "#ffd23f", lgs: "#d99a2b" };
   const $ = (id) => document.getElementById(id);
 
-  const map = L.map("map", { zoomControl: true }).setView(HOME, 12);
+  let home = [40.797211, -74.125219]; // replaced by stores.json -> home as soon as it loads
+  let origin = home, usingGps = false;
+  let stores = [], alerts = [], health = {}, filter = "all", selected = null, homeMarker = null;
+  const markers = new Map();
+
+  const map = L.map("map", { zoomControl: true }).setView(home, 12);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap" }).addTo(map);
+
   function placeHome() {
     if (homeMarker) map.removeLayer(homeMarker);
-    homeMarker = L.marker(HOME, { icon: L.divIcon({ className: "", html: '<div class="pin home"></div>', iconSize: [16, 16] }) }).addTo(map).bindTooltip("Home");
-    $("home-note").textContent = homeIsCustom ? "Distances are from your saved home (kept only in this browser)." : "Distances are from the town centre. Set your home for exact miles.";
-    $("home-clear").hidden = !homeIsCustom;
+    homeMarker = L.marker(home, { icon: L.divIcon({ className: "", html: '<div class="pin home"></div>', iconSize: [16, 16] }) }).addTo(map).bindTooltip("Home");
+    $("origin-note").textContent = usingGps ? "Distances are from your current location." : "Distances are from home.";
   }
-
-  /* Home is private: the repo and site are public, so the exact spot is saved only in this browser. */
-  function useHome(townDefault) {
-    const fromLink = C.parseHomeParam(location.search);
-    if (fromLink) { C.saveHome(localStorage, fromLink[0], fromLink[1]); history.replaceState(null, "", location.pathname + location.hash); }
-    const h = C.loadHome(localStorage, townDefault);
-    HOME = [h.lat, h.lng]; homeIsCustom = h.custom; origin = HOME;
-    placeHome();
-  }
-
-  async function setHomeFromAddress(text) {
-    const note = $("home-note");
-    note.textContent = "Looking that up…";
-    try {
-      const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=" + encodeURIComponent(text);
-      const hit = (await (await fetch(url)).json())[0];
-      if (!hit || !C.saveHome(localStorage, Number(hit.lat), Number(hit.lon))) { note.textContent = "Could not find that address in the North Jersey / NYC area. Try the street and town."; return; }
-      useHome(HOME); drawLive(); drawStores(); fitAll();
-    } catch (e) { note.textContent = "Address lookup failed. Try again, or use my location."; }
-  }
-
-  const TOWN = HOME.slice();
-  let stores = [], alerts = [], health = {}, origin = HOME, filter = "all", selected = null;
-  const markers = new Map();
 
   function pinIcon(store, on) {
     return L.divIcon({ className: "", html: '<div class="pin' + (on ? " selected" : "") + '" style="background:' + (COLORS[store.retailer] || COLORS.lgs) + '"></div>', iconSize: [16, 16] });
@@ -52,27 +31,30 @@
 
   function drawLamps() {
     const now = Date.now();
-    $("lamps").innerHTML = C.RETAILERS.map((r) => {
+    $("lamps").innerHTML = C.lampsHtml(health, now);
+    $("coverage").innerHTML = C.RETAILERS.map((r) => {
       const s = C.retailerState(health, r, now);
-      return '<span class="lamp" data-state="' + s.state + '" title="' + C.escapeHtml(C.LABELS[r] + ": " + s.note) + '"><i></i>' + C.LABELS[r] + " <small>" + C.escapeHtml(s.state === "ok" ? "reading" : s.state) + "</small></span>";
+      return '<li data-state="' + s.state + '"><b>' + C.escapeHtml(C.LABELS[r]) + "</b> " + C.STATE_WORDS[s.state] + " · " + C.escapeHtml(C.COVERAGE_NOTES[r]) + "</li>";
     }).join("");
     const runs = C.RETAILERS.map((r) => health[r] && health[r].last_run).filter(Boolean).sort().pop();
-    $("checked").textContent = runs ? "bot checked " + C.ago(runs, now) : "";
+    $("checked").textContent = runs ? "checked " + C.ago(runs, now) : "";
   }
 
+  /* One compact row per live hit: same footprint as a store row. */
   function drawLive() {
     const now = Date.now();
     const live = alerts.filter((a) => C.isLive(a, now));
     if (!live.length) {
       const blind = C.RETAILERS.filter((r) => ["blind", "stale"].indexOf(C.retailerState(health, r, now).state) !== -1).map((r) => C.LABELS[r]);
-      $("live").innerHTML = '<div class="empty"><b>Nothing live right now.</b>' + (blind.length ? "<br>The bot cannot read " + C.escapeHtml(blind.join(", ")) + " at the moment, so check those by hand." : "") + "</div>";
+      $("live").innerHTML = '<div class="empty"><b>Nothing live right now.</b>' + (blind.length ? "<br>Not readable: " + C.escapeHtml(blind.join(", ")) + ". Check those by hand." : "") + "</div>";
       return;
     }
     $("live").innerHTML = live.slice(0, 20).map((a) => {
       const near = C.nearestStore(stores, a.retailer, origin);
-      const pickup = near ? '<a class="btn" target="_blank" rel="noopener" href="' + C.directionsUrl(near.store) + '">Nearest ' + C.escapeHtml(C.LABELS[a.retailer]) + " · " + near.miles.toFixed(1) + " mi</a>" : "";
-      return '<article class="live-card"><h3>' + C.escapeHtml(a.title) + "</h3><p>" + C.escapeHtml(C.LABELS[a.retailer]) + " · detected " + C.ago(a.detected_at || a.ts, now) + " · stock can change before you click</p>"
-        + '<div class="actions"><a class="btn primary" target="_blank" rel="noopener" href="' + C.safeUrl(a.url) + '">Open product</a>' + pickup + "</div></article>";
+      const price = a.price ? "$" + Number(a.price).toFixed(2) : "";
+      return '<article class="hit"><div class="row"><a class="name" target="_blank" rel="noopener" href="' + C.safeUrl(a.url) + '"><i class="dot-live"></i>' + C.escapeHtml(a.title) + '</a><span class="dist">' + price + "</span></div>"
+        + '<div class="addr">' + C.escapeHtml(C.LABELS[a.retailer]) + " · " + C.ago(a.detected_at || a.ts, now) + (a.signal === "text" ? " · unconfirmed" : "")
+        + (near ? ' · <a class="near" target="_blank" rel="noopener" href="' + C.directionsUrl(near.store) + '">nearest ' + near.miles.toFixed(1) + " mi</a>" : "") + "</div></article>";
     }).join("");
   }
 
@@ -127,11 +109,10 @@
   $("stores").addEventListener("click", (e) => { const b = e.target.closest(".store"); if (b) select(b.dataset.id, true); });
   $("chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; filter = b.dataset.k; drawChips(); drawStores(); fitAll(); });
   $("locate").addEventListener("click", () => {
+    if (usingGps) { usingGps = false; origin = home; $("locate").textContent = "Use my location"; placeHome(); drawLive(); drawStores(); fitAll(); return; }
     if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition((p) => { origin = [p.coords.latitude, p.coords.longitude]; $("home-note").textContent = "Distances are from your current location."; drawLive(); drawStores(); }, () => { $("locate").textContent = "Location blocked"; });
+    navigator.geolocation.getCurrentPosition((p) => { usingGps = true; origin = [p.coords.latitude, p.coords.longitude]; $("locate").textContent = "Back to home"; placeHome(); drawLive(); drawStores(); fitAll(); }, () => { $("locate").textContent = "Location blocked"; });
   });
-  $("home-form").addEventListener("submit", (e) => { e.preventDefault(); const v = $("home-input").value.trim(); if (v) setHomeFromAddress(v); });
-  $("home-clear").addEventListener("click", () => { C.clearHome(localStorage); useHome(TOWN); drawLive(); drawStores(); fitAll(); });
 
   async function getJson(name, fallback) {
     try { return await (await fetch(name + "?ts=" + Date.now())).json(); } catch (e) { return fallback; }
@@ -140,7 +121,7 @@
   async function load(first) {
     const [s, a, h] = await Promise.all([getJson("stores.json", { stores: [] }), getJson("alerts.json", []), getJson("health.json", {})]);
     stores = s.stores || []; alerts = a || []; health = h || {};
-    if (first && s.home) { TOWN[0] = s.home.lat; TOWN[1] = s.home.lng; useHome(TOWN); }
+    if (first && s.home) { home = [s.home.lat, s.home.lng]; origin = home; placeHome(); }
     drawLamps(); drawLive(); drawChips(); drawStores();
     if (first) {
       fitAll();

@@ -7,17 +7,24 @@
 .rail-head h2 { font-size: 1.2rem; }
 .muted { color: var(--muted); font-size: .8rem; }
 
-.home { display: flex; gap: 6px; margin-bottom: 4px; }
-.home input { flex: 1; min-width: 0; background: var(--ink); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font: inherit; font-size: .9rem; }
-#home-clear { margin-bottom: 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .chip { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 4px 11px; font: inherit; font-size: .82rem; cursor: pointer; }
 .chip[aria-pressed="true"] { color: var(--ink); background: var(--text); border-color: var(--text); font-weight: 700; }
 
-.live-card { border: 1px solid var(--live); border-left-width: 5px; border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; background: rgba(255, 210, 63, .07); }
-.live-card h3 { font-size: 1.05rem; line-height: 1.2; }
-.live-card p { margin: 4px 0 8px; color: var(--muted); font-size: .85rem; }
-.live-card .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.hit { border: 1px solid transparent; border-bottom-color: var(--line); border-left: 4px solid var(--live); padding: 10px 8px 10px 10px; background: rgba(255, 210, 63, .06); }
+.hit .row { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.hit .name { font-family: var(--display); font-size: 1.05rem; font-weight: 600; line-height: 1.2; text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.hit .name:hover { text-decoration: underline; }
+.hit .dist { font-family: var(--display); font-size: 1.05rem; color: var(--live); white-space: nowrap; }
+.hit .addr { color: var(--muted); font-size: .82rem; }
+.hit .near { color: var(--text); }
+.dot-live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--live); margin-right: 6px; box-shadow: 0 0 0 3px rgba(255, 210, 63, .25); }
+.coverage { margin-top: 8px; color: var(--muted); font-size: .82rem; }
+.coverage summary { cursor: pointer; padding: 6px 0; }
+.coverage ul { margin: 4px 0 0; padding-left: 16px; }
+.coverage li { margin-bottom: 4px; }
+.coverage li[data-state="ok"] b { color: var(--ok); }
+.coverage li:not([data-state="ok"]) b { color: var(--blind); }
 .empty { border: 1px dashed var(--line); border-radius: var(--radius); padding: 12px; color: var(--muted); font-size: .9rem; }
 .empty b { color: var(--text); }
 
@@ -55,8 +62,8 @@
   .rail { border-right: 0; border-top: 1px solid var(--line); padding: 12px 12px 20px; -webkit-overflow-scrolling: touch; }
   .store { min-height: 64px; padding: 12px 8px; }
   .chip { min-height: 40px; padding: 8px 14px; }
-  .home input { min-height: 44px; font-size: 16px; } /* 16 px stops iOS zooming the page on focus */
   .leaflet-control-zoom a { width: 40px; height: 40px; line-height: 40px; }
   .leaflet-popup-content { max-width: 70vw; }
-  .live-card .actions .btn { flex: 1 1 140px; }
+  .hit { min-height: 64px; padding: 12px 8px 12px 10px; }
+  .hit .near, .hit .name { padding: 4px 0; }
 }

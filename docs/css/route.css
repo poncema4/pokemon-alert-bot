@@ -1,0 +1,48 @@
+/* Route page. Colours and type come from site.css. */
+.content { max-width: 880px; margin: 0 auto; padding: 18px 16px 40px; }
+.intro h1 { font-size: 2rem; }
+.intro p { color: var(--muted); margin: 6px 0 12px; }
+.actions-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.small { font-size: .8rem; color: var(--muted); margin-top: 6px; }
+.stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 18px 0; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
+.stat b { display: block; font-family: var(--display); font-size: 1.5rem; line-height: 1.1; }
+.stat span { color: var(--muted); font-size: .78rem; }
+.closed-stat b { color: #ff6b61; }
+.section { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+.section h2 { font-size: 1.3rem; }
+.muted { color: var(--muted); font-size: .85rem; margin: 4px 0 0; }
+.routebar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
+.btn.secondary { background: var(--panel-2); }
+.stop { display: grid; grid-template-columns: 42px 1fr auto; gap: 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--line); }
+.stop:first-of-type { border-top: 0; }
+.num { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--panel-2); font-family: var(--display); font-weight: 700; font-size: 1.1rem; color: var(--live); }
+.stop.final .num { background: var(--live); color: var(--ink); }
+.name { font-family: var(--display); font-size: 1.15rem; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.status-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.status-dot.open { background: var(--ok); }
+.status-dot.closed { background: var(--alert); }
+.status-text { font-family: var(--body); font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.status-text.open { color: var(--ok); border: 1px solid var(--ok); }
+.status-text.closed { color: #fff; background: var(--alert); border: 1px solid var(--alert); }
+.address { color: var(--muted); font-size: .85rem; margin-top: 2px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag { border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; font-size: .74rem; color: var(--muted); }
+.hours { margin-top: 8px; font-size: .8rem; color: var(--muted); }
+.hours-head { display: flex; justify-content: space-between; gap: 8px; }
+.hours-title { color: var(--text); font-weight: 600; }
+.hours-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; margin-top: 4px; }
+.hours-list b { color: var(--text); }
+.loading, .error { padding: 20px; text-align: center; color: var(--muted); }
+.error { border-left: 4px solid var(--alert); background: rgba(228, 53, 43, .08); text-align: left; }
+
+@media (max-width: 800px) {
+  .content { padding: 12px 12px 24px; }
+  .intro h1 { font-size: 1.6rem; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stop { grid-template-columns: 36px 1fr; }
+  .stop .actions { grid-column: 2; }
+  .stop .actions .btn { width: 100%; }
+  .hours-list { grid-template-columns: 1fr; }
+  .routebar .btn { flex: 1 1 140px; }
+}
