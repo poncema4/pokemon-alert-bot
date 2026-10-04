@@ -447,7 +447,7 @@ def test_loop_scheduling():
     assert count == len(ran) and ran == list(range(count)), "a failing cycle must not stop the watcher"
     assert 9 <= count <= 10, f"600 s at a 60 s interval should be about 10 cycles, got {count}"
     assert clock.t <= 600 + 1, "the loop must end inside its runtime so the next watcher can take over"
-    assert len(commits) == 1, "nothing meaningful changed, so only the final commit attempt runs"
+    assert len(commits) in (2, 3) and 295 <= commits[0] <= 360, f"nothing changed, yet a heartbeat commit runs about every 300 s, then the final one: {commits}"
 
 
 def test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure():
@@ -482,6 +482,28 @@ def test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure():
         monitor.main, rl.main, nn.main, prices_mod.main, coverage.main, monitor_loop.refresh_market = real
 
 
+def test_the_loop_commits_a_heartbeat_even_when_nothing_changed():
+    """When every store is out of stock nothing 'meaningful' changes; the committed last_seen / last_run still has to move or the site says
+    'checked 38 minutes ago' for a watcher that is running fine."""
+    clock = _Clock()
+    commits = []
+    monitor_loop.run_loop(cycle=lambda n: None, commit=lambda: commits.append(clock.t) or True, sig=lambda: ("same", "[]"),
+                          now=clock.now, sleep=clock.sleep, runtime=1500, interval=30, commit_every=300)
+    beats = commits[:-1]   # the last one is the final commit at shutdown
+    assert len(beats) >= 4, f"a 25 minute run with nothing changing must still commit about every 5 minutes, got {commits}"
+    gaps = [b - a for a, b in zip(beats, beats[1:])]
+    assert all(295 <= g <= 335 for g in gaps), f"heartbeats about every 300 s (not faster: every commit rebuilds the Pages site), got gaps {gaps}"
+    assert commits[0] <= 335, "the first heartbeat arrives within about five minutes of the start"
+
+
+def test_a_failed_commit_attempt_does_not_retry_every_cycle():
+    clock = _Clock()
+    attempts = []
+    monitor_loop.run_loop(cycle=lambda n: None, commit=lambda: attempts.append(clock.t) or False, sig=lambda: ("same", "[]"),
+                          now=clock.now, sleep=clock.sleep, runtime=900, interval=30, commit_every=300)
+    assert len(attempts) <= 4, f"nothing to commit must not mean git runs after every 30 s cycle: {attempts}"
+
+
 def test_loop_commits_on_meaningful_change_only():
     clock = _Clock()
     commits = []
@@ -494,7 +516,7 @@ def test_loop_commits_on_meaningful_change_only():
 
     monitor_loop.run_loop(cycle=lambda n: None, commit=lambda: commits.append(clock.t) or True, sig=sig,
                           now=clock.now, sleep=clock.sleep, runtime=240, interval=60, commit_every=300)
-    # "b" differs but it is too soon after the last commit; the live-hit list changing ("c") commits at once; then the final attempt.
+    # "b" differs but it is too soon after the last commit (the heartbeat is 300 s); the live-hit list changing ("c") commits at once; then the final attempt.
     assert len(commits) == 2 and commits[0] < 240, commits
 
 
@@ -2145,6 +2167,8 @@ if __name__ == "__main__":
     test_progress_is_saved_after_each_store()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
+    test_the_loop_commits_a_heartbeat_even_when_nothing_changed()
+    test_a_failed_commit_attempt_does_not_retry_every_cycle()
     test_loop_commits_on_meaningful_change_only()
     test_signature_ignores_last_seen()
     test_fast_pass_does_not_search_and_rechecks_known_listings()
