@@ -63,6 +63,8 @@ Home is hard-set in `docs/stores.json`. Store pins come from each store's own Op
 
 `.github/workflows/monitor.yml` runs the tests, then one long-lived watcher job (`bot/monitor_loop.py`, about 55 minutes) that starts its own successor. GitHub's cron is best effort (measured median gap between scheduled runs was 239 minutes), so the job polls inside itself every 60 seconds and the 30-minute cron is only a safety net.
 
+The watcher runs in its own concurrency group (`pokeping-watcher`), separate from the test runs on push and PR. GitHub keeps only one *pending* run per group, so when they shared one, every merge to `main` replaced the watcher's queued handover and the chain broke until the next cron run (the data went stale after each merge).
+
 Each cycle checks the seed and recently readable listings, refreshes the live-hit list and announces new listings. Every 10th cycle also searches by keyword for new listings and refreshes market prices, and about every 20 cycles the 30th guide prices refresh from TCGplayer. State is committed when something meaningful changed (not just `last_seen`) and at once when the live-hit list changes. On an always-on machine, `python bot/monitor_loop.py` does the same.
 
 | Workflow | Purpose |

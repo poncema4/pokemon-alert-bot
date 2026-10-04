@@ -29,7 +29,9 @@ permissions:
   actions: write
 
 concurrency:
-  group: pokemon-stock-monitor-${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+  # The watcher has its own group. It used to share one with the test runs on push, and GitHub keeps only ONE pending run per group:
+  # every merge to main queued a test run that replaced the watcher's pending handover, so the watcher chain broke and the data went stale.
+  group: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && 'pokeping-watcher' || format('pokeping-tests-{0}', github.ref) }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
