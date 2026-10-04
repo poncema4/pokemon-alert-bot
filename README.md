@@ -24,6 +24,12 @@ Sent only when a newly discovered Big 4 URL is verified in stock on its first ob
 
 There is no production UNKNOWN Discord alert. That behavior is intentional and enforced in code.
 
+## Blind spots (health)
+
+A retailer that blocks the runner looks exactly like "nothing in stock", so the bot tracks it. Every run records per-retailer counts in `docs/health.json` (checked / readable / blocked / errors). A bot wall is recognised even when it answers HTTP 200 (Walmart redirects to `/blocked`). When a retailer has been unreadable for 24 hours the bot posts one **BLIND SPOT** message to Discord, and one **RECOVERED** message when it can read again. After three unreadable checks in a row the rest of that retailer is skipped for the run, and discovered listings that were never readable for 7 days are pruned (seed URLs stay).
+
+In-stock alerts say how strong the evidence is: *Verified* means structured availability data, *Likely* means only cart/pickup wording was found, so confirm on the page.
+
 ## Accuracy
 
 `tests/test_accuracy.py` covers retailer URL validation, Pokémon-product detection, structured stock parsing, protection against UNKNOWN interfering with stock cooldowns, and route-node integrity.
@@ -98,6 +104,7 @@ pokemon-alert-bot/
 │   ├── stores.json
 │   ├── alerts.json
 │   ├── 30th_prices.json
+│   ├── health.json
 │   └── favicon.svg
 ├── tests/test_accuracy.py
 ├── accuracy.py

@@ -221,27 +221,95 @@ def extract_structured_availability(text):
     return None
 
 
+BOT_WALL_MARKERS = ("robot or human", "px-captcha", "captcha.px-cdn", "press & hold", "access denied", "are you a human")
+
+
+def classify_response(status, final_url, text):
+    """Decide what a retailer response can tell us. Pure, so it is testable.
+
+    Returns (stock, reason, signal): stock is True/False/None (None = UNKNOWN),
+    reason says why (ok, blocked, http_<code>, no_signal), signal says how strong
+    an in-stock reading is ("structured" data, weak "text" wording, or None).
+    A bot wall often answers HTTP 200 after a redirect (Walmart sends /blocked), so the
+    status code alone is never trusted.
+    """
+    if status is None:
+        return None, "error", None
+    path = urlparse(final_url or "").path.lower()
+    if status >= 400:
+        reason = "blocked" if status in (403, 429, 435) else f"http_{status}"
+        return None, reason, None
+    low = (text or "").lower()
+    if path.startswith("/blocked") or any(marker in low for marker in BOT_WALL_MARKERS):
+        return None, "blocked", None
+    structured = extract_structured_availability(text or "")
+    if structured is not None:
+        return structured, "ok", "structured" if structured else None
+    if any(h in low for h in OUT_OF_STOCK_HINTS):
+        return False, "ok", None
+    if any(h in low for h in IN_STOCK_HINTS):
+        return True, "ok", "text"
+    return None, "no_signal", None
+
+
 def check_product_page(http, retailer, url, timeout):
+    fallback_title = f"{retailer.title()} Pokémon product"
     try:
         response = http.get(url, timeout=timeout, allow_redirects=True)
-        if response.status_code >= 400:
-            print(f"  product page HTTP {response.status_code}: {url}")
-            return {"stock": None, "title": f"{retailer.title()} Pokémon product", "posted_at": None, "http_status": response.status_code}
-        text = response.text
     except Exception as exc:
         print(f"  product check unavailable: {exc}")
-        return {"stock": None, "title": f"{retailer.title()} Pokémon product", "posted_at": None, "http_status": None}
-    low = text.lower()
-    structured = extract_structured_availability(text)
-    if structured is not None:
-        stock = structured
-    elif any(h in low for h in OUT_OF_STOCK_HINTS):
-        stock = False
-    elif any(h in low for h in IN_STOCK_HINTS):
-        stock = True
-    else:
-        stock = None
-    return {"stock": stock, "title": extract_title(text, retailer), "posted_at": extract_posted_time(text), "http_status": response.status_code}
+        return {"stock": None, "title": fallback_title, "posted_at": None, "http_status": None, "reason": "error", "signal": None}
+    stock, reason, signal = classify_response(response.status_code, response.url, response.text)
+    if reason not in ("ok", "no_signal"):
+        print(f"  product page {reason} (HTTP {response.status_code}): {url}")
+        return {"stock": None, "title": fallback_title, "posted_at": None, "http_status": response.status_code, "reason": reason, "signal": None}
+    text = response.text
+    return {"stock": stock, "title": extract_title(text, retailer), "posted_at": extract_posted_time(text), "http_status": response.status_code, "reason": reason, "signal": signal}
+
+
+HEALTH_FILE = ROOT / "docs/health.json"
+BLIND_AFTER_HOURS = 24.0
+PRUNE_AFTER_DAYS = 7
+BLOCKED_STREAK_LIMIT = 3
+
+
+def update_health(health, retailer, counts, now):
+    """Fold one run's per-retailer counts into the health record; returns notices to send.
+
+    counts = {"checked": n, "readable": n, "blocked": n, "errors": n}. A retailer is *blind*
+    when a run checked pages but could read none of them. A blind spot is announced once after
+    BLIND_AFTER_HOURS and again when reading recovers, so silence never means "nothing in stock".
+    """
+    entry = health.setdefault(retailer, {})
+    entry.update(counts)
+    entry["last_run"] = now.isoformat()
+    notices = []
+    if counts["checked"] and counts["readable"] == 0:
+        entry.setdefault("blind_since", now.isoformat())
+        since = datetime.fromisoformat(entry["blind_since"])
+        if now - since >= timedelta(hours=BLIND_AFTER_HOURS) and not entry.get("blind_notified"):
+            entry["blind_notified"] = True
+            hours = int((now - since).total_seconds() // 3600)
+            notices.append(("blind", retailer, f"{retailer.title()} has not been readable for {hours} h. Every check was blocked or empty, so this bot cannot see {retailer.title()} stock right now. Check it by hand."))
+    elif counts["readable"]:
+        entry["last_readable_at"] = now.isoformat()
+        if entry.get("blind_notified"):
+            notices.append(("recovered", retailer, f"{retailer.title()} is readable again."))
+        entry.pop("blind_since", None)
+        entry.pop("blind_notified", None)
+    return notices
+
+
+def should_prune(entry, seed, now):
+    """Drop discovered listings that have never been readable for PRUNE_AFTER_DAYS (seed URLs stay)."""
+    if seed:
+        return False
+    try:
+        last_ok = entry.get("last_ok") or (entry["last_seen"] if entry.get("in_stock") is not None else None)  # legacy entries have no last_ok
+        newest = datetime.fromisoformat(last_ok or entry.get("first_seen") or entry["last_seen"])
+    except Exception:
+        return False
+    return now - newest > timedelta(days=PRUNE_AFTER_DAYS)
 
 
 def clean_state(state):
@@ -274,12 +342,17 @@ def format_et(value):
         return value
 
 
-def send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at):
+def send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, signal="structured"):
     if kind != "stock":
         return
+    verdict = (
+        "Verified in stock — the retailer page exposed structured availability data."
+        if signal == "structured"
+        else "Likely in stock — cart/pickup wording was found but there is no structured availability data. Confirm on the page."
+    )
     lines = [
         f"**{title}**",
-        "Verified in stock — the retailer page exposed a positive availability/cart signal.",
+        verdict,
         f"Detected: {format_et(detected_at)}",
         f"Map: [Open map]({map_url})",
         f"Product: [Open product page]({url})",
@@ -325,24 +398,28 @@ def main():
     print("403/429/timeout: UNKNOWN internally, never IN STOCK")
     print("Niche shops: MAP ONLY — no Discord alerts")
 
+    health = load_json(HEALTH_FILE, {})
+    notices = []
+
     for retailer in retailers:
-        urls = list(dict.fromkeys(config.get("seed_urls", {}).get(retailer, [])))
-        seen = set(urls)
-        for keyword in keywords:
-            print(f"Checking {retailer} / {keyword}")
-            for url in discover_products(http, retailer, keyword, timeout):
-                if retailer_url_is_valid(retailer, url) and url not in seen:
-                    urls.append(url)
-                    seen.add(url)
-        for url in urls:
-            if not retailer_url_is_valid(retailer, url):
-                print(f"  skipped invalid {retailer} URL: {url}")
-                continue
+        seeds = list(dict.fromkeys(config.get("seed_urls", {}).get(retailer, [])))
+        counts = {"checked": 0, "readable": 0, "blocked": 0, "errors": 0}
+        streak = 0
+
+        def check_url(url):
+            nonlocal streak
             key = f"{retailer}::{url}"
             previous = state.get(key, {})
             result = check_product_page(http, retailer, url, timeout)
             in_stock = result["stock"]
-            http_status = result.get("http_status")
+            reason = result["reason"]
+            counts["checked"] += 1
+            if in_stock is not None:
+                counts["readable"] += 1
+                streak = 0
+            else:
+                counts["blocked" if reason == "blocked" or reason.startswith("http_") else "errors"] += 1
+                streak += 1
             title = result["title"] if is_pokemon(result["title"] + " " + url) else f"{retailer.title()} Pokémon product"
             posted_at = result.get("posted_at")
             kind = None
@@ -355,7 +432,7 @@ def main():
             if kind == "stock":
                 detected_at = now.isoformat()
                 record_alert(alerts, retailer, kind, title, url, True, posted_at, detected_at, True)
-                send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at)
+                send_alert(retailer, kind, title, url, map_url, ping, posted_at, detected_at, result.get("signal"))
                 sent["stock"] += 1
                 last_stock_alert = detected_at
             else:
@@ -366,10 +443,50 @@ def main():
                 "title": title,
                 "in_stock": in_stock,
                 "posted_at": posted_at,
+                "first_seen": previous.get("first_seen") or now.isoformat(),
                 "last_seen": now.isoformat(),
+                "last_ok": now.isoformat() if in_stock is not None else previous.get("last_ok"),
                 "last_stock_alert": last_stock_alert,
-                "http_status": http_status,
+                "http_status": result.get("http_status"),
+                "reason": reason,
+                "signal": result.get("signal"),
             }
+
+        for url in seeds:
+            if retailer_url_is_valid(retailer, url):
+                check_url(url)
+            else:
+                print(f"  skipped invalid {retailer} URL: {url}")
+
+        if counts["checked"] and streak >= BLOCKED_STREAK_LIMIT:
+            print(f"  {retailer}: {streak} checks in a row unreadable; skipping discovery and extra checks this run")
+        else:
+            seen = set(seeds)
+            extra = []
+            for keyword in keywords:
+                print(f"Checking {retailer} / {keyword}")
+                for url in discover_products(http, retailer, keyword, timeout):
+                    if retailer_url_is_valid(retailer, url) and url not in seen:
+                        extra.append(url)
+                        seen.add(url)
+            for url in extra:
+                if streak >= BLOCKED_STREAK_LIMIT:
+                    print(f"  {retailer}: {streak} checks in a row unreadable; skipping the rest this run")
+                    break
+                check_url(url)
+
+        notices += update_health(health, retailer, counts, now)
+        print(f"  {retailer} health: {counts}")
+
+    for kind, retailer, message in notices:
+        alert(f"{'⚠️ BLIND SPOT' if kind == 'blind' else '✅ RECOVERED'} — {retailer.title()}", message, ping=ping if kind == "blind" else False)
+    save_json(HEALTH_FILE, health)
+
+    seed_keys = {f"{r}::{u}" for r, urls in config.get("seed_urls", {}).items() for u in urls}
+    before = len(state)
+    state = {k: v for k, v in state.items() if k == "schema_version" or not should_prune(v, k in seed_keys, now)}
+    if len(state) != before:
+        print(f"Pruned {before - len(state)} listings never readable for {PRUNE_AFTER_DAYS} days")
 
     alerts = [a for a in alerts if a.get("retailer", "").lower() in retailers]
     alerts = [a for a in alerts if not a.get("expires_at") or a.get("expires_at") > now.isoformat()]
