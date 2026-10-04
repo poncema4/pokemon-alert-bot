@@ -962,7 +962,7 @@ def test_stock_embed_is_clean_linked_and_within_discord_limits():
     assert names == ["Price", "Retail", "TCGplayer market", "Proof", "Links"]
     values = {f["name"]: f["value"] for f in embed["fields"]}
     assert values["Price"] == "$84.99" and values["Retail"].startswith("$49.99") and "above MSRP (+70%)" in values["Retail"] and values["TCGplayer market"].startswith("$75.58")
-    assert "[Open product](" + PB_URL + ")" in values["Links"] and "[Map](" in values["Links"] and "tcgplayer.com/product/692947" in values["Links"]
+    assert "[Product page](" + PB_URL + ")" in values["Links"] and "[Map](" in values["Links"] and "tcgplayer.com/product/692947" in values["Links"]
     # No raw URL anywhere: every http(s) address sits inside a markdown link, so Discord never unfurls a giant preview.
     texts = [embed["title"], embed["description"]] + list(values.values())
     for text in texts:
@@ -1210,6 +1210,19 @@ def test_ultra_premium_collections_are_watched_and_priced():
     assert advisor.pick(rows, ["ultra premium collection", "day"], []) ["productId"] == 704190 and advisor.pick(rows, ["ultra-premium collection"], ["case"])["productId"] == 704191, "hyphen and space spellings are the same product"
 
 
+def test_walmart_alerts_carry_a_real_add_to_cart_link_and_the_links_are_plainly_named():
+    walmart = advisor.build_card("walmart", "stock", "Pokemon ETB", "https://www.walmart.com/ip/Pokemon-TCG-Elite-Trainer-Box/15718673510?athbdg=L1600", "https://m", "2026-10-04T16:00:00+00:00", "page", 59.99, None, None)
+    assert walmart["add_url"] == "https://affil.walmart.com/cart/addToCart?items=15718673510"
+    links = {f["name"]: f["value"] for f in notify.stock_embed(walmart)["embeds"][0]["fields"]}["Links"]
+    assert "[Add to cart](https://affil.walmart.com/cart/addToCart?items=15718673510)" in links
+    assert links.index("[Product page]") < links.index("[Add to cart]") < links.index("[My cart]") < links.index("[Map]"), links
+    assert advisor.add_to_cart_url("walmart", "https://www.walmart.com/ip/15718673510") == "https://affil.walmart.com/cart/addToCart?items=15718673510", "id-only product URL"
+    for retailer in ("target", "bestbuy", "gamestop", "pokemoncenter", "walmart"):
+        other = advisor.build_card(retailer, "stock", "Pokemon ETB", "https://example.test/p/1", "https://m", "2026-10-04T16:00:00+00:00", "page", None, None, None)
+        assert other["add_url"] == "" and "[Add to cart]" not in {f["name"]: f["value"] for f in notify.stock_embed(other)["embeds"][0]["fields"]}["Links"], retailer + " has no public add-to-cart link, so none is shown"
+    assert "Open product" not in (ROOT / "bot" / "notify.py").read_text(encoding="utf-8"), "the confusing old labels are gone"
+
+
 def test_every_alert_links_straight_to_the_stores_cart():
     expected = {"target": "https://www.target.com/co-cart", "walmart": "https://www.walmart.com/cart", "bestbuy": "https://www.bestbuy.com/cart",
                 "gamestop": "https://www.gamestop.com/cart/", "pokemoncenter": "https://www.pokemoncenter.com/cart"}
@@ -1217,9 +1230,9 @@ def test_every_alert_links_straight_to_the_stores_cart():
         card = advisor.build_card(retailer, "stock", "Pokemon ETB", "https://example.test/p/1", "https://m", "2026-10-04T16:00:00+00:00", "page", 59.99, None, None)
         assert card["cart_url"] == cart
         links = {f["name"]: f["value"] for f in notify.stock_embed(card)["embeds"][0]["fields"]}["Links"]
-        assert f"[Cart]({cart})" in links and links.index("[Open product]") < links.index("[Cart]") < links.index("[Map]"), links
+        assert f"[My cart]({cart})" in links and links.index("[Product page]") < links.index("[My cart]") < links.index("[Map]"), links
     unknown = advisor.build_card("somewhere", "stock", "Pokemon ETB", "https://example.test/p/1", "https://m", "2026-10-04T16:00:00+00:00", "page", None, None, None)
-    assert unknown["cart_url"] == "" and "[Cart]" not in {f["name"]: f["value"] for f in notify.stock_embed(unknown)["embeds"][0]["fields"]}["Links"]
+    assert unknown["cart_url"] == "" and "[My cart]" not in {f["name"]: f["value"] for f in notify.stock_embed(unknown)["embeds"][0]["fields"]}["Links"]
 
 
 def test_watchlist_matching_is_by_whole_word_and_regular_boxes_only():
@@ -2035,6 +2048,7 @@ if __name__ == "__main__":
     test_the_watchlist_covers_the_etbs_marco_named()
     test_every_watched_etb_a_store_can_be_read_for_has_a_seed_url()
     test_ultra_premium_collections_are_watched_and_priced()
+    test_walmart_alerts_carry_a_real_add_to_cart_link_and_the_links_are_plainly_named()
     test_every_alert_links_straight_to_the_stores_cart()
     test_watchlist_matching_is_by_whole_word_and_regular_boxes_only()
     test_coverage_cells_never_confuse_unreadable_with_out_of_stock()
