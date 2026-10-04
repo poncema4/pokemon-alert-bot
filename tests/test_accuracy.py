@@ -65,6 +65,18 @@ def test_route_integrity():
     assert "Could not load the store list" in route
 
 
+def test_store_pins_are_geocoded_and_plausible():
+    stores = json.loads((ROOT / "docs" / "stores.json").read_text(encoding="utf-8"))["stores"]
+    assert len(stores) >= 18
+    for store in stores:
+        lat, lng = store["lat"], store["lng"]
+        assert 40.4 < lat < 41.2 and -74.5 < lng < -73.6, f"{store['id']} is outside the North Jersey / NYC area"
+        # Hand-rounded pins like 40.76,-74.158 are what put markers hundreds of feet off the building.
+        assert all(abs(round(v, 3) - v) > 1e-9 for v in (lat, lng)), f"{store['id']} has a rounded pin"
+        assert store.get("pin_source", "").startswith("nominatim:"), f"{store['id']} pin was not verified against its address"
+    assert len({s["id"] for s in stores}) == len(stores)
+
+
 def test_30th_complete_coverage():
     data = json.loads((ROOT / "docs" / "30th_prices.json").read_text(encoding="utf-8"))
     guide = (ROOT / "docs" / "30th.html").read_text(encoding="utf-8")
@@ -230,6 +242,7 @@ if __name__ == "__main__":
     test_structured_stock_signals()
     test_unknown_does_not_block_restock_cooldown()
     test_route_integrity()
+    test_store_pins_are_geocoded_and_plausible()
     test_30th_complete_coverage()
     test_classify_response()
     test_health_blind_spot_and_recovery()
