@@ -68,6 +68,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Install the browser (Best Buy is read in a real browser)
+        continue-on-error: true  # if this fails the watcher still runs; only Best Buy is skipped
         run: |
           pip install playwright
           playwright install --with-deps chromium

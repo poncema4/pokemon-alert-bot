@@ -1652,6 +1652,8 @@ def test_the_browser_starts_only_when_enabled_and_failure_is_harmless():
             assert monitor.retailer_url_is_valid("bestbuy", url), url
         workflow = (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
         assert "playwright install --with-deps chromium" in workflow and 'POKEPING_BROWSER: "1"' in workflow
+        install = workflow[workflow.index("Install the browser"):workflow.index("Watch stock")]
+        assert "continue-on-error: true" in install, "a failed browser install must never stop the watcher"
     finally:
         monitor.BROWSER = real_browser
         if real_env is None:
