@@ -14,12 +14,12 @@
       "lat": 40.760181,
       "lng": -74.158492,
       "hours": "Mon–Sun 8:00 AM–11:00 PM",
-      "open": "08:00",
-      "close": "23:00",
       "notes": "Address-based map query is used for navigation.",
       "monitored": true,
       "maps_query": "Target Kearny, 200 Passaic Ave, Kearny, NJ 07032",
-      "pin_source": "osm-poi:node12035679422"
+      "pin_source": "osm-poi:node12035679422",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "target-clifton",
@@ -28,13 +28,13 @@
       "address": "30 Kingsland Rd, Clifton, NJ 07014",
       "lat": 40.824397,
       "lng": -74.135142,
-      "hours": "Mon–Sat 8:00 AM–11:00 PM; Sun 8:00 AM–10:00 PM",
-      "open": "08:00",
-      "close": "23:00",
+      "hours": "Mon–Sun 8:00 AM–11:00 PM",
       "notes": "Sunday close time retained separately in display hours.",
       "monitored": true,
       "maps_query": "Target Clifton, 30 Kingsland Rd, Clifton, NJ 07014",
-      "pin_source": "osm-poi:way45791964"
+      "pin_source": "osm-poi:way45791964",
+      "hours_source": "official store page (target.com)",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "target-paramus",
@@ -43,13 +43,13 @@
       "address": "900 Bergen Town Ctr, Paramus, NJ 07652",
       "lat": 40.91633,
       "lng": -74.060958,
-      "hours": "Mon–Sat 8:00 AM–11:00 PM; Sun closed (current published schedule)",
-      "open": "08:00",
-      "close": "23:00",
+      "hours": "Mon–Sat 8:00 AM–11:00 PM; Sun closed",
       "notes": "Check holiday exceptions.",
       "monitored": true,
       "maps_query": "Target Paramus, 900 Bergen Town Ctr, Paramus, NJ 07652",
-      "pin_source": "osm-poi:node2830623175"
+      "pin_source": "osm-poi:node2830623175",
+      "hours_source": "official store page (target.com)",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "walmart-kearny",
@@ -59,12 +59,12 @@
       "lat": 40.747673,
       "lng": -74.1375,
       "hours": "Mon–Sun 6:00 AM–11:00 PM",
-      "open": "06:00",
-      "close": "23:00",
       "notes": "Coordinates aligned to the Walmart property address. Online orders are never blocked by local radius.",
       "monitored": true,
       "maps_query": "Walmart Supercenter Kearny, 150 Harrison Ave, Kearny, NJ 07032",
-      "pin_source": "osm-poi:way448246752"
+      "pin_source": "osm-poi:way448246752",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "walmart-secaucus",
@@ -74,12 +74,12 @@
       "lat": 40.793002,
       "lng": -74.042476,
       "hours": "Mon–Sun 6:00 AM–11:00 PM",
-      "open": "06:00",
-      "close": "23:00",
       "notes": "Official store address.",
       "monitored": true,
       "maps_query": "Walmart Supercenter Secaucus, 400 Park Pl, Secaucus, NJ 07094",
-      "pin_source": "osm-poi:way234124512"
+      "pin_source": "osm-poi:way234124512",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "walmart-north-bergen",
@@ -89,12 +89,12 @@
       "lat": 40.814109,
       "lng": -74.013532,
       "hours": "Mon–Sun 6:00 AM–11:00 PM",
-      "open": "06:00",
-      "close": "23:00",
       "notes": "Official store address.",
       "monitored": true,
       "maps_query": "Walmart Supercenter North Bergen, 2100 88th St, North Bergen, NJ 07047",
-      "pin_source": "osm-poi:way459758525"
+      "pin_source": "osm-poi:way459758525",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "bestbuy-american-dream",
@@ -104,12 +104,12 @@
       "lat": 40.809412,
       "lng": -74.067852,
       "hours": "Mon–Thu 11:00 AM–9:00 PM; Fri–Sat 11:00 AM–10:00 PM; Sun 11:00 AM–7:00 PM",
-      "open": "11:00",
-      "close": "21:00",
       "notes": "Best Buy store 1217. Level 3 at American Dream. Mall-based hours can change for special dates.",
       "monitored": true,
       "maps_query": "Best Buy American Dream, 1 American Dream Way, East Rutherford, NJ 07073",
-      "pin_source": "osm-poi:node10977736681"
+      "pin_source": "osm-poi:node10977736681",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "bestbuy-secaucus",
@@ -118,13 +118,13 @@
       "address": "3 Mill Creek Dr, Secaucus, NJ 07094",
       "lat": 40.792316,
       "lng": -74.051849,
-      "hours": "Mon–Sat 10:00 AM–9:00 PM; Sun 11:00 AM–8:00 PM",
-      "open": "10:00",
-      "close": "21:00",
+      "hours": "Mon–Sat 10:00 AM–9:00 PM; Sun 10:00 AM–8:00 PM",
       "notes": "Official store address.",
       "monitored": true,
       "maps_query": "Best Buy Secaucus, 3 Mill Creek Dr, Secaucus, NJ 07094",
-      "pin_source": "osm-poi:way1182340094"
+      "pin_source": "osm-poi:way1182340094",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "bestbuy-paramus",
@@ -133,13 +133,13 @@
       "address": "2400 Bergen Town Ctr, Paramus, NJ 07652",
       "lat": 40.913016,
       "lng": -74.0562,
-      "hours": "Mon–Sat 10:00 AM–9:00 PM; Sun 11:00 AM–8:00 PM",
-      "open": "10:00",
-      "close": "21:00",
+      "hours": "Mon–Sat 10:00 AM–9:00 PM; Sun closed",
       "notes": "Current store listing should be checked for holiday exceptions.",
       "monitored": true,
       "maps_query": "Best Buy Bergen Town Center, 2400 Bergen Town Ctr, Paramus, NJ 07652",
-      "pin_source": "osm-poi:node12045510049"
+      "pin_source": "osm-poi:node12045510049",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "gamestop-kearny",
@@ -148,13 +148,13 @@
       "address": "220 Harrison Ave Ste A2, Kearny, NJ 07032",
       "lat": 40.74861,
       "lng": -74.13515,
-      "hours": "Sun 11:00 AM–8:00 PM; Mon–Thu 11:00 AM–9:00 PM; Fri 10:00 AM–9:00 PM; Sat 10:00 AM–6:00 PM",
-      "open": "11:00",
-      "close": "21:00",
+      "hours": "Mon–Thu 11:00 AM–9:00 PM; Fri–Sat 10:00 AM–9:00 PM; Sun 11:00 AM–8:00 PM",
       "notes": "Official GameStop store 7742.",
       "monitored": true,
       "maps_query": "GameStop Kearny, 220 Harrison Ave Ste A2, Kearny, NJ 07032",
-      "pin_source": "osm-poi:node5856628085"
+      "pin_source": "osm-poi:node5856628085",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "gamestop-lyndhurst",
@@ -163,13 +163,13 @@
       "address": "417 Valley Brook Ave Ste 6, Lyndhurst, NJ 07071",
       "lat": 40.811621,
       "lng": -74.124021,
-      "hours": "Sun 11:00 AM–6:00 PM; Mon–Thu 11:00 AM–7:00 PM; Fri–Sat 10:00 AM–9:00 PM",
-      "open": "11:00",
-      "close": "19:00",
+      "hours": "Mon–Thu 11:00 AM–7:00 PM; Fri–Sat 10:00 AM–9:00 PM; Sun 11:00 AM–6:00 PM",
       "notes": "Official GameStop store 3755.",
       "monitored": true,
       "maps_query": "GameStop Lyndhurst Shopping Center, 417 Valley Brook Ave Ste 6, Lyndhurst, NJ 07071",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "nominatim:2026-10-04",
+      "hours_source": "official store page for Sat/Sun (gamestop.com); weekdays from third-party listings",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "tcgduckhunter",
@@ -179,13 +179,13 @@
       "lat": 40.810857,
       "lng": -74.122343,
       "hours": "Mon 3:00 PM–9:00 PM; Tue–Fri 12:00 PM–9:00 PM; Sat 11:00 AM–9:00 PM; Sun closed",
-      "open": "12:00",
-      "close": "21:00",
       "notes": "Official site confirms Pokémon events and this address. No online product catalog found, so no invented inventory alerts.",
       "monitored": false,
       "website": "https://www.tcgduckhunter.com/",
       "maps_query": "TCGDUCKHUNTER, 465 Valley Brook Ave, Lyndhurst, NJ 07071",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "nominatim:2026-10-04",
+      "hours_source": "official store page (tcgduckhunter.com contact page)",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "east-coast-connection",
@@ -194,14 +194,14 @@
       "address": "304 Ridge Rd, Lyndhurst, NJ 07071",
       "lat": 40.808282,
       "lng": -74.118725,
-      "hours": "Check official site; online catalog active",
-      "open": "10:30",
-      "close": "17:30",
+      "hours": "Mon–Fri 10:30 AM–5:30 PM; Sat 10:00 AM–3:00 PM; Sun closed",
       "notes": "Official site says the store carries Pokémon boxes and has an online catalog. Pokémon category currently has no live products.",
       "monitored": false,
       "website": "https://www.eastcoastconnection.net/",
       "maps_query": "East Coast Connection, 304 Ridge Rd, Lyndhurst, NJ 07071",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "nominatim:2026-10-04",
+      "hours_source": "official store page (eastcoastconnection.net/hours)",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "cardvault-american-dream",
@@ -211,12 +211,12 @@
       "lat": 40.808857,
       "lng": -74.071561,
       "hours": "Mon–Thu 11:00 AM–9:00 PM; Fri–Sat 11:00 AM–10:00 PM; Sun 11:00 AM–8:00 PM",
-      "open": "11:00",
-      "close": "21:00",
       "notes": "Inside American Dream; trading-card/collectibles shop with Pokémon inventory. Kept separate from the four core retailers.",
       "monitored": false,
       "maps_query": "CardVault by Tom Brady, American Dream, 1 American Dream Way, East Rutherford, NJ 07073",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "nominatim:2026-10-04",
+      "hours_source": "official store page (cardvaultbytombrady.com)",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "bodega-hoboken",
@@ -225,14 +225,14 @@
       "address": "119 Monroe St, Hoboken, NJ 07030",
       "lat": 40.739684,
       "lng": -74.039793,
-      "hours": "Tue–Thu 12:00 PM–7:00 PM; Fri 12:00 PM–8:00 PM; Sat 10:00 AM–8:00 PM; Sun 10:00 AM–6:00 PM",
-      "open": "12:00",
-      "close": "19:00",
+      "hours": "Mon closed; Tue–Thu 12:00 PM–7:00 PM; Fri 12:00 PM–8:00 PM; Sat 10:00 AM–7:00 PM; Sun 11:00 AM–6:00 PM",
       "notes": "Local trading-card shop with Pokémon/TCG and an online catalog. Exact navigation uses the street address.",
       "monitored": false,
       "website": "https://www.bodegacards.com/",
       "maps_query": "Bodega Cards, 119 Monroe St, Hoboken, NJ 07030",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "nominatim:2026-10-04",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "kaleido-tcg",
@@ -242,12 +242,12 @@
       "lat": 40.715506,
       "lng": -74.046145,
       "hours": "Mon–Fri 2:00 PM–10:00 PM; Sat–Sun 12:00 PM–10:00 PM",
-      "open": "14:00",
-      "close": "22:00",
       "notes": "Jersey City Pokémon-focused TCG shop. Exact navigation uses the unit address.",
       "monitored": false,
       "maps_query": "Kaleido TCG, 113 Tidewater St Unit 1G A, Jersey City, NJ 07302",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "nominatim:2026-10-04",
+      "hours_source": "third-party listings (the store's own page blocks bots); confirm by phone before a long trip",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "nuevalinea",
@@ -256,28 +256,28 @@
       "address": "5203 Bergenline Ave, West New York, NJ 07093",
       "lat": 40.784368,
       "lng": -74.019814,
-      "hours": "Mon–Sun 11:00 AM–7:00 PM",
-      "open": "11:00",
-      "close": "19:00",
+      "hours": "Mon–Fri 10:30 AM–7:00 PM; Sat 10:30 AM–6:00 PM; Sun 10:30 AM–7:00 PM",
       "notes": "Local collectibles/trading-card store; included as a nearby niche Pokémon/TCG location.",
       "monitored": false,
       "maps_query": "NuevaLinea Toy & Game House, 5203 Bergenline Ave, West New York, NJ 07093",
-      "pin_source": "nominatim:2026-10-04"
+      "pin_source": "nominatim:2026-10-04",
+      "hours_source": "third-party listings that disagree on Saturday (6 PM vs 7 PM); confirm by phone",
+      "hours_checked": "2026-10-04"
     },
     {
       "id": "pokemon-center-nyc",
       "retailer": "pokemoncenter",
-      "name": "Pokémon Center NYC",
+      "name": "Nintendo New York (was Pokémon Center NYC)",
       "address": "10 Rockefeller Plaza, New York, NY 10020",
       "lat": 40.757976,
       "lng": -73.979414,
-      "hours": "Check official Pokémon Center listing before travel",
-      "open": "10:00",
-      "close": "20:00",
-      "notes": "Destination store, not part of local alerting.",
+      "hours": "Mon–Sat 10:00 AM–8:00 PM; Sun 11:00 AM–7:00 PM",
+      "notes": "The Pokémon Center that stood at 10 Rockefeller Plaza closed in 2005; this is Nintendo New York, which may carry some Pokémon items. Pokémon Center online is the real Pokémon Center retailer.",
       "monitored": false,
       "maps_query": "Pokémon Center NYC, 10 Rockefeller Plaza, New York, NY 10020",
-      "pin_source": "osm-poi:node2676979144"
+      "pin_source": "osm-poi:node2676979144",
+      "hours_source": "official store page (nintendo.com/us/retail-locations/new-york)",
+      "hours_checked": "2026-10-04"
     }
   ]
 }

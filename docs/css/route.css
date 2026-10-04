@@ -46,3 +46,5 @@
   .hours-list { grid-template-columns: 1fr; }
   .routebar .btn { flex: 1 1 140px; }
 }
+.status-dot.unknown { background: var(--muted); }
+.status-text.unknown { color: var(--muted); border: 1px solid var(--line); }

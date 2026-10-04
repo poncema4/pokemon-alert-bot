@@ -41,12 +41,59 @@ assert.strictEqual(C.isLive({ ...live, expires_at: new Date(NOW - 1).toISOString
 assert.strictEqual(C.isLive({ ...live, retailer: "ebay" }, NOW), false);
 assert.strictEqual(C.isLive(null, NOW), false);
 
-// open now: 8:00-23:00 Eastern. 2026-10-04 16:00Z is 12:00 EDT.
-const store = { open: "08:00", close: "23:00" };
-assert.strictEqual(C.openNow(store, new Date("2026-10-04T16:00:00Z")), true);
-assert.strictEqual(C.openNow(store, new Date("2026-10-04T09:00:00Z")), false, "5 AM Eastern is closed");
-assert.strictEqual(C.openNow(store, new Date("2026-10-05T03:30:00Z")), false, "11:30 PM Eastern is closed");
+// store hours: the WEEKLY schedule decides, in Eastern time. 2026-10-04 is a Sunday; 16:00Z is 12:00 noon EDT.
+const SUN_NOON = new Date("2026-10-04T16:00:00Z"), MON_NOON = new Date("2026-10-05T16:00:00Z");
+const duck = { hours: "Mon 3:00 PM–9:00 PM; Tue–Fri 12:00 PM–9:00 PM; Sat 11:00 AM–9:00 PM; Sun closed" };
+assert.strictEqual(C.storeStatus(duck, SUN_NOON).state, "closed", "TCGDUCKHUNTER is closed on Sunday (the reported bug)");
+assert.strictEqual(C.storeStatus(duck, SUN_NOON).label, "Closed today · opens tomorrow 3 PM");
+assert.strictEqual(C.storeStatus(duck, MON_NOON).state, "closed", "Monday noon is before the 3 PM opening");
+assert.strictEqual(C.storeStatus(duck, new Date("2026-10-05T20:00:00Z")).label, "Open now · until 9 PM", "Monday 4 PM is open");
+assert.strictEqual(C.openNow(duck, SUN_NOON), false);
+const target = { hours: "Mon–Sat 8:00 AM–11:00 PM; Sun 8:00 AM–10:00 PM" };
+assert.strictEqual(C.storeStatus(target, new Date("2026-10-05T02:30:00Z")).state, "closed", "10:30 PM Sunday Eastern is after the Sunday 10 PM close");
+assert.strictEqual(C.storeStatus(target, new Date("2026-10-05T01:30:00Z")).state, "open", "9:30 PM Sunday Eastern is open");
+assert.strictEqual(C.storeStatus(target, new Date("2026-10-04T09:00:00Z")).state, "closed", "5 AM Eastern is closed");
+// the clock is Eastern whatever the visitor's own time zone is: 02:30Z is 10:30 PM Saturday in New Jersey
+assert.strictEqual(C.storeStatus({ hours: "Mon–Sun 6:00 AM–11:00 PM" }, new Date("2026-10-04T02:30:00Z")).state, "open");
+assert.strictEqual(C.storeStatus({ hours: "Mon–Sun 6:00 AM–11:00 PM" }, new Date("2026-10-04T02:30:00Z")).label, "Open now · until 11 PM");
+// a range that wraps the weekend and a close at midnight (belongs to the next morning)
+const wrap = C.parseSchedule("Fri–Mon 10:00 AM–12:00 AM; Tue closed");
+assert.deepStrictEqual([wrap.days[5] !== undefined, wrap.days[6] !== undefined, wrap.days[0] !== undefined, wrap.days[1] !== undefined, wrap.days[2], wrap.days[3]], [true, true, true, true, "closed", undefined]);
+assert.strictEqual(C.storeStatus({ hours: "Sat 10:00 AM–12:00 AM" }, new Date("2026-10-04T03:30:00Z")).state, "open", "11:30 PM Saturday is open until midnight");
+assert.strictEqual(C.storeStatus({ hours: "Sat 10:00 AM–2:00 AM" }, new Date("2026-10-04T05:30:00Z")).state, "open", "1:30 AM Sunday is still Saturday's late hours");
+// unknown is never "open", and a day the text does not mention is unknown, not closed or open
+assert.strictEqual(C.storeStatus({}, new Date()).state, "unknown");
+assert.strictEqual(C.storeStatus({ hours: "Check official site; online catalog active" }, new Date()).state, "unknown");
 assert.strictEqual(C.openNow({}, new Date()), null, "unknown hours are unknown, not open");
+assert.strictEqual(C.storeStatus({ hours: "Tue–Thu 12:00 PM–7:00 PM" }, MON_NOON).state, "unknown", "Monday is not listed");
+// the exact opening and closing minute: Walmart 6:00 AM–11:00 PM. 2026-10-05 is a Monday; 09:59Z is 5:59 AM EDT.
+const walmart = { hours: "Mon–Sun 6:00 AM–11:00 PM" };
+assert.strictEqual(C.storeStatus(walmart, new Date("2026-10-05T09:59:59Z")).state, "closed", "5:59:59 AM is still closed");
+assert.strictEqual(C.storeStatus(walmart, new Date("2026-10-05T10:00:00Z")).state, "open", "6:00:00 AM is open");
+assert.strictEqual(C.storeStatus(walmart, new Date("2026-10-06T02:59:59Z")).state, "open", "10:59:59 PM is still open");
+assert.strictEqual(C.storeStatus(walmart, new Date("2026-10-06T03:00:00Z")).state, "closed", "11:00:00 PM is closed");
+// daylight saving: in January Eastern is UTC-5, so 6:00 AM is 11:00Z
+assert.strictEqual(C.storeStatus(walmart, new Date("2026-01-12T10:59:00Z")).state, "closed");
+assert.strictEqual(C.storeStatus(walmart, new Date("2026-01-12T11:00:00Z")).state, "open");
+// the full week for display, Monday first
+assert.deepStrictEqual(C.weekRows(duck).map((r) => r.day + " " + r.text), ["Mon 3 PM–9 PM", "Tue 12 PM–9 PM", "Wed 12 PM–9 PM", "Thu 12 PM–9 PM", "Fri 12 PM–9 PM", "Sat 11 AM–9 PM", "Sun Closed"]);
+
+// every real store: no leftover single open/close pair, and a readable weekly schedule unless it is on the explicit "check their site" list
+const fs = require("fs");
+const real = JSON.parse(fs.readFileSync(__dirname + "/../../docs/stores.json", "utf8")).stores;
+const NO_SCHEDULE = [];   // every store now has a real weekly schedule; a new store without one must be added here on purpose
+real.forEach((st) => {
+  assert.ok(!("open" in st) && !("close" in st), st.id + " must not carry a single open/close pair (it ignores the weekly schedule)");
+  const sched = C.parseSchedule(st.hours);
+  if (NO_SCHEDULE.includes(st.id)) assert.strictEqual(sched, null, st.id + " has no schedule and must show unknown");
+  else assert.ok(sched && sched.listed === 7, st.id + " must list all seven days, got: " + st.hours);
+});
+const realById = Object.fromEntries(real.map((x) => [x.id, x]));
+assert.strictEqual(C.storeStatus(realById["tcgduckhunter"], SUN_NOON).state, "closed");
+assert.strictEqual(C.storeStatus(realById["target-paramus"], SUN_NOON).state, "closed", "Target Paramus Sunday is closed in its published schedule");
+assert.strictEqual(C.storeStatus(realById["bestbuy-paramus"], SUN_NOON).state, "closed", "Best Buy Paramus is closed on Sundays");
+assert.strictEqual(C.storeStatus(realById["target-clifton"], new Date("2026-10-05T02:30:00Z")).state, "open", "Target Clifton is open until 11 PM on Sunday");
+assert.strictEqual(C.storeStatus(realById["bodega-hoboken"], MON_NOON).state, "closed", "Bodega Cards is closed on Monday");
 
 // nearest store of a retailer
 const stores = [

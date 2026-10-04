@@ -1854,6 +1854,82 @@ def test_progress_is_saved_after_each_store():
     assert health["gamestop"]["readable"] == 1 and "target" not in health
 
 
+def test_store_hours_flip_to_open_and_closed_live_in_a_real_browser():
+    """Walmart opens at 6:00 AM Eastern: a page that is already open must flip from Closed to Open with no reload (fake clock)."""
+    import os
+    import threading
+    from datetime import datetime, timezone
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
+    try:
+        import playwright.sync_api as pw_api
+    except ImportError:
+        assert os.environ.get("POKEPING_REQUIRE_BROWSER") != "1", "CI must have Playwright installed"
+        print("  (skipped: Playwright is not installed here)")
+        return
+
+    class Quiet(SimpleHTTPRequestHandler):
+        def __init__(self, *a, **k):
+            super().__init__(*a, directory=str(ROOT / "docs"), **k)
+        def log_message(self, *a):
+            pass
+
+    server = HTTPServer(("127.0.0.1", 0), Quiet)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    base = f"http://127.0.0.1:{server.server_port}/"
+    walmart = "Walmart Supercenter Kearny"
+    try:
+        with pw_api.sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            try:
+                def status_of(page, name):
+                    return page.evaluate("(n) => { const a = [...document.querySelectorAll('article.stop')].find(x => x.querySelector('.name').textContent.includes(n)); return a ? a.querySelector('.status-text').textContent : null; }", name)
+
+                page = browser.new_page()
+                page.clock.install(time=datetime(2026, 10, 5, 9, 59, 50, tzinfo=timezone.utc))   # Monday 5:59:50 AM in New Jersey
+                page.goto(base + "route.html")
+                page.wait_for_selector("article.stop", timeout=15000)
+                before = status_of(page, walmart)
+                assert before and before.startswith("Closed"), f"before 6:00 AM Walmart is closed, got {before!r}"
+                page.clock.run_for(20000)   # 6:00:10 AM, with no reload
+                after = status_of(page, walmart)
+                assert after and after.startswith("Open now"), f"after 6:00 AM the same page must show open, got {after!r}"
+                page.clock.run_for(17 * 3600 * 1000)   # 11:00:10 PM: closing time has passed
+                late = status_of(page, walmart)
+                assert late and late.startswith("Closed"), f"after 11:00 PM it must flip back to closed, got {late!r}"
+                # TCGDUCKHUNTER is closed all Sunday
+                sunday = browser.new_page()
+                sunday.clock.install(time=datetime(2026, 10, 4, 16, 0, 0, tzinfo=timezone.utc))
+                sunday.goto(base + "route.html")
+                sunday.wait_for_selector("article.stop", timeout=15000)
+                duck = status_of(sunday, "TCGDUCKHUNTER")
+                assert duck is None or duck.startswith("Closed"), f"TCGDUCKHUNTER is closed on Sunday, got {duck!r}"
+            finally:
+                browser.close()
+    finally:
+        server.shutdown()
+
+
+def test_the_map_re_reads_the_clock_by_itself():
+    map_js = (ROOT / "docs" / "js" / "map.js").read_text(encoding="utf-8")
+    route = (ROOT / "docs" / "route.html").read_text(encoding="utf-8")
+    assert "setInterval(refreshHours, 15000)" in map_js, "the map must re-evaluate open/closed on a timer"
+    assert 'addEventListener("visibilitychange", () => { if (!document.hidden) refreshHours(); })' in map_js, "a woken tab must catch up at once"
+    assert "setInterval(()=>{if(stores.length)build(!!legs)},15000)" in route, "the route page must re-evaluate open/closed on a timer"
+    assert "setPopupContent" in map_js, "an open popup must update in place"
+
+
+def test_store_hours_data_is_complete_and_sourced():
+    stores = json.loads((ROOT / "docs" / "stores.json").read_text(encoding="utf-8"))["stores"]
+    for s in stores:
+        assert "open" not in s and "close" not in s, f"{s['id']} carries a single open/close pair that ignores the weekly schedule"
+        assert s.get("hours_source") and s.get("hours_checked"), f"{s['id']} must say where its hours came from and when they were checked"
+        assert re.search(r"\bMon", s["hours"]) and re.search(r"\b(AM|PM)\b", s["hours"]), f"{s['id']} has no readable weekly schedule: {s['hours']}"
+    by = {s["id"]: s for s in stores}
+    assert "Sun closed" in by["tcgduckhunter"]["hours"] and "Sun closed" in by["bestbuy-paramus"]["hours"] and "Sun closed" in by["target-paramus"]["hours"]
+    assert by["target-clifton"]["hours"] == "Mon–Sun 8:00 AM–11:00 PM"
+    assert "Mon closed" in by["bodega-hoboken"]["hours"]
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -1924,6 +2000,9 @@ if __name__ == "__main__":
     test_browser_stores_are_read_by_the_browser_and_the_rest_over_http()
     test_the_browser_starts_only_when_enabled_and_failure_is_harmless()
     test_the_real_browser_reads_real_pages()
+    test_store_hours_flip_to_open_and_closed_live_in_a_real_browser()
+    test_the_map_re_reads_the_clock_by_itself()
+    test_store_hours_data_is_complete_and_sourced()
     test_browser_stores_are_read_gently()
     test_a_slow_cycle_stops_at_its_budget_and_a_failing_store_is_left_alone()
     test_progress_is_saved_after_each_store()

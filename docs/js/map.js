@@ -22,10 +22,24 @@
     return L.divIcon({ className: "", html: '<div class="pin' + (on ? " selected" : "") + '" style="background:' + (COLORS[store.retailer] || COLORS.lgs) + '"></div>', iconSize: [16, 16] });
   }
 
+  function tagHtml(st) {
+    return '<span class="tag ' + st.state + '">' + C.escapeHtml(st.state === "open" ? "Open" : st.state === "closed" ? "Closed" : "Hours?") + "</span>";
+  }
+
+  /* Re-reads the clock: flips the Open/Closed tags and popups in place (no rebuild, so an open popup, the scroll position and the selection stay). */
+  function refreshHours() {
+    stores.forEach((s) => {
+      const card = document.querySelector('.store[data-id="' + s.id + '"] .tag');
+      if (card) card.outerHTML = tagHtml(C.storeStatus(s));
+      const m = markers.get(s.id);
+      if (m) m.setPopupContent(popupHtml(s));
+    });
+  }
+
   function popupHtml(store) {
-    const open = C.openNow(store);
+    const st = C.storeStatus(store);
     return "<b>" + C.escapeHtml(store.name) + "</b><br>" + C.escapeHtml(store.address) + "<br>" + C.escapeHtml(store.hours || "")
-      + (open === null ? "" : '<br><span class="' + (open ? "state-open" : "state-closed") + '">' + (open ? "Open now (approx.)" : "Closed now (approx.)") + "</span>")
+      + '<br><span class="' + (st.state === "open" ? "state-open" : st.state === "closed" ? "state-closed" : "state-unknown") + '">' + C.escapeHtml(st.label) + "</span>"
       + '<br><a class="btn primary" style="margin-top:8px" target="_blank" rel="noopener" href="' + C.directionsUrl(store) + '">Directions</a>';
   }
 
@@ -73,8 +87,7 @@
     markers.forEach((m) => map.removeLayer(m));
     markers.clear();
     $("stores").innerHTML = rows.map(({ s, d }) => {
-      const open = C.openNow(s);
-      const tag = open === null ? "" : '<span class="tag ' + (open ? "open" : "closed") + '">' + (open ? "Open" : "Closed") + "</span>";
+      const tag = tagHtml(C.storeStatus(s));
       return '<button class="store" type="button" data-id="' + C.escapeHtml(s.id) + '" aria-current="' + (s.id === selected) + '"><div class="row"><span class="name">' + C.escapeHtml(s.name) + '</span><span class="dist">' + d.toFixed(1) + ' mi</span></div><div class="addr">' + tag + C.escapeHtml(s.address) + '</div><div class="hours">' + C.escapeHtml(s.hours || "") + "</div></button>";
     }).join("");
     rows.forEach(({ s }) => {
@@ -133,4 +146,6 @@
   placeHome();
   load(true);
   setInterval(() => load(false), 30000);
+  setInterval(refreshHours, 15000);   // a store flips to Open / Closed within 15 s of its opening or closing time
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshHours(); });   // a sleeping laptop or background tab catches up at once
 })();
