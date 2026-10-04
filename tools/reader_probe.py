@@ -11,9 +11,9 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "bot"))   # the bot modules import each other by plain name (the watcher runs from bot/)
 
-from bot.browser_reader import BrowserReader, classify_rendered  # noqa: E402
+from browser_reader import BrowserReader, classify_rendered  # noqa: E402
 
 PAGES = {
     "bestbuy_chaos_rising_etb": "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-chaos-rising-elite-trainer-box/JJG2TL34RT",
