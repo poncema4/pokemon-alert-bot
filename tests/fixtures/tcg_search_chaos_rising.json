@@ -1,0 +1,81 @@
+{
+ "results": [
+  {
+   "totalResults": 217,
+   "results": [
+    {
+     "productId": 684450.0,
+     "productName": "Chaos Rising Elite Trainer Box",
+     "marketPrice": 69.63,
+     "lowestPrice": 50.0,
+     "totalListings": 349.0,
+     "setName": "ME04: Chaos Rising",
+     "productTypeName": null
+    },
+    {
+     "productId": 684451.0,
+     "productName": "Chaos Rising Elite Trainer Box Case",
+     "marketPrice": 704.86,
+     "lowestPrice": 695.0,
+     "totalListings": 22.0,
+     "setName": "ME04: Chaos Rising",
+     "productTypeName": null
+    },
+    {
+     "productId": 684452.0,
+     "productName": "Chaos Rising Pokemon Center Elite Trainer Box",
+     "marketPrice": 129.16,
+     "lowestPrice": 108.0,
+     "totalListings": 166.0,
+     "setName": "ME04: Chaos Rising",
+     "productTypeName": null
+    },
+    {
+     "productId": 684453.0,
+     "productName": "Chaos Rising Pokemon Center Elite Trainer Box Case",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "ME04: Chaos Rising",
+     "productTypeName": null
+    },
+    {
+     "productId": 129890.0,
+     "productName": "Guardians Rising Elite Trainer Box",
+     "marketPrice": 446.54,
+     "lowestPrice": 24.97,
+     "totalListings": 6.0,
+     "setName": "SM - Guardians Rising",
+     "productTypeName": null
+    },
+    {
+     "productId": 503313.0,
+     "productName": "151 Elite Trainer Box",
+     "marketPrice": 493.91,
+     "lowestPrice": 499.0,
+     "totalListings": 64.0,
+     "setName": "SV: Scarlet & Violet 151",
+     "productTypeName": null
+    },
+    {
+     "productId": 97762.0,
+     "productName": "Elite Trainer Box [Groudon]",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "XY - Primal Clash",
+     "productTypeName": null
+    },
+    {
+     "productId": 97763.0,
+     "productName": "Elite Trainer Box [Kyogre]",
+     "marketPrice": null,
+     "lowestPrice": null,
+     "totalListings": 0.0,
+     "setName": "XY - Primal Clash",
+     "productTypeName": null
+    }
+   ]
+  }
+ ]
+}

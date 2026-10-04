@@ -21,21 +21,35 @@
     "gamestop"
   ],
   "keywords": [
-    "pokemon elite trainer box",
-    "pokemon booster bundle",
-    "pokemon booster box",
     "pokemon 151",
-    "pokemon prismatic evolutions",
-    "pokemon destined rivals",
-    "pokemon phantasmal flames",
-    "pokemon white flare",
-    "pokemon black bolt",
-    "pokemon ascended heroes",
-    "pokemon perfect order",
-    "pokemon pitch black",
-    "pokemon 30th celebration elite trainer box",
+    "pokemon 151 elite trainer box",
+    "pokemon 30th anniversary elite trainer box",
     "pokemon 30th celebration",
-    "pokemon 30th anniversary elite trainer box"
+    "pokemon 30th celebration elite trainer box",
+    "pokemon ascended heroes",
+    "pokemon ascended heroes elite trainer box",
+    "pokemon black bolt",
+    "pokemon black bolt elite trainer box",
+    "pokemon booster box",
+    "pokemon booster bundle",
+    "pokemon chaos rising elite trainer box",
+    "pokemon delta reign elite trainer box",
+    "pokemon destined rivals",
+    "pokemon destined rivals elite trainer box",
+    "pokemon elite trainer box",
+    "pokemon journey together elite trainer box",
+    "pokemon mega evolution elite trainer box",
+    "pokemon perfect order",
+    "pokemon perfect order elite trainer box",
+    "pokemon phantasmal flames",
+    "pokemon phantasmal flames elite trainer box",
+    "pokemon pitch black",
+    "pokemon pitch black elite trainer box",
+    "pokemon prismatic evolutions",
+    "pokemon prismatic evolutions elite trainer box",
+    "pokemon surging sparks elite trainer box",
+    "pokemon white flare",
+    "pokemon white flare elite trainer box"
   ],
   "retailers": [
     "target",
@@ -60,7 +74,19 @@
     ],
     "gamestop": [
       "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html",
-      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html"
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-chaos-rising-elite-trainer-box/20033749.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/20037568.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-prismatic-evolutions-elite-trainer-box/20018505.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-perfect-order-elite-trainer-box/20031957.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-black-bolt-elite-trainer-box/426102.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-surging-sparks-elite-trainer-box/20015259.html",
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-journey-together-elite-trainer-box/420196.html"
     ]
   },
   "niche_sources": [
@@ -96,22 +122,7 @@
     {
       "match": "30th-celebration-elite-trainer-box",
       "msrp": 49.99,
-      "name": "30th Celebration ETB"
-    },
-    {
-      "match": "elite-trainer-box",
-      "msrp": 49.99,
-      "name": "Elite Trainer Box"
-    },
-    {
-      "match": "booster-bundle",
-      "msrp": 26.94,
-      "name": "Booster Bundle"
-    },
-    {
-      "match": "booster-box",
-      "msrp": 143.64,
-      "name": "Booster Box"
+      "name": "30th Celebration ETB (TCGplayer product facts)"
     }
   ],
   "market_rules": [
@@ -140,6 +151,165 @@
         "case",
         "pokemon center"
       ]
+    }
+  ],
+  "watchlist": [
+    {
+      "id": "30th-celebration",
+      "label": "30th Celebration",
+      "include": [
+        "30th celebration"
+      ],
+      "exclude": [],
+      "query": "30th Celebration Elite Trainer Box",
+      "msrp": 49.99
+    },
+    {
+      "id": "delta-reign",
+      "label": "Delta Reign",
+      "include": [
+        "delta reign"
+      ],
+      "exclude": [],
+      "query": "Delta Reign Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "chaos-rising",
+      "label": "Chaos Rising",
+      "include": [
+        "chaos rising"
+      ],
+      "exclude": [],
+      "query": "Chaos Rising Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "pitch-black",
+      "label": "Pitch Black",
+      "include": [
+        "pitch black"
+      ],
+      "exclude": [],
+      "query": "Pitch Black Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "perfect-order",
+      "label": "Perfect Order",
+      "include": [
+        "perfect order"
+      ],
+      "exclude": [],
+      "query": "Perfect Order Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "ascended-heroes",
+      "label": "Ascended Heroes",
+      "include": [
+        "ascended heroes"
+      ],
+      "exclude": [],
+      "query": "Ascended Heroes Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "phantasmal-flames",
+      "label": "Phantasmal Flames",
+      "include": [
+        "phantasmal flames"
+      ],
+      "exclude": [],
+      "query": "Phantasmal Flames Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "mega-evolution",
+      "label": "Mega Evolution",
+      "include": [
+        "mega evolution"
+      ],
+      "exclude": [
+        "pitch black",
+        "chaos rising",
+        "delta reign",
+        "phantasmal flames",
+        "ascended heroes",
+        "perfect order"
+      ],
+      "query": "Mega Evolution Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "prismatic-evolutions",
+      "label": "Prismatic Evolutions",
+      "include": [
+        "prismatic evolutions"
+      ],
+      "exclude": [],
+      "query": "Prismatic Evolutions Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "destined-rivals",
+      "label": "Destined Rivals",
+      "include": [
+        "destined rivals"
+      ],
+      "exclude": [],
+      "query": "Destined Rivals Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "black-bolt",
+      "label": "Black Bolt",
+      "include": [
+        "black bolt"
+      ],
+      "exclude": [],
+      "query": "Black Bolt Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "white-flare",
+      "label": "White Flare",
+      "include": [
+        "white flare"
+      ],
+      "exclude": [],
+      "query": "White Flare Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "journey-together",
+      "label": "Journey Together",
+      "include": [
+        "journey together"
+      ],
+      "exclude": [],
+      "query": "Journey Together Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "surging-sparks",
+      "label": "Surging Sparks",
+      "include": [
+        "surging sparks"
+      ],
+      "exclude": [],
+      "query": "Surging Sparks Elite Trainer Box",
+      "msrp": null
+    },
+    {
+      "id": "151",
+      "label": "151",
+      "include": [
+        "151"
+      ],
+      "exclude": [],
+      "query": "151 Elite Trainer Box",
+      "msrp": null
     }
   ]
 }

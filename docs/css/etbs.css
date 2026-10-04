@@ -1,0 +1,33 @@
+/* ETB board. Colours and type come from site.css. */
+.content { max-width: 1100px; margin: 0 auto; padding: 18px 16px 40px; }
+.intro h1 { font-size: 2rem; }
+.intro p { color: var(--muted); margin: 6px 0 0; max-width: 78ch; }
+.k-in { color: var(--live); } .k-out { color: var(--text); } .k-cant { color: var(--blind); } .k-none { color: var(--muted); }
+.muted { color: var(--muted); font-size: .82rem; }
+.board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.etb { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; }
+.etb .head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.etb h2 { font-size: 1.25rem; }
+.price { text-align: right; }
+.market { font-family: var(--display); font-size: 1.2rem; color: var(--text); text-decoration: none; }
+.market:hover { text-decoration: underline; }
+.price small { display: block; color: var(--muted); font-size: .72rem; }
+.cells { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.c { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.who { color: var(--muted); font-size: .72rem; }
+.pill { display: block; padding: 6px 4px; border-radius: 8px; text-align: center; font-size: .78rem; font-weight: 600; border: 1px solid var(--line); text-decoration: none; min-height: 34px; line-height: 1.2; }
+.pill.in { background: var(--live); color: var(--ink); border-color: var(--live); }
+.pill.out { color: var(--text); background: var(--panel-2); }
+.pill.cant { color: var(--blind); border-color: var(--blind); }
+.pill.none { color: var(--muted); border-style: dashed; font-weight: 400; }
+.empty { padding: 30px; text-align: center; color: var(--muted); grid-column: 1 / -1; }
+
+@media (max-width: 800px) {
+  .content { padding: 12px 12px 24px; }
+  .intro h1 { font-size: 1.6rem; }
+  .board { grid-template-columns: 1fr; }
+  .cells { grid-template-columns: 1fr 1fr; }
+  .c { flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; }
+  .pill { flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+  .who { min-width: 74px; }
+}
