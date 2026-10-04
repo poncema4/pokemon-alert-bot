@@ -9,6 +9,13 @@ on:
       - "search_config.json"
       - "requirements.txt"
       - ".github/workflows/**"
+  pull_request:
+    paths:
+      - "*.py"
+      - "tests/**"
+      - "search_config.json"
+      - "requirements.txt"
+      - ".github/workflows/**"
   schedule:
     - cron: "2/5 * * * *"
   workflow_dispatch:
@@ -23,7 +30,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: pokemon-stock-monitor
+  group: pokemon-stock-monitor-${{ github.event_name == 'pull_request' && github.ref || 'main' }}
   cancel-in-progress: true
 
 jobs:
@@ -44,7 +51,7 @@ jobs:
         run: python -m py_compile monitor.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py update_30th_prices.py tests/test_accuracy.py
 
   check-stock:
-    if: github.event_name != 'push'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 8
@@ -82,6 +89,6 @@ jobs:
         run: |
           git config user.name "Pokémon Alert Bot"
           git config user.email "pokemon-alert-bot@users.noreply.github.com"
-          git add state.json docs/alerts.json
+          git add state.json docs/alerts.json docs/health.json
           git diff --quiet --cached || git commit -m "Update stock state [skip ci]"
           git push
