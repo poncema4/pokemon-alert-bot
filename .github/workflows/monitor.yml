@@ -4,18 +4,20 @@ on:
   push:
     branches: [main]
     paths:
-      - "*.py"
+      - "bot/**"
+      - "tools/**"
       - "tests/**"
       - "docs/**/*.js"
-      - "search_config.json"
+      - "config/**"
       - "requirements.txt"
       - ".github/workflows/**"
   pull_request:
     paths:
-      - "*.py"
+      - "bot/**"
+      - "tools/**"
       - "tests/**"
       - "docs/**"
-      - "search_config.json"
+      - "config/**"
       - "requirements.txt"
       - ".github/workflows/**"
   schedule:
@@ -50,7 +52,7 @@ jobs:
       - name: Run web helper tests
         run: node tests/web/common.test.js
       - name: Compile production Python
-        run: python -m py_compile advisor.py tools/send_test_alert.py tools/snapshot.py tools/check_pins.py monitor.py monitor_loop.py notify.py notify_new_listings.py refresh_live_hits.py accuracy.py bootstrap_stock_alerts.py update_30th_prices.py tests/test_accuracy.py
+        run: python -m py_compile bot/*.py tools/*.py tests/test_accuracy.py
 
   check-stock:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
@@ -65,8 +67,6 @@ jobs:
           cache: "pip"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Normalize missed first-stock alerts
-        run: python -u bootstrap_stock_alerts.py
       - name: Watch stock for about 55 minutes (checks every minute)
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
@@ -79,7 +79,7 @@ jobs:
           else
             echo "WARNING: DISCORD_WEBHOOK_URL is not configured; alerts will be skipped."
           fi
-          python -u monitor_loop.py
+          python -u bot/monitor_loop.py
       - name: Hand over to the next watcher
         if: always()
         env:

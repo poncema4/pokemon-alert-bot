@@ -20,7 +20,7 @@ import os
 import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from urllib.parse import quote_plus, unquote, urljoin, urlparse
+from urllib.parse import quote_plus, unquote, urljoin, urlparse, urlsplit, urlunsplit
 
 import requests
 import advisor
@@ -31,9 +31,9 @@ try:
 except ImportError:  # pragma: no cover - Python 3.11 in Actions always has zoneinfo
     ZoneInfo = None
 
-ROOT = Path(__file__).parent
-STATE_FILE = ROOT / "state.json"
-CONFIG_FILE = ROOT / "search_config.json"
+ROOT = Path(__file__).resolve().parents[1]  # repo root (this file lives in bot/)
+STATE_FILE = ROOT / "data" / "state.json"
+CONFIG_FILE = ROOT / "config" / "search_config.json"
 ALERTS_FILE = ROOT / "docs/alerts.json"
 MARKET_FILE = ROOT / "docs/market.json"
 
@@ -103,6 +103,17 @@ def clean_result_url(url):
     return url
 
 
+def canonical_url(url):
+    """One listing, one URL: drop the fragment and query (#tabbed-customerreviews, ?skuId=, tracking) and a trailing slash.
+
+    Best Buy search results linked the same product with several fragments, which the bot counted as 130 separate listings.
+    """
+    parts = urlsplit((url or "").strip())
+    if not parts.scheme or not parts.netloc:
+        return url
+    return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), parts.path.rstrip("/") or "/", "", ""))
+
+
 def retailer_url_is_valid(retailer, url):
     p = urlparse(url)
     host = p.netloc.lower().split(":")[0]
@@ -131,7 +142,7 @@ def extract_retailer_urls(retailer, text):
     candidates += [BASE_URLS[retailer] + x for x in re.findall(patterns[retailer], text, flags=re.I)]
     links, seen = [], set()
     for href in candidates:
-        full = clean_result_url(urljoin(BASE_URLS[retailer], href)).split('"')[0].split("'")[0]
+        full = canonical_url(clean_result_url(urljoin(BASE_URLS[retailer], href)).split('"')[0].split("'")[0])
         if retailer_url_is_valid(retailer, full) and full not in seen:
             seen.add(full)
             links.append(full)
@@ -344,13 +355,18 @@ def should_prune(entry, seed, now):
 
 
 def clean_state(state):
+    """Drop junk entries and merge URL variants of one listing into its canonical key (newest readable reading wins)."""
     cleaned = {"schema_version": 4}
     for key, value in state.items():
         if key == "schema_version" or not isinstance(value, dict) or "::" not in key:
             continue
         source, url = key.split("::", 1)
+        url = canonical_url(url)
         if source in SEARCH_URLS and retailer_url_is_valid(source, url) and (value.get("pokemon") is True or is_pokemon(url + " " + value.get("title", ""))):
-            cleaned[key] = value
+            canonical_key = f"{source}::{url}"
+            existing = cleaned.get(canonical_key)
+            if existing is None or (value.get("last_ok") or "") > (existing.get("last_ok") or ""):
+                cleaned[canonical_key] = value
     return cleaned
 
 
@@ -434,7 +450,7 @@ def main(discover=True):
     notices = []
 
     for retailer in retailers:
-        seeds = list(dict.fromkeys(config.get("seed_urls", {}).get(retailer, [])))
+        seeds = list(dict.fromkeys(canonical_url(u) for u in config.get("seed_urls", {}).get(retailer, [])))
         counts = {"checked": 0, "readable": 0, "blocked": 0, "errors": 0}
         streak = 0
 

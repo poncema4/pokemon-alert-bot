@@ -12,17 +12,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "bot"))
 import advisor  # noqa: E402
 import notify  # noqa: E402
 
-MAP_URL = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8")).get("map_url", "")
+MAP_URL = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8")).get("map_url", "")
 
 
 def samples():
     now = datetime.now(timezone.utc)
     stamp = now.isoformat()
-    config = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8"))
+    config = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
     guide = json.loads((ROOT / "docs" / "30th_prices.json").read_text(encoding="utf-8"))
     etb = next(p for p in guide["products"] if p["id"] == "etb")
     etb_market = {"market": etb["market"], "updated_at": etb.get("market_updated_at") or stamp, "product_id": 704143}

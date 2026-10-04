@@ -1,140 +1,93 @@
-# Pokémon TCG Stock & Listing Alert Bot
+# PokePing
 
-Personal North Jersey Pokémon TCG monitor. It watches Target, Walmart, Best Buy and GameStop for online Pokémon listings/stock, sends verified Discord alerts, maintains a short-lived live-hit map, and provides a school-day store route.
+A personal Pokémon TCG restock alert bot for North Jersey. It watches Target, Walmart, Best Buy, GameStop and Pokémon Center, pings Discord when something is really in stock, says what the price means against live TCGplayer data, and shows the stores near home on a map.
 
-> The bot does not buy products, bypass retailer protections, or guarantee stock after an alert. Retailer inventory can change between detection and your click.
+Site: <https://poncema4.github.io/pokemon-alert-bot/> (Map, Route, 30th guide). It never buys anything and never works around a retailer's bot protection.
 
-## Production rules
+## How an alert is decided
 
-- **Big 4 only:** Target, Walmart, Best Buy, GameStop can generate Discord alerts and live-hit pins.
-- **UNKNOWN is never IN STOCK:** HTTP 403/429, timeout, bot-check pages, missing signals and other unverifiable results are stored as UNKNOWN and never generate a Discord stock alert.
-- **Unknown never wakes Discord:** the safety rule is enforced in code, not just by configuration.
-- **NEW LISTING is verified-only:** a newly discovered URL is tracked immediately, but Discord is notified only if that first observation is verified in stock.
-- **Niche stores are map-only:** they remain useful for route planning and local context without becoming alert sources.
-- **No fake timestamps:** `posted_at` is populated only when retailer metadata exposes a usable timestamp; otherwise it stays null.
-- **Stock cooldown is separate from UNKNOWN:** blocked checks cannot suppress a later real restock.
+- **In stock is what matters.** Price never blocks an alert; it only changes what the alert says.
+- **Unknown is never in stock.** A bot wall (even one that answers HTTP 200), a 403/429, a timeout, a disabled placeholder button or a missing signal is stored as unknown and never alerts.
+- **The page's own signal beats generic data.** GameStop's `data-available` flag overrides its JSON-LD (which says `InStock` for items that are not). A disabled "Add to cart" button (Target's loading placeholder) is not stock.
+- **Proof is stated.** *Verified* means the page's own flag or structured data says in stock; *Likely* means only cart or pickup wording was found.
+- **New listings alert once**, only if the first reading is in stock, at most 5 per run (a summary covers the rest).
+- **One listing, one URL.** Fragments, query strings and trailing slashes are dropped, so a product linked several ways is not counted several times.
+- **Repeat alerts are cooled down** per listing, and a blocked check can never suppress a later real restock.
 
-## Discord alerts
+## The Discord alert
 
-### IN STOCK
-Sent only for an already-known listing that transitions to a verified positive availability signal. The alert contains the product, detection time, map link and direct product link.
+One embed per alert, coloured by the price verdict, with `@everyone` in the message when `DISCORD_PING` is on:
 
-### NEW + IN STOCK
-Sent only when a newly discovered Big 4 URL is verified in stock on its first observation. Unknown/out-of-stock discoveries are tracked silently.
+| Part | Example |
+| --- | --- |
+| Title | `🟢 IN STOCK · GameStop` (`🆕 NEW LISTING IN STOCK`, `🧪 TEST ALERT`) |
+| Product | the name, as a bold hyperlink (no giant image preview) |
+| Verdict | `BUY: LOW`, `FAIR PRICE`, `ABOVE MARKET`, or `AT RETAIL` / `ABOVE MSRP` when no market price exists |
+| Fields | price, retail (and `above MSRP (+70%)`), TCGplayer market with its age, proof, links to product / map / TCGplayer |
 
-There is no production UNKNOWN Discord alert. That behavior is intentional and enforced in code.
+The verdict compares the listed price with the live TCGplayer market price: 10% or more under is `BUY: LOW`, within 10% is `FAIR PRICE`, more than 10% over is `ABOVE MARKET`. The market price is looked up by product name (`bot/advisor.py`), cached in `docs/market.json` and never older than 10 minutes when an alert is sent. If TCGplayer cannot be reached the alert simply omits the comparison.
 
-## Blind spots (health)
+Blind-spot notices (below) use the same card style.
 
-A retailer that blocks the runner looks exactly like "nothing in stock", so the bot tracks it. Every run records per-retailer counts in `docs/health.json` (checked / readable / blocked / errors). A bot wall is recognised even when it answers HTTP 200 (Walmart redirects to `/blocked`). When a retailer has been unreadable for 24 hours the bot posts one **BLIND SPOT** message to Discord, and one **RECOVERED** message when it can read again. After three unreadable checks in a row the rest of that retailer is skipped for the run, and discovered listings that were never readable for 7 days are pruned (seed URLs stay).
+## What the bot can and cannot see
 
-In-stock alerts say how strong the evidence is: *Verified* means structured availability data, *Likely* means only cart/pickup wording was found, so confirm on the page.
+Measured from GitHub's runner. The map's status lamps show the live state and explain each one on hover.
 
-## Accuracy
+| Retailer | Reading? | Why |
+| --- | --- | --- |
+| GameStop | yes | its page carries its own availability flag |
+| Walmart | sometimes | redirects automated visitors to a bot wall; read whenever it lets the bot in |
+| Target | no | server page shows a disabled placeholder; real stock comes from a captcha-protected API |
+| Best Buy | no | the connection from the runner times out |
+| Pokémon Center | no | 403 or a robot check |
 
-`tests/test_accuracy.py` covers retailer URL validation, Pokémon-product detection, structured stock parsing, protection against UNKNOWN interfering with stock cooldowns, and route-node integrity.
+A retailer that cannot be read looks exactly like "nothing in stock", so each run records per-retailer counts in `docs/health.json`. After 24 hours unreadable the bot posts one **BLIND SPOT** notice, and one **RECOVERED** notice when it can read again. Listings never readable for 7 days are pruned (seed URLs stay).
 
-`accuracy.py` calculates precision, recall, F1, accuracy and detection latency from independent human observations. Human labels belong in `data/ground_truth.json`; the bot's own prediction is not ground truth.
+## The site (`docs/`, served by GitHub Pages)
 
-## Website
+- **Map**: live online hits (one compact row each, with price and nearest store), stores sorted by distance from home, click a card to zoom to its pin, closed stores in red, status lamps for each retailer.
+- **Route**: the fixed school-day sweep with real road miles and drive minutes (OSRM), live open/closed status and weekly hours.
+- **30th guide**: every 30th Celebration product with live TCGplayer market price, premium over MSRP, target buy price, verdict, and the real top chase cards.
 
-GitHub Pages serves the `docs/` directory. The repository already has the GitHub Pages deployment integration enabled; website changes under `docs/` automatically trigger the Pages build/deployment. There is intentionally **no duplicate Pages workflow** in this repository.
+Home is hard-set in `docs/stores.json`. Store pins come from each store's own OpenStreetMap record where one exists (otherwise the exact street-address point), and `pin_source` says which; `tools/check_pins.py` re-checks them.
 
-The site has three main views:
+## How it runs
 
-- `docs/index.html` — live North Jersey map and verified online hits
-- `docs/route.html` — school-day store sweep
-- `docs/30th.html` — 30th Celebration investment/rip guide
+`.github/workflows/monitor.yml` runs the tests, then one long-lived watcher job (`bot/monitor_loop.py`, about 55 minutes) that starts its own successor. GitHub's cron is best effort (measured median gap between scheduled runs was 239 minutes), so the job polls inside itself every 60 seconds and the 30-minute cron is only a safety net.
 
-The website reads `stores.json`, `alerts.json` and `30th_prices.json` directly, with cache-busting query parameters so fresh commits are picked up quickly.
+Each cycle checks the seed and recently readable listings, refreshes the live-hit list and announces new listings. Every 10th cycle also searches by keyword for new listings and refreshes market prices, and about every 20 cycles the 30th guide prices refresh from TCGplayer. State is committed when something meaningful changed (not just `last_seen`) and at once when the live-hit list changes. On an always-on machine, `python bot/monitor_loop.py` does the same.
 
-## Route design
+| Workflow | Purpose |
+| --- | --- |
+| `monitor.yml` | tests on every PR and push; the watcher on schedule or manual dispatch |
+| `30th-prices.yml` | hourly fallback refresh of the 30th guide prices |
+| `snapshot.yml` | manual: saves the retailer pages exactly as the runner receives them |
+| `test-alert.yml` | manual: posts clearly labelled TEST alerts and prints Discord's answer |
 
-The default school-day route is deliberately **not DFS**. Each store is a graph node and every node pair has a coordinate-based edge weight. The route is a constrained weighted-graph sweep designed around the real trip rather than a generic nearest-neighbor sort.
-
-The current locked order is:
-
-1. Walmart Secaucus
-2. Best Buy Secaucus
-3. Best Buy American Dream
-4. CardVault by Tom Brady — American Dream
-5. Target Clifton
-6. GameStop Lyndhurst
-7. TCGDUCKHUNTER — Lyndhurst
-8. East Coast Connection — Lyndhurst
-9. Target Kearny
-10. GameStop Kearny
-11. **Walmart Kearny — END**
-
-This keeps the useful northern stops together, moves progressively south, and finishes at Walmart Kearny. Paramus, North Bergen, Jersey City, West New York, Hoboken and other side-trip locations remain in `stores.json` but are not automatically inserted into the default school-day sweep just because they are nearby. A future change should promote a side trip only if it actually improves the real trip.
-
-The route page can use the device's current coordinates as its origin. Google Maps remains responsible for actual road routing, traffic, one-way streets and closures.
-
-## 30th Celebration price guide
-
-`docs/30th_prices.json` contains the ranked sealed products, MSRP, current TCGplayer snapshot, target buy range, absolute max, pack count, promo/exclusive notes and chase-card ceiling. Presale/low-volume values are explicitly labeled rather than treated as established market prices.
-
-`update_30th_prices.py` refreshes that existing JSON file conservatively. If TCGplayer cannot be parsed, the last good values are preserved. `.github/workflows/30th-prices.yml` runs the refresh hourly.
-
-## GitHub Actions
-
-### Stock monitor
-`.github/workflows/monitor.yml` runs tests first, then one long-lived watcher job (`monitor_loop.py`, about 55 minutes). GitHub's cron is best effort (measured median gap between scheduled runs: 239 minutes), so the job polls inside itself every 60 seconds and starts its own successor when it ends; a 30-minute cron is only the safety net. Each cycle checks the seed and known listings, refreshes the live-hit map and announces new listings; every 10th cycle also runs the slower keyword searches. State is committed when something meaningful changed (never just because `last_seen` moved), and at once when the live-hit list changes. On an always-on machine, `python monitor_loop.py` does the same.
-
-### 30th prices
-`.github/workflows/30th-prices.yml` runs hourly at minute 17 plus manual dispatch and updates the existing price JSON rather than creating timestamped copies.
-
-### Pages
-GitHub's existing Pages integration publishes `docs/` after site changes. Do not add another Pages workflow unless the Pages configuration itself changes.
+Secrets: `DISCORD_WEBHOOK_URL` (required for alerts), `DISCORD_PING=true` (optional, adds `@everyone`).
 
 ## Repository layout
 
 ```text
-pokemon-alert-bot/
-├── .github/workflows/
-│   ├── monitor.yml
-│   └── 30th-prices.yml
-├── data/
-│   ├── README.md
-│   └── ground_truth.json
-├── docs/
-│   ├── index.html
-│   ├── route.html
-│   ├── 30th.html
-│   ├── stores.json
-│   ├── alerts.json
-│   ├── 30th_prices.json
-│   ├── health.json
-│   └── favicon.svg
-├── tests/test_accuracy.py
-├── accuracy.py
-├── bootstrap_stock_alerts.py
-├── monitor.py
-├── notify.py
-├── notify_new_listings.py
-├── refresh_live_hits.py
-├── update_30th_prices.py
-├── run_loop.py
-├── search_config.json
-├── state.json
-├── requirements.txt
-└── README.md
+bot/        everything that runs: monitor, loop, advisor, notify, new-listing and live-hit steps, 30th price updater, accuracy maths
+config/     search_config.json: keywords, seed URLs, retail price (MSRP) rules, market-search rules
+data/       state.json (what the bot has seen), ground_truth.json (human-checked outcomes for measuring accuracy)
+docs/       the site and the public JSON it reads: stores, alerts, health, market, 30th prices
+tools/      pin checker, page snapshotter, test-alert sender
+tests/      Python and Node tests, plus captured real retailer and TCGplayer responses in tests/fixtures
+.github/    workflows
 ```
 
-Files are updated in place. New files should be created only when they represent a genuinely new component that cannot cleanly live in an existing file; do not create duplicate versions, timestamped copies or parallel implementations.
+## Testing
 
-## Discord setup
-
-Set the repository secret:
-
-```text
-DISCORD_WEBHOOK_URL
+```bash
+pip install -r requirements.txt
+python tests/test_accuracy.py     # detection, health, advisor, embeds, loop, pins, site structure
+node tests/web/common.test.js     # the page helpers
 ```
 
-Optional:
+Tests run against captured real responses (retailer pages, TCGplayer searches), and the habit is to prove a check can fail: change one thing, watch the right test fail, restore it. Never trust a check that cannot fail.
 
-```text
-DISCORD_PING=true
-```
+## Measuring accuracy
 
-The production monitor will never send an UNKNOWN alert even if a retailer blocks the runner.
+`bot/accuracy.py` computes precision, recall, F1 and detection latency from `data/ground_truth.json`. Record what you actually saw when you clicked an alert (retailer, URL, alert type, whether it was purchasable, when). Never label an event from the bot's own prediction; the point is independent ground truth.

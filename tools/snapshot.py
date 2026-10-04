@@ -14,7 +14,7 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "bot"))
 import monitor  # noqa: E402
 
 OUT = ROOT / "snapshots"
@@ -22,7 +22,7 @@ SIGNALS = (r'"availability"\s*:\s*"[^"]+"', r"InStock|OutOfStock|SoldOut|Limited
 
 
 def main():
-    config = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8"))
+    config = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
     OUT.mkdir(exist_ok=True)
     http = requests.Session()
     http.headers.update(monitor.HEADERS)

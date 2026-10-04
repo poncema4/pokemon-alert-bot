@@ -6,8 +6,8 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+if str(ROOT / "bot") not in sys.path:
+    sys.path.insert(0, str(ROOT / "bot"))
 
 from datetime import timedelta
 
@@ -125,6 +125,29 @@ def test_pages_share_one_shell_and_have_no_broken_local_links():
     for page in list(PAGES) + ["js/map.js", "js/common.js", "css/map.css"]:
         text = _page_html(page)
         assert not [w for w in forbidden if w in text], f"{page} still mentions removed UI: {[w for w in forbidden if w in text]}"
+
+
+def test_repo_stays_organised_and_the_readme_matches_it():
+    root_files = {p.name for p in ROOT.iterdir() if p.is_file()}
+    assert root_files <= {"README.md", "requirements.txt", ".gitignore"}, f"loose files at the repo root: {sorted(root_files - {'README.md', 'requirements.txt', '.gitignore'})}"
+    for folder in ("bot", "config", "data", "docs", "tools", "tests", ".github/workflows"):
+        assert (ROOT / folder).is_dir(), folder
+    assert not list(ROOT.glob("*.py")) and not list(ROOT.glob("*.json")), "code belongs in bot/ or tools/, data in data/ or config/"
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    for workflow in re.findall(r"`([a-z0-9-]+\.yml)`", readme):
+        assert (ROOT / ".github" / "workflows" / workflow).exists(), f"README names a workflow that does not exist: {workflow}"
+    for module in re.findall(r"`(bot/[a-z_0-9]+\.py)`", readme) + re.findall(r"`(tools/[a-z_0-9]+\.py)`", readme):
+        assert (ROOT / module).exists(), f"README names a file that does not exist: {module}"
+    for line in re.findall(r"^(bot|config|data|docs|tools|tests)/", readme, re.M):
+        assert (ROOT / line).is_dir()
+    for needed in ("data/state.json", "data/ground_truth.json", "config/search_config.json"):
+        assert (ROOT / needed).exists(), f"{needed} (gathered data / config) must never go missing"
+    state = json.loads((ROOT / "data" / "state.json").read_text(encoding="utf-8"))
+    assert len(state) > 5, "state.json is the bot's memory: it must not be emptied by a reorganisation"
+    # Every code file the workflows run lives where the workflows say it does.
+    for workflow in (ROOT / ".github" / "workflows").glob("*.yml"):
+        for script in re.findall(r"python -u ((?:bot|tools)/[a-z_0-9]+\.py)", workflow.read_text(encoding="utf-8")):
+            assert (ROOT / script).exists(), f"{workflow.name} runs {script}, which does not exist"
 
 
 def test_the_name_is_always_PokePing():
@@ -474,7 +497,8 @@ def test_signature_ignores_last_seen():
     with tempfile.TemporaryDirectory() as d:
         root = Path(d)
         (root / "docs").mkdir()
-        write = lambda seen: (root / "state.json").write_text(json.dumps({"target::u": {"in_stock": False, "last_seen": seen}}))
+        (root / "data").mkdir()
+        write = lambda seen: (root / "data" / "state.json").write_text(json.dumps({"target::u": {"in_stock": False, "last_seen": seen}}))
         (root / "docs/alerts.json").write_text("[]")
         (root / "docs/health.json").write_text("{}")
         old = monitor_loop.ROOT
@@ -482,7 +506,7 @@ def test_signature_ignores_last_seen():
         try:
             write("t1"); first = monitor_loop.signature()
             write("t2"); assert monitor_loop.signature() == first, "last_seen moving is not a change"
-            (root / "state.json").write_text(json.dumps({"target::u": {"in_stock": True, "last_seen": "t2"}}))
+            (root / "data" / "state.json").write_text(json.dumps({"target::u": {"in_stock": True, "last_seen": "t2"}}))
             assert monitor_loop.signature() != first, "a stock change is a change"
         finally:
             monitor_loop.ROOT = old
@@ -716,7 +740,7 @@ def test_real_pages_classify_correctly():
 
 
 def test_price_and_msrp_rules():
-    config = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8"))
+    config = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
     assert monitor.extract_price(_page("gamestop_30th_etb_unavailable.html")) == 99.99
     assert monitor.extract_price(_page("gamestop_pitch_black_etb_available.html")) == 84.99
     assert monitor.extract_price("<html>no price</html>") is None
@@ -726,7 +750,7 @@ def test_price_and_msrp_rules():
 
 
 def _gs_config(url):
-    cfg = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8"))
+    cfg = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
     cfg.update({"retailers": ["gamestop"], "keywords": [], "seed_urls": {"gamestop": [url]}})
     return cfg
 
@@ -782,7 +806,7 @@ def test_live_hits_show_every_in_stock_item_with_its_price():
 
 
 PB_URL = "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html"
-CONFIG_FOR_ADVISOR = json.loads((ROOT / "search_config.json").read_text(encoding="utf-8"))
+CONFIG_FOR_ADVISOR = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
 
 
 def test_advisor_query_building():
@@ -990,6 +1014,69 @@ def test_post_sends_payload_and_never_raises():
         notify.DISCORD_WEBHOOK_URL, notify.requests.post = real_url, real_post
 
 
+def test_one_listing_is_one_url():
+    c = monitor.canonical_url
+    base = "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ"
+    assert c(base + "#tabbed-customerreviews") == base and c(base + "?skuId=13089535&utm_source=x") == base and c(base + "/") == base
+    assert c("HTTPS://WWW.Target.com/p/-/A-1010892076?preselect=1") == "https://www.target.com/p/-/A-1010892076"
+    assert c("https://www.walmart.com/ip/Some-Name/123?athbdg=L1600") == "https://www.walmart.com/ip/Some-Name/123"
+    assert c("not a url") == "not a url" and c("") == ""
+    # Discovery from a search page: the same product linked three ways is one listing.
+    page = f'<a href="{base}">a</a><a href="{base}#tabbed-customerreviews">b</a><a href="{base}?x=1">c</a><a href="{base}/#overview">d</a>'
+    assert monitor.extract_retailer_urls("bestbuy", page) == [base]
+
+
+def test_seed_urls_with_tracking_junk_are_requested_and_stored_canonically():
+    import tempfile
+    config = {"retailers": ["target"], "keywords": [], "seed_urls": {"target": ["https://www.target.com/p/-/A-1?preselect=1#reviews", "https://www.target.com/p/-/A-1"]}}
+    sold = lambda u: _Resp(200, u, "<title>Pokemon ETB</title>Sold out online")
+    with tempfile.TemporaryDirectory() as d:
+        session, _ = _run_main(Path(d), config, {"schema_version": 4}, {"target.com": sold})
+        keys = [k for k in json.loads((Path(d) / "state.json").read_text()) if k != "schema_version"]
+    assert session.calls == ["https://www.target.com/p/-/A-1"], "two spellings of one seed are fetched once"
+    assert keys == ["target::https://www.target.com/p/-/A-1"]
+
+
+def test_state_merges_url_variants_and_keeps_the_newest_reading():
+    base = "https://www.bestbuy.com/product/pokemon-30th-celebration-elite-trainer-box/JJG2TL8XCJ"
+    entry = lambda ok, stock: {"pokemon": True, "title": "Pokemon 30th Celebration Elite Trainer Box", "in_stock": stock, "last_ok": ok, "last_seen": ok}
+    state = {"schema_version": 4,
+             f"bestbuy::{base}#tabbed-customerreviews": entry("2026-10-04T10:00:00+00:00", False),
+             f"bestbuy::{base}": entry("2026-10-04T12:00:00+00:00", True),
+             f"bestbuy::{base}?skuId=1": entry("2026-10-04T11:00:00+00:00", False)}
+    cleaned = monitor.clean_state(state)
+    assert list(cleaned) == ["schema_version", f"bestbuy::{base}"], list(cleaned)
+    assert cleaned[f"bestbuy::{base}"]["in_stock"] is True and cleaned[f"bestbuy::{base}"]["last_ok"].startswith("2026-10-04T12"), "newest reading wins"
+    assert monitor.clean_state({"schema_version": 4, "target::https://www.target.com/p/-/A-1?x=1": {"pokemon": True, "title": "Pokemon"}}).get("target::https://www.target.com/p/-/A-1")
+
+
+def test_new_listing_burst_is_capped_with_one_summary():
+    import tempfile
+    sent, notices = [], []
+    real = (notify_new_listings.send_card, notify_new_listings.alert, advisor.fetch_query)
+    notify_new_listings.send_card = lambda card: sent.append(card)
+    notify_new_listings.alert = lambda title, body, url="", ping=False, tone="blind": notices.append((title, body))
+    advisor.fetch_query = _fake_tcg_search
+    base = {"pokemon": True, "title": "Pokemon ETB", "last_seen": "2026-10-04T12:00:00+00:00", "in_stock": True, "new_announced": False, "signal": "page"}
+    state = {"schema_version": 4, **{f"bestbuy::https://www.bestbuy.com/product/x/J{n}": dict(base) for n in range(12)}}
+    with tempfile.TemporaryDirectory() as d:
+        notify_new_listings.STATE_FILE = Path(d) / "state.json"
+        notify_new_listings.MARKET_FILE = Path(d) / "market.json"
+        notify_new_listings.CONFIG_FILE = Path(d) / "config.json"
+        notify_new_listings.CONFIG_FILE.write_text("{}")
+        notify_new_listings.STATE_FILE.write_text(json.dumps(state))
+        try:
+            notify_new_listings.main()
+            after = json.loads(notify_new_listings.STATE_FILE.read_text())
+            notify_new_listings.main()
+        finally:
+            notify_new_listings.send_card, notify_new_listings.alert, advisor.fetch_query = real
+    assert len(sent) == notify_new_listings.MAX_NEW_PER_RUN == 5, "only the first five get a card"
+    assert len(notices) == 1 and "7 more" in notices[0][1], notices
+    assert all(v.get("new_announced") for k, v in after.items() if k != "schema_version"), "all twelve are decided, so the rest never alert later"
+    assert len(sent) == 5 and len(notices) == 1, "a second run adds nothing"
+
+
 if __name__ == "__main__":
     test_retailer_urls()
     test_pokemon_detection()
@@ -998,6 +1085,7 @@ if __name__ == "__main__":
     test_route_integrity()
     test_store_pins_are_geocoded_and_plausible()
     test_pages_share_one_shell_and_have_no_broken_local_links()
+    test_repo_stays_organised_and_the_readme_matches_it()
     test_the_name_is_always_PokePing()
     test_home_is_hard_set_and_distances_use_it()
     test_phone_rules_on_every_page()
@@ -1034,6 +1122,10 @@ if __name__ == "__main__":
     test_embed_ping_rules_and_tones()
     test_embed_survives_hostile_lengths()
     test_post_sends_payload_and_never_raises()
+    test_one_listing_is_one_url()
+    test_seed_urls_with_tracking_junk_are_requested_and_stored_canonically()
+    test_state_merges_url_variants_and_keeps_the_newest_reading()
+    test_new_listing_burst_is_capped_with_one_summary()
     test_loop_scheduling()
     test_cycle_refreshes_prices_on_schedule_and_survives_a_price_failure()
     test_loop_commits_on_meaningful_change_only()

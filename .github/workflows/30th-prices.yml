@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Refresh TCGplayer prices
-        run: python -u update_30th_prices.py
+        run: python -u bot/update_30th_prices.py
       - name: Commit refreshed prices
         run: |
           git config user.name "Pokémon Alert Bot"

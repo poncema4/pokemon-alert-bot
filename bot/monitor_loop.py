@@ -19,14 +19,14 @@ import subprocess
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).parent
+ROOT = Path(__file__).resolve().parents[1]  # repo root (this file lives in bot/)
 CYCLE_SECONDS = float(os.environ.get("MONITOR_CYCLE_SECONDS", "60"))
 RUNTIME_SECONDS = float(os.environ.get("MONITOR_RUNTIME_SECONDS", "3300"))
 DISCOVER_EVERY = int(os.environ.get("MONITOR_DISCOVER_EVERY", "10"))
 COMMIT_EVERY = float(os.environ.get("MONITOR_COMMIT_EVERY", "300"))
 PRICE_EVERY = int(os.environ.get("MONITOR_PRICE_EVERY", "20"))  # cycles between 30th price refreshes (about 20 minutes)
 MARKET_EVERY = int(os.environ.get("MONITOR_MARKET_EVERY", "10"))  # cycles between TCGplayer market refreshes for tracked listings
-TRACKED = ("state.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json", "docs/market.json")
+TRACKED = ("data/state.json", "docs/alerts.json", "docs/health.json", "docs/30th_prices.json", "docs/market.json")
 
 
 def signature():
@@ -36,7 +36,7 @@ def signature():
             return json.loads((ROOT / name).read_text(encoding="utf-8"))
         except Exception:
             return {}
-    state = {k: ({f: v for f, v in e.items() if f != "last_seen"} if isinstance(e, dict) else e) for k, e in load("state.json").items()}
+    state = {k: ({f: v for f, v in e.items() if f != "last_seen"} if isinstance(e, dict) else e) for k, e in load("data/state.json").items()}
     health = {r: {f: v for f, v in e.items() if f != "last_run"} for r, e in load("docs/health.json").items()}
     prices = {k: v for k, v in load("docs/30th_prices.json").items() if k not in ("checked_at",)}
     market = {k: {f: v for f, v in e.items() if f != "updated_at"} for k, e in load("docs/market.json").items()}
