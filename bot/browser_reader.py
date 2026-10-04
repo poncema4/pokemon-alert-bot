@@ -9,6 +9,7 @@ It never gets around anything: a captcha, a "press & hold", a queue or an access
 from __future__ import annotations
 
 import re
+import time
 
 import sellers
 
@@ -18,11 +19,19 @@ BUY = re.compile(r"^(add to (cart|bag|basket))$", re.I)
 NOT_AVAILABLE = re.compile(r"^(sold out|unavailable|currently unavailable|out of stock|coming soon|notify me|check stores|find in store|see details)$", re.I)
 
 
+time_sleep = time.sleep
+RETRY_PAUSE = 3.0   # seconds before the single reload of a half-loaded page
+
+
+def is_wall(snapshot):
+    return bool(snapshot.get("walls")) or any(re.search(w, snapshot.get("title") or "", re.I) for w in WALLS)
+
+
 def classify_rendered(snapshot):
     """(stock, reason, signal) from {"walls": [...], "buttons": [{"label", "visible", "enabled"}], "body_chars": n}."""
     if snapshot.get("error"):
         return None, "error", None
-    if snapshot.get("walls") or any(re.search(w, snapshot.get("title") or "", re.I) for w in WALLS):
+    if is_wall(snapshot):
         return None, "blocked", None
     buttons = [b for b in snapshot.get("buttons", snapshot.get("buy_buttons", [])) if b.get("visible")]  # (older snapshots call the field buy_buttons)
     if any(BUY.match(b["label"].strip()) and b.get("enabled") for b in buttons):
@@ -114,6 +123,12 @@ class BrowserReader:
         """Same shape as monitor.check_product_page."""
         row = self.snapshot(url)
         stock, reason, signal = classify_rendered(row)
+        # About half of Best Buy's loads from a runner are an empty stub (or a page that has not filled in yet). One reload usually gets the real
+        # page. A captcha / robot wall and an error are never reloaded: a wall is respected, and errors are handled by the store back-off.
+        if reason in ("blocked", "no_signal") and not row.get("error") and not is_wall(row):
+            time_sleep(RETRY_PAUSE)
+            row = self.snapshot(url)
+            stock, reason, signal = classify_rendered(row)
         return {"stock": stock, "title": row.get("title") or "", "posted_at": None, "http_status": row.get("status"), "reason": reason, "signal": signal, "price": row.get("price"), "sku": row.get("sku"), "seller": row.get("seller")}
 
     def close(self):

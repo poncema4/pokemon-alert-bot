@@ -43,7 +43,7 @@ Measured from GitHub's runner. The map's status lamps show the live state and ex
 | GameStop | yes | its page carries its own availability flag |
 | Walmart | sometimes | redirects automated visitors to a robot check ("Robot or human?"); read whenever it lets the bot in |
 | Target | no | server page shows a disabled placeholder; real stock comes from a captcha-protected API |
-| Best Buy | spotty | read in a real browser; its bot defence serves an empty page about half the time (an empty page is "unknown", never "in stock"), and only the store's own offers count, not marketplace resellers |
+| Best Buy | spotty | read in a real browser; its bot defence serves an empty page about half the time (an empty page is "unknown", never "in stock"; a half-loaded page is reloaded once, a robot wall never is), and only the store's own offers count, not marketplace resellers |
 | Pokémon Center | no | 403 or a robot check |
 
 A retailer that cannot be read looks exactly like "nothing in stock", so each run records per-retailer counts in `docs/health.json`. After 24 hours unreadable the bot posts one **BLIND SPOT** notice, and one **RECOVERED** notice when it can read again. Listings never readable for 7 days are pruned (seed URLs stay).

@@ -613,6 +613,49 @@ def test_rearm_state_rules():
     assert monitor.rearm_state({"armed": False, "out_since": "garbage"}, False, now, 20) == (False, now.isoformat()), "a corrupt timestamp restarts the streak, never crashes"
 
 
+def test_a_half_loaded_page_is_retried_once_but_a_wall_never_is():
+    """About half of Best Buy's loads from a runner are an empty stub page. One immediate reload of a STUB raises the share of usable readings
+    (and stops two stubs in a row from putting the store on a 5 minute back-off); a captcha / robot wall is never reloaded."""
+    full = {"url": "https://www.bestbuy.com/product/x/JJG1", "status": 200, "title": "Pokemon ETB - Best Buy", "body_chars": 3300, "walls": [], "buttons": [{"label": "Add to cart", "visible": True, "enabled": True}], "seller": "Best Buy"}
+    stub = {"url": full["url"], "status": 200, "title": "Pokemon ETB - Best Buy", "body_chars": 215, "walls": [], "buttons": []}
+    nobutton = {**full, "buttons": [], "body_chars": 2400}
+    wall = {"url": full["url"], "status": 200, "title": "Robot or human?", "body_chars": 211, "walls": ["robot or human"], "buttons": []}
+
+    real_sleep = browser_reader.time_sleep
+    browser_reader.time_sleep = lambda seconds: None   # no real pause in a test
+
+    def reader(*answers):
+        r = browser_reader.BrowserReader.__new__(browser_reader.BrowserReader)
+        r.calls, queue = 0, list(answers)
+        def snapshot(url, wait_ms=None):
+            r.calls += 1
+            return queue.pop(0) if queue else queue_last
+        r.snapshot = snapshot
+        queue_last = answers[-1]
+        return r
+
+    try:
+        r = reader(stub, full)
+        got = r.check(full["url"])
+        assert r.calls == 2 and got["stock"] is True and got["reason"] == "ok", "a stub then a full page: the second load is used"
+        r = reader(full)
+        assert r.check(full["url"])["stock"] is True and r.calls == 1, "a good first load is not repeated"
+        r = reader(stub, stub)
+        got = r.check(full["url"])
+        assert r.calls == 2 and got["stock"] is None, "two stubs in a row stay unknown (never stock), and it stops at one retry"
+        r = reader(nobutton, full)
+        assert r.check(full["url"])["stock"] is True and r.calls == 2, "a page with no buy or unavailable button yet (still hydrating) is retried too"
+        r = reader(wall, full)
+        got = r.check(full["url"])
+        assert r.calls == 1 and got["stock"] is None and got["reason"] == "blocked", "a robot wall is read once and never reloaded"
+        r = reader({**full, "buttons": [{"label": "Sold Out", "visible": True, "enabled": False}]})
+        assert r.check(full["url"])["stock"] is False and r.calls == 1, "a clear sold-out reading is final"
+        r = reader({"url": full["url"], "error": "timeout"}, full)
+        assert r.check(full["url"])["reason"] == "error" and r.calls == 1, "a timeout or error is not retried here (the back-off handles it)"
+    finally:
+        browser_reader.time_sleep = real_sleep
+
+
 def test_a_marketplace_reseller_is_not_the_store_restocking():
     """Measured 2026-10-04: every Best Buy 'in stock' reading (Chaos Rising, Perfect Order, Pitch Black) was a third-party seller
     ('Sold & shipped by Shopville Inc / Collectors Emporium', 'More options from Marketplace sellers $94.99 - $155.94'), not Best Buy."""
@@ -2433,6 +2476,7 @@ if __name__ == "__main__":
     test_fast_pass_does_not_search_and_rechecks_known_listings()
     test_one_alert_per_stay_in_stock_and_rearming_needs_confirmed_out_of_stock()
     test_rearm_state_rules()
+    test_a_half_loaded_page_is_retried_once_but_a_wall_never_is()
     test_a_marketplace_reseller_is_not_the_store_restocking()
     test_a_reseller_listing_never_alerts_and_clears_a_stale_in_stock_state()
     test_a_new_listing_alert_uses_up_that_stay()
