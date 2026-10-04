@@ -1,4 +1,4 @@
-"""Continuous monitor: checks every ~60 seconds instead of waiting on GitHub's cron.
+"""Continuous monitor: checks every 30 seconds instead of waiting on GitHub's cron.
 
 GitHub's `*/5` cron is best effort; measured over 100 scheduled runs the median gap was 239 minutes
 (longest 499), so a restock that lasts a few minutes was usually missed. This runner keeps one job alive
