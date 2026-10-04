@@ -12,18 +12,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import advisor
-from notify import send_card
+from notify import alert, send_card
 
 try:
     from zoneinfo import ZoneInfo
 except ImportError:  # pragma: no cover - Python 3.11 in Actions always has zoneinfo
     ZoneInfo = None
 
-ROOT = Path(__file__).parent
-STATE_FILE = ROOT / "state.json"
-CONFIG_FILE = ROOT / "search_config.json"
+ROOT = Path(__file__).resolve().parents[1]  # repo root (this file lives in bot/)
+STATE_FILE = ROOT / "data" / "state.json"
+CONFIG_FILE = ROOT / "config" / "search_config.json"
 MARKET_FILE = ROOT / "docs/market.json"
 BIG4 = {"target", "walmart", "bestbuy", "gamestop"}
+MAX_NEW_PER_RUN = 5  # a burst of "new listings" (a retailer that suddenly becomes readable) must never flood the channel
 
 
 def load(path: Path, default):
@@ -52,6 +53,7 @@ def main():
     current = load(STATE_FILE, {})
     market_cache = load(MARKET_FILE, {})
     sent = 0
+    overflow = 0
     changed = False
 
     for key, entry in current.items():
@@ -67,6 +69,9 @@ def main():
         if entry.get("in_stock") is not True:
             continue
 
+        if sent >= MAX_NEW_PER_RUN:
+            overflow += 1
+            continue
         detected = entry.get("last_seen") or datetime.now(timezone.utc).isoformat()
         title = entry.get("title") or f"{retailer.title()} Pokémon product"
         config = load(CONFIG_FILE, {})
@@ -75,6 +80,9 @@ def main():
                                      ping=os.environ.get("DISCORD_PING", "").lower() in ("1", "true", "yes")))
         sent += 1
 
+    if overflow:
+        notice = f"{overflow} more new in-stock listings were found in this run (the first {MAX_NEW_PER_RUN} are above). They are on the map; check it for the rest."
+        alert("🆕 MORE NEW LISTINGS", notice, tone="fair")
     if changed:
         STATE_FILE.write_text(json.dumps(current, indent=2) + "\n", encoding="utf-8")
         MARKET_FILE.parent.mkdir(parents=True, exist_ok=True)

@@ -17,7 +17,7 @@ from pathlib import Path
 
 import requests
 
-ROOT = Path(__file__).parent
+ROOT = Path(__file__).resolve().parents[1]  # repo root (this file lives in bot/)
 DATA_FILE = ROOT / "docs" / "30th_prices.json"
 ENDPOINT = "https://mp-search-api.tcgplayer.com/v1/search/request?q=&isList=true&mpfev=3060"
 HEADERS = {

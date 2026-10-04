@@ -10,9 +10,9 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).parent
-STATE_FILE = ROOT / "state.json"
-CONFIG_FILE = ROOT / "search_config.json"
+ROOT = Path(__file__).resolve().parents[1]  # repo root (this file lives in bot/)
+STATE_FILE = ROOT / "data" / "state.json"
+CONFIG_FILE = ROOT / "config" / "search_config.json"
 ALERTS_FILE = ROOT / "docs/alerts.json"
 BIG4 = {"target", "walmart", "bestbuy", "gamestop"}
 
