@@ -43,6 +43,33 @@ def main():
                 row = {"file": name, "url": url, "error": str(exc)[:200]}
             index.append(row)
             print(json.dumps(row)[:600])
+    # Listing pages: do they load over plain HTTP, and how many product links does the bot's extractor find on them?
+    for retailer, pages in config.get("listing_pages", {}).items():
+        for n, url in enumerate(pages):
+            name = f"listing_{retailer}_{n}"
+            try:
+                response = http.get(url, timeout=25, allow_redirects=True)
+                (OUT / f"{name}.html").write_text(response.text, encoding="utf-8")
+                links = monitor.extract_retailer_urls(retailer, response.text) if response.status_code < 400 else []
+                etbs = [u for u in links if "elite-trainer-box" in u]
+                row = {"file": name, "url": url, "status": response.status_code, "bytes": len(response.text), "product_links": len(links), "etb_links": etbs[:25]}
+            except Exception as exc:
+                row = {"file": name, "url": url, "error": str(exc)[:200]}
+            index.append(row)
+            print(json.dumps(row)[:700])
+    # Can a GameStop product page be fetched by its product id alone? (the listing page lists ids server-side)
+    try:
+        listing = (OUT / "listing_gamestop_0.html").read_text(encoding="utf-8")
+        pids = list(dict.fromkeys(re.findall(r'data-pid="(\d+)"', listing)))[:4]
+        for pid in pids[:3]:
+            for form in (f"https://www.gamestop.com/products/-/{pid}.html", f"https://www.gamestop.com/product/{pid}", f"https://www.gamestop.com/toys-games/trading-cards/products/-/{pid}.html"):
+                response = http.get(form, timeout=25, allow_redirects=True)
+                title = re.search(r"<title[^>]*>(.*?)</title>", response.text, re.S)
+                row = {"file": "pid_probe", "pid": pid, "form": form, "status": response.status_code, "final": response.url, "title": re.sub(r"\s+", " ", title.group(1)).strip()[:90] if title else None, "data_available": re.findall(r'data-available="(true|false)"', response.text)[:2]}
+                index.append(row)
+                print(json.dumps(row)[:500])
+    except Exception as exc:
+        index.append({"file": "pid_probe", "error": str(exc)[:200]})
     (OUT / "index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")
 
 

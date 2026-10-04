@@ -26,6 +26,7 @@
     "pokemon 30th anniversary elite trainer box",
     "pokemon 30th celebration",
     "pokemon 30th celebration elite trainer box",
+    "pokemon 30th celebration ultra-premium collection",
     "pokemon ascended heroes",
     "pokemon ascended heroes elite trainer box",
     "pokemon black bolt",
@@ -84,9 +85,8 @@
       "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html",
       "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html",
       "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html",
-      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-black-bolt-elite-trainer-box/426102.html",
       "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-surging-sparks-elite-trainer-box/20015259.html",
-      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-journey-together-elite-trainer-box/420196.html"
+      "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html"
     ]
   },
   "niche_sources": [
@@ -310,6 +310,51 @@
       "exclude": [],
       "query": "151 Elite Trainer Box",
       "msrp": null
+    },
+    {
+      "id": "30th-upc-day",
+      "label": "30th Celebration UPC (Day, Espeon)",
+      "include": [
+        "30th celebration",
+        "ultra premium collection"
+      ],
+      "exclude": [],
+      "product": "ultra premium collection",
+      "query": "30th Celebration Ultra-Premium Collection [Day]",
+      "msrp": 179.99,
+      "keyword": "pokemon 30th celebration ultra-premium collection",
+      "market_include": [
+        "day"
+      ]
+    },
+    {
+      "id": "30th-upc-night",
+      "label": "30th Celebration UPC (Night, Umbreon)",
+      "include": [
+        "30th celebration",
+        "ultra premium collection"
+      ],
+      "exclude": [],
+      "product": "ultra premium collection",
+      "query": "30th Celebration Ultra-Premium Collection [Night]",
+      "msrp": 179.99,
+      "keyword": "pokemon 30th celebration ultra-premium collection",
+      "market_include": [
+        "night"
+      ]
     }
+  ],
+  "listing_pages": {
+    "gamestop": [
+      "https://www.gamestop.com/pokemon/new?prefn1=brand&prefv1=The+Pokemon+Company+International&srule=release-date-descending",
+      "https://www.gamestop.com/pokemon/new?prefn1=brand&prefv1=The+Pokemon+Company+International&srule=release-date-descending&start=20&sz=20",
+      "https://www.gamestop.com/pokemon/new?prefn1=brand&prefv1=The+Pokemon+Company+International&srule=release-date-descending&start=40&sz=20",
+      "https://www.gamestop.com/toys-games/trading-cards?prefn1=franchise&prefv1=Pokemon&view=new&tileView=list&hybrid=true",
+      "https://www.gamestop.com/pokemon?prefn1=bvConsolidatedRating&prefn2=lifecycleStatus&prefv1=2+and+up&prefv2=Shop+Pre-Orders"
+    ]
+  },
+  "discover_titles": [
+    "elite trainer box",
+    "ultra-premium collection"
   ]
 }

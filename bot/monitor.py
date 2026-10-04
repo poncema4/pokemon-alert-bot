@@ -24,6 +24,7 @@ from urllib.parse import quote_plus, unquote, urljoin, urlparse, urlsplit, urlun
 
 import requests
 import advisor
+import gamestop_discovery
 from notify import alert, send_card
 
 try:
@@ -36,6 +37,7 @@ STATE_FILE = ROOT / "data" / "state.json"
 CONFIG_FILE = ROOT / "config" / "search_config.json"
 ALERTS_FILE = ROOT / "docs/alerts.json"
 MARKET_FILE = ROOT / "docs/market.json"
+PIDS_FILE = ROOT / "data" / "gamestop_pids.json"
 
 SEARCH_URLS = {
     "target": "https://www.target.com/s?searchTerm={q}",
@@ -131,7 +133,7 @@ def retailer_url_is_valid(retailer, url):
     return False
 
 
-def extract_retailer_urls(retailer, text):
+def extract_retailer_urls(retailer, text, limit=20):
     candidates = re.findall(r'href=[\"\']([^\"\']+)', text, flags=re.I) + re.findall(r'https?://[^\"\'<>\\ ]+', text)
     patterns = {
         "walmart": r"/ip/(?:[^\"\'<>\\ ]+/)?\d+",
@@ -146,7 +148,7 @@ def extract_retailer_urls(retailer, text):
         if retailer_url_is_valid(retailer, full) and full not in seen:
             seen.add(full)
             links.append(full)
-    return links[:20]
+    return links[:limit]
 
 
 def fallback_search(http, retailer, keyword):
@@ -447,6 +449,7 @@ def main(discover=True):
 
     health = load_json(HEALTH_FILE, {})
     market_cache = load_json(MARKET_FILE, {})
+    pid_cache = load_json(PIDS_FILE, {})
     notices = []
 
     for retailer in retailers:
@@ -534,6 +537,16 @@ def main(discover=True):
                     if retailer_url_is_valid(retailer, url) and url not in seen:
                         extra.append(url)
                         seen.add(url)
+            if retailer == "gamestop" and discover:
+                try:
+                    found = gamestop_discovery.discover(http, config, pid_cache, canonical_url)
+                except Exception as exc:  # discovery is a bonus: never let it stop the checks
+                    print(f"  gamestop discovery failed: {exc}")
+                    found = []
+                for url in found:
+                    if retailer_url_is_valid(retailer, url) and url not in seen:
+                        extra.append(url)
+                        seen.add(url)
             for url in extra:
                 if streak >= BLOCKED_STREAK_LIMIT:
                     print(f"  {retailer}: {streak} checks in a row unreadable; skipping the rest this run")
@@ -547,6 +560,7 @@ def main(discover=True):
         alert(f"{'⚠️ BLIND SPOT' if kind == 'blind' else '✅ RECOVERED'} · {retailer.title()}", message, ping=ping if kind == "blind" else False, tone="blind" if kind == "blind" else "ok")
     save_json(HEALTH_FILE, health)
     save_json(MARKET_FILE, market_cache)
+    save_json(PIDS_FILE, pid_cache)
 
     seed_keys = {f"{r}::{u}" for r, urls in config.get("seed_urls", {}).items() for u in urls}
     before = len(state)
