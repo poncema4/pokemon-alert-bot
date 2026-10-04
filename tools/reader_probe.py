@@ -21,17 +21,21 @@ PAGES = {
 }
 
 
+STRATEGIES = [("commit", 12000), ("domcontentloaded", 12000), ("load", 12000), ("load", 25000)]
+
+
 def main() -> int:
-    reader = BrowserReader()
-    try:
-        for name, url in PAGES.items():
-            started = time.time()
-            row = reader.snapshot(url)
-            row.pop("url", None)
-            stock, reason, signal = classify_rendered(row)
-            print(json.dumps({"page": name, "seconds": round(time.time() - started, 1), "stock": stock, "reason": reason, "signal": signal, **row}))
-    finally:
-        reader.close()
+    for wait_until, wait_ms in STRATEGIES:
+        reader = BrowserReader(wait_ms=wait_ms, wait_until=wait_until)
+        try:
+            for name, url in PAGES.items():
+                started = time.time()
+                row = reader.snapshot(url)
+                row.pop("url", None)
+                stock, reason, signal = classify_rendered(row)
+                print(json.dumps({"strategy": f"{wait_until}+{wait_ms}", "page": name, "seconds": round(time.time() - started, 1), "stock": stock, "reason": reason, "signal": signal, "status": row.get("status"), "chars": row.get("body_chars"), "buttons": row.get("buttons"), "error": row.get("error")}))
+        finally:
+            reader.close()
     return 0
 
 

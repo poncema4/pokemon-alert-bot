@@ -35,9 +35,10 @@ def classify_rendered(snapshot):
 class BrowserReader:
     """One headless Chromium kept open across cycles (starting it costs seconds, reading a page costs a few)."""
 
-    def __init__(self, wait_ms=12000):
+    def __init__(self, wait_ms=12000, wait_until="commit"):
         from playwright.sync_api import sync_playwright
         self.wait_ms = wait_ms
+        self.wait_until = wait_until
         self._pw = sync_playwright().start()
         self._browser = self._pw.chromium.launch(headless=True)
         self._context = self._browser.new_context(viewport={"width": 1280, "height": 900}, locale="en-US", timezone_id="America/New_York")
@@ -66,7 +67,7 @@ class BrowserReader:
         page.set_default_timeout(15000)
         row = {"url": url}
         try:
-            response = page.goto(url, wait_until="commit", timeout=25000)  # do not wait for the whole page to finish loading
+            response = page.goto(url, wait_until=self.wait_until, timeout=25000)
             try:  # return the moment a buy/unavailable button exists; a page that never shows one waits the full time
                 page.wait_for_function(self.READY, timeout=wait_ms)
             except Exception:
