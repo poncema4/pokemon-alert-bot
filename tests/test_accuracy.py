@@ -2479,6 +2479,24 @@ def test_every_tool_script_can_be_imported_the_way_its_workflow_runs_it():
         assert run.returncode == 0, f"tools/{tool.name} cannot be imported:\n{run.stderr[-600:]}"
 
 
+def test_the_email_forwarders_focus_list_matches_the_watchlist():
+    """The Apps Script cannot read the repo, so its FOCUS_TERMS are a copy of the watchlist's set names. If a set is added to
+    config/search_config.json without adding it to the script, emails about it would be silently ignored."""
+    import unicodedata
+    def norm(text):
+        text = unicodedata.normalize("NFD", text)
+        return " ".join(re.sub(r"[^a-z0-9]+", " ", "".join(c for c in text if unicodedata.category(c) != "Mn").lower()).split())
+    script = (ROOT / "integrations" / "gmail_to_discord.gs").read_text(encoding="utf-8")
+    block = re.search(r"const FOCUS_TERMS = \[(.*?)\];", script, re.S).group(1)
+    terms = [norm(t) for t in re.findall(r'"([^"]+)"', block)]
+    assert len(terms) >= 15 and all(terms), terms
+    config = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
+    for item in config["watchlist"]:
+        for phrase in item["include"]:
+            assert any(norm(phrase) in term for term in terms), f"watchlist item {item['id']} ({phrase!r}) is not covered by the email forwarder's FOCUS_TERMS"
+    assert "151" not in terms, "a bare 151 would match any price of $151"
+
+
 def test_ci_runs_the_email_forwarder_tests_and_the_readme_explains_the_setup():
     workflow = (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
     assert "node tests/web/gmail_forwarder.test.js" in workflow, "CI must run the email forwarder tests"
@@ -2664,6 +2682,7 @@ if __name__ == "__main__":
     test_page_assets_are_versioned_so_a_browser_never_mixes_releases()
     test_ci_runs_the_end_to_end_test()
     test_every_tool_script_can_be_imported_the_way_its_workflow_runs_it()
+    test_the_email_forwarders_focus_list_matches_the_watchlist()
     test_ci_runs_the_email_forwarder_tests_and_the_readme_explains_the_setup()
     test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued()
     test_the_watcher_never_shares_a_concurrency_group_with_test_runs()

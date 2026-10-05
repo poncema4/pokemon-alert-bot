@@ -19,6 +19,14 @@ const RETAILERS = [
 const RESTOCK_WORDS = /(back in stock|in[- ]stock|is available|now available|available again|available now|restock|just dropped|just landed|waiting room|queue|you'?re in line|your turn)/i;
 const NEVER_LINK = /(unsubscribe|preferences|privacy|terms|mailto:|facebook\.com|twitter\.com|x\.com\/|instagram\.com|youtube\.com|tiktok\.com|\.(png|jpe?g|gif|svg)(\?|$)|help\.|support\.)/i;
 const MAX_AGE_MS = 24 * 3600 * 1000;   // an old email is not a restock
+// The products PokePing focuses on (the set names in config/search_config.json "watchlist", kept in step by a test). An email is only forwarded when it
+// is about Pokemon AND names one of these. Written normalised: lower case, no accents, letters and digits only, single spaces.
+const FOCUS_TERMS = [
+  "30th celebration", "delta reign", "chaos rising", "pitch black", "perfect order", "ascended heroes", "phantasmal flames", "mega evolution",
+  "prismatic evolutions", "destined rivals", "black bolt", "white flare", "journey together", "surging sparks", "pokemon 151", "scarlet violet 151",
+  "ultra premium collection",
+];
+const QUEUE_WORDS = /(waiting room|you'?re in line|your turn|queue)/i;   // a Pokemon Center queue email announces a drop even when it names no product
 const LABEL = "PokePing";               // the Gmail filter from the README puts this label on store emails
 
 function clip(text, limit) {
@@ -46,6 +54,17 @@ function firstLink(body) {
   return null;
 }
 
+/** Lower case, accents removed ("Pokémon" -> "pokemon"), every run of other characters becomes one space. */
+function normalize(text) {
+  return String(text == null ? "" : text).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+/** Is this text about Pokemon AND one of the products we focus on? ("151" alone would match a price, so it is only matched as "pokemon 151".) */
+function isFocus(text) {
+  const hay = " " + normalize(text) + " ";
+  return hay.includes(" pokemon ") && FOCUS_TERMS.some((term) => hay.includes(" " + term + " "));
+}
+
 /** A subject can contain "@everyone" or line breaks: neutralise them so an email can never ping or break the layout. */
 function plain(text) {
   return String(text || "").replace(/\s+/g, " ").replace(/@(everyone|here)/gi, "@​$1").trim();
@@ -61,6 +80,8 @@ function buildPayload(msg, now) {
   const subject = plain(msg.subject);
   const head = String(msg.plainBody || "").slice(0, 800);
   if (!RESTOCK_WORDS.test(subject) && !RESTOCK_WORDS.test(head)) return null;
+  const queueDrop = retailer === "Pokémon Center" && (QUEUE_WORDS.test(subject) || QUEUE_WORDS.test(head));
+  if (!isFocus(subject + " " + String(msg.plainBody || "").slice(0, 1500)) && !queueDrop) return null;   // not a Pokemon product we focus on
   const age = now - Number(msg.date || now);
   if (age > MAX_AGE_MS || age < -60000) return null;
   const link = firstLink(msg.plainBody);
@@ -114,4 +135,4 @@ function installTrigger() {
   ScriptApp.newTrigger("checkRestockEmails").timeBased().everyMinutes(1).create();
 }
 
-if (typeof module !== "undefined") module.exports = { retailerOf, firstLink, plain, buildPayload, clip, RETAILERS, checkRestockEmails, sendTestToDiscord, installTrigger };
+if (typeof module !== "undefined") module.exports = { retailerOf, firstLink, plain, buildPayload, clip, RETAILERS, normalize, isFocus, FOCUS_TERMS, checkRestockEmails, sendTestToDiscord, installTrigger };

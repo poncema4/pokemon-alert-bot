@@ -107,7 +107,7 @@ One-time setup (about 10 minutes):
 4. **Give it the webhook.** Project Settings > Script properties > add `DISCORD_WEBHOOK_URL` with the same Discord webhook PokePing uses (keep it private).
 5. **Test, then start it.** Run `sendTestToDiscord` once (a TEST message appears in Discord), then run `installTrigger` once and approve the permissions. It now checks every minute.
 
-What it forwards: unread emails labelled `PokePing`, from one of the five stores' own domains (a look-alike domain is ignored), that talk about stock (back in stock, available, restock, queue, waiting room), less than a day old. Each is forwarded once and then marked read. A subject can never ping anyone by itself. `node tests/web/gmail_forwarder.test.js` tests this logic.
+What it forwards: unread emails labelled `PokePing`, from one of the five stores' own domains (a look-alike domain is ignored), that talk about stock (back in stock, available, restock), are about **Pokémon and one of the products on the watchlist** (the set names in `config/search_config.json`, copied into `FOCUS_TERMS` in the script; a test fails if they drift apart), and are less than a day old. A Pokémon Center queue or waiting-room email is forwarded even when it names no product, because it announces a drop. An email about anything else (other toys, other Pokémon items) is ignored. Each is forwarded once and then marked read. A subject can never ping anyone by itself. `node tests/web/gmail_forwarder.test.js` tests this logic.
 
 ## Repository layout
 
