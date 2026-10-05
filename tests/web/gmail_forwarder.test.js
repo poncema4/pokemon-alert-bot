@@ -4,7 +4,7 @@ const assert = require("assert");
 const F = require("../../integrations/gmail_to_discord.gs");
 
 const NOW = Date.parse("2026-10-04T18:00:00Z");
-const email = (over) => ({ from: "Target <no-reply@e.target.com>", subject: "Good news! Pokémon TCG Elite Trainer Box is back in stock", date: NOW - 60000,
+const email = (over) => ({ from: "Target <no-reply@e.target.com>", subject: "Good news! Pokémon TCG: Mega Evolution—Pitch Black Elite Trainer Box is back in stock", date: NOW - 60000,
   plainBody: "Hi Marco,\nIt's back in stock: https://www.target.com/p/-/A-1010892076?ref=email\nUnsubscribe: https://target.com/unsubscribe?x=1", ...over });
 
 // which sender is which store
@@ -25,12 +25,12 @@ assert.deepStrictEqual(p.allowed_mentions, { parse: ["everyone"] });
 assert.ok(p.embeds[0].title.includes("Target") && p.embeds[0].title.includes("back-in-stock"));
 assert.ok(p.embeds[0].description.includes("[Open the store's link](https://www.target.com/p/-/A-1010892076?ref=email)"), p.embeds[0].description);
 assert.ok(!/unsubscribe/i.test(p.embeds[0].description), "the unsubscribe link is never the link");
-assert.ok(p.embeds[0].description.includes("Elite Trainer Box is back in stock"));
+assert.ok(p.embeds[0].description.includes("Pitch Black Elite Trainer Box is back in stock"));
 assert.ok(p.embeds[0].footer.text.includes("not PokePing's check"), "the message says it is the store's own, possibly late, alert");
 
 // every store works
 for (const [from, name] of [["walmart@em.walmart.com", "Walmart"], ["BestBuyInfo@emailinfo.bestbuy.com", "Best Buy"], ["gamestop@e.gamestop.com", "GameStop"], ["noreply@pokemoncenter.com", "Pokémon Center"]]) {
-  const q = F.buildPayload(email({ from, subject: "Your item is available now" }), NOW);
+  const q = F.buildPayload(email({ from, subject: "Pokémon 30th Celebration Elite Trainer Box is available now" }), NOW);
   assert.ok(q && q.embeds[0].title.includes(name), name);
 }
 // a queue email from Pokémon Center is a restock-style alert too
@@ -42,16 +42,16 @@ assert.strictEqual(F.buildPayload(email({ subject: "20% off toys this weekend", 
 assert.strictEqual(F.buildPayload(email({ date: NOW - 25 * 3600 * 1000 }), NOW), null, "older than a day");
 assert.strictEqual(F.buildPayload(email({ date: NOW + 10 * 60000 }), NOW), null, "dated in the future");
 // restock words only in the body still count
-assert.ok(F.buildPayload(email({ subject: "An update on your saved item", plainBody: "Great news, it is back in stock! https://www.target.com/p/-/A-1" }), NOW));
+assert.ok(F.buildPayload(email({ subject: "An update on your saved item", plainBody: "Great news, your Pokémon Chaos Rising Elite Trainer Box is back in stock! https://www.target.com/p/-/A-1" }), NOW));
 
 // safety: an email can never ping or break the message
-const evil = F.buildPayload(email({ subject: "@everyone @here back in stock\nnow" }), NOW);
+const evil = F.buildPayload(email({ subject: "@everyone @here Pokémon Pitch Black back in stock\nnow" }), NOW);
 assert.ok(!/@everyone|@here/.test(evil.embeds[0].description.replace(/@​(everyone|here)/g, "")), "a subject cannot ping");
 assert.ok(!evil.embeds[0].description.split("\n")[0].includes("\n"));
 assert.strictEqual(evil.content, "@everyone", "the one deliberate ping is the fixed message content");
-const longOne = F.buildPayload(email({ subject: "back in stock " + "x".repeat(6000), plainBody: "back in stock " + "y".repeat(9000) + " https://www.target.com/p/-/A-1" }), NOW);
+const longOne = F.buildPayload(email({ subject: "Pokémon Pitch Black back in stock " + "x".repeat(6000), plainBody: "back in stock " + "y".repeat(9000) + " https://www.target.com/p/-/A-1" }), NOW);
 assert.ok(longOne.embeds[0].description.length <= 3500 && longOne.embeds[0].title.length <= 256, "Discord's size limits are respected");
-assert.ok(longOne.embeds[0].description.startsWith("**back in stock xxxx") && longOne.embeds[0].description.split("\n")[0].length <= 256, "a huge subject is cut to a sensible length");
+assert.ok(longOne.embeds[0].description.startsWith("**Pokémon Pitch Black back in stock xxxx") && longOne.embeds[0].description.split("\n")[0].length <= 256, "a huge subject is cut to a sensible length");
 assert.ok(longOne.embeds[0].description.split("\n")[0].endsWith("…**"), "and shows that it was cut");
 assert.strictEqual(F.clip("abcdef", 4), "abc…");
 assert.strictEqual(F.clip("abc", 4), "abc");
@@ -63,6 +63,30 @@ assert.strictEqual(F.firstLink("no links here"), null);
 assert.strictEqual(F.firstLink("go to https://www.walmart.com/ip/1."), "https://www.walmart.com/ip/1", "trailing punctuation is removed");
 const noLink = F.buildPayload(email({ plainBody: "It is back in stock, open the app." }), NOW);
 assert.ok(noLink.embeds[0].description.includes("no link found"), "an email with no link still alerts");
+
+
+// ---- focus: only Pokemon products we watch ----
+const forward = (subject, over = {}) => F.buildPayload(email({ subject, plainBody: "https://www.target.com/p/-/A-1", ...over }), NOW);
+assert.ok(forward("POKÉMON TCG: Mega Evolution—Pitch Black Elite Trainer Box is back in stock"), "capitals, accents and dashes do not matter");
+assert.ok(forward("Pokemon Trading Card Game: 30th Celebration Ultra-Premium Collection is available"), "ultra-premium spelled with a hyphen");
+assert.ok(forward("Pokémon TCG: Scarlet & Violet—151 Elite Trainer Box is back in stock"), "the 151 set");
+assert.ok(forward("Pokémon TCG: Delta Reign Booster Bundle is back in stock"), "any product of a watched set");
+assert.strictEqual(forward("PlayStation 5 console is back in stock"), null, "not Pokemon");
+assert.strictEqual(forward("Pokémon Plush 8 in is back in stock"), null, "Pokemon, but not a product we focus on");
+assert.strictEqual(forward("Pokémon TCG Elite Trainer Box is back in stock"), null, "no watched set named");
+assert.strictEqual(forward("Pokémon plush now $151.99 and back in stock"), null, "a price of 151 is not the 151 set");
+assert.strictEqual(forward("Pitch Black movie poster is back in stock"), null, "a watched set name without Pokemon");
+assert.strictEqual(forward("Pokémon Pitch Blackjack card game is back in stock"), null, "a set name inside a longer word is not that set");
+assert.strictEqual(forward("Pokémon Perfect Orders pizza kit is back in stock"), null, "whole words only");
+assert.strictEqual(forward("Great news", { plainBody: "Your item is back in stock. Pokémon Chaos Rising Elite Trainer Box https://www.target.com/p/-/A-1" }) !== null, true, "the product can be named in the body instead of the subject");
+// a Pokemon Center queue / waiting-room email announces a drop even when it names no product; other stores' queue mail does not
+const queue = (from) => F.buildPayload(email({ from, subject: "The waiting room is open", plainBody: "You can shop now https://www.pokemoncenter.com/" }), NOW);
+assert.ok(queue("noreply@pokemoncenter.com") && queue("noreply@pokemoncenter.com").embeds[0].title.includes("Pokémon Center"));
+assert.strictEqual(queue("deals@e.target.com"), null, "a queue email from another store is not a Pokemon drop");
+assert.strictEqual(F.isFocus("Pokémon Pitch Black"), true);
+assert.strictEqual(F.isFocus("Pitch Black"), false);
+assert.strictEqual(F.isFocus(""), false);
+assert.strictEqual(F.normalize("POKÉMON—Pitch  Black!"), "pokemon pitch black");
 
 // ---- the Apps Script glue (what talks to Gmail and Discord), run against mocks that behave like them ----
 const HOOK = "https://discord.com/api/webhooks/123/abc";
@@ -77,7 +101,7 @@ function world({ props = { DISCORD_WEBHOOK_URL: HOOK }, label = "present", statu
     newTrigger: (fn) => ({ timeBased: () => ({ everyMinutes: (n) => ({ create: () => w.triggers.push({ fn, minutes: n }) }) }) }) };
   return w;
 }
-const restock = { from: "Target <no-reply@e.target.com>", subject: "Your item is back in stock", body: "Open https://www.target.com/p/-/A-1" };
+const restock = { from: "Target <no-reply@e.target.com>", subject: "Your Pokémon Pitch Black Elite Trainer Box is back in stock", body: "Open https://www.target.com/p/-/A-1" };
 const marketing = { from: "Target <no-reply@e.target.com>", subject: "Weekend deals on toys", body: "Shop https://www.target.com/toys" };
 const stranger = { from: "x@example.com", subject: "back in stock", body: "https://example.com" };
 
@@ -108,7 +132,7 @@ w = world({ messages: [restock], status: 429 });
 F.checkRestockEmails();
 assert.deepStrictEqual(w.read, [], "rate limited: retried later");
 
-w = world({ messages: [restock, { ...restock, subject: "Another item is available now" }] });
+w = world({ messages: [restock, { ...restock, subject: "Pokémon 30th Celebration Elite Trainer Box is available now" }] });
 F.checkRestockEmails();
 assert.strictEqual(w.posts.length, 2);
 assert.deepStrictEqual(w.read, [0, 1], "each email is posted once");
