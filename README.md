@@ -95,22 +95,6 @@ Best Buy publishes a free product API that answers "can this be ordered online r
 
 **Heads-up (learned 2026-10-05):** Best Buy's developer portal refuses personal addresses ("Free email and .edu addresses are not allowed at this time"), so a Gmail account cannot get a key; it needs an address on a company or personal domain. Until one exists, Best Buy alerts come from the browser reader and the email route below. A product counts as in stock only when the API says it can be ordered online **and** its ordering status is exactly "Available"; sold-out and coming-soon statuses are out of stock, and anything unrecognised is unknown (never an alert). Without a key nothing changes: Best Buy is read in a browser as before.
 
-## Alerts from the stores' own emails (Target, Walmart, Pokémon Center and the rest)
-
-Some stores cannot be read by a bot at all (Target and Walmart put up captchas, Pokémon Center blocks automated visitors), and the bot will not try to get past that. They can still tell **you**: every one of them emails you when a sold-out item comes back if you ask. `integrations/gmail_to_discord.gs` is a small Google Apps Script that runs in your own Gmail and posts those emails to the same Discord channel, with an `@everyone` ping, within about a minute. It is a second source, not PokePing's own check: the store decides when its email goes out, so it can be late.
-
-One-time setup (about 10 minutes):
-
-1. **Ask each store to email you.** On a sold-out product page tap Target's "Notify me when it's back", Walmart's "Get in-stock alert", GameStop's "Notify Me" (and Best Buy's in-stock alert where the page offers one). For Pokémon Center, subscribe to its emails (restock, queue and early-access mail). Do it for the boxes you want.
-2. **Label them in Gmail.** Settings > Filters > Create a new filter, "From": `target.com OR walmart.com OR bestbuy.com OR gamestop.com OR pokemoncenter.com OR pokemon.com`, then **Apply the label** `PokePing` (create it) and tick "Never send it to Spam".
-3. **Add the script.** Open script.google.com, New project, paste the whole of `integrations/gmail_to_discord.gs`.
-4. **Give it the webhook.** Project Settings > Script properties > add `DISCORD_WEBHOOK_URL` with the same Discord webhook PokePing uses (keep it private).
-5. **Test, then start it.** Run `sendTestToDiscord` once (a TEST message appears in Discord), then run `installTrigger` once and approve the permissions. It now checks every minute.
-
-6. **Put the alerts on the website too.** In the Apps Script editor choose Deploy > New deployment > Web app, "Execute as: Me", "Who has access: Anyone", and copy the web app URL into `docs/config.json` as `email_alerts_url`. The script remembers each forwarded alert and serves the recent ones there; the site's Live online section reads that feed (only from `script.google.com` / `script.googleusercontent.com`, every entry validated) and shows each as "from the store's email" for 15 minutes, next to the bot's own alerts. Discord and the site are fed by the same record, so they agree; `tests/test_end_to_end.py` runs one email through the real script and checks both.
-
-What it forwards: unread emails labelled `PokePing`, from one of the five stores' own domains (a look-alike domain is ignored), that talk about stock (back in stock, available, restock), are about **Pokémon and one of the products on the watchlist** (the set names in `config/search_config.json`, copied into `FOCUS_TERMS` in the script; a test fails if they drift apart), and are less than a day old. A Pokémon Center queue or waiting-room email is forwarded even when it names no product, because it announces a drop. An email about anything else (other toys, other Pokémon items) is ignored. Each is forwarded once and then marked read. A subject can never ping anyone by itself. `node tests/web/gmail_forwarder.test.js` tests this logic.
-
 ## Repository layout
 
 ```text
