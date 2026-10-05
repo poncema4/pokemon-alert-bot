@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-05T09:37:08.945932+00:00",
+  "updated_at": "2026-10-05T09:39:53.188311+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,9 +13,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box-ETB/20754418655",
-          "reason": null
+          "state": "in_stock",
+          "price": 179.77,
+          "url": "https://www.walmart.com/ip/20754418655",
+          "since": "2026-10-05T09:39:34.707295+00:00"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -107,9 +108,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pok-mon-TCG-Mega-Evolution-Pitch-Black-Elite-Trainer-Box/20161351456",
-          "reason": null
+          "state": "in_stock",
+          "price": 85.0,
+          "url": "https://www.walmart.com/ip/20161351456",
+          "since": "2026-10-05T09:39:34.707295+00:00"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -292,9 +294,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 111.0,
           "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
-          "reason": "blocked"
+          "since": "2026-10-05T09:39:34.707295+00:00"
         },
         "bestbuy": {
           "state": "not_tracked"
