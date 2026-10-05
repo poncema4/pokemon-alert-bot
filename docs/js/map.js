@@ -6,7 +6,7 @@
 
   let home = [40.797211, -74.125219]; // replaced by stores.json -> home as soon as it loads
   let origin = home, usingGps = false;
-  let stores = [], alerts = [], health = {}, filter = "all", selected = null, homeMarker = null;
+  let stores = [], alerts = [], botAlerts = [], emailHits = [], health = {}, filter = "all", selected = null, homeMarker = null;
   const markers = new Map();
 
   const map = L.map("map", { zoomControl: true }).setView(home, 12);
@@ -67,7 +67,7 @@
       const near = C.nearestStore(stores, a.retailer, origin);
       const price = a.price ? "$" + Number(a.price).toFixed(2) : "";
       return '<article class="hit"><div class="row"><a class="name" target="_blank" rel="noopener" href="' + C.safeUrl(a.url) + '"><i class="dot-live"></i>' + C.escapeHtml(a.title) + '</a><span class="dist">' + price + "</span></div>"
-        + '<div class="addr">' + C.escapeHtml(C.LABELS[a.retailer]) + " · " + C.ago(a.detected_at || a.ts, now) + (a.signal === "text" ? " · unconfirmed" : "")
+        + '<div class="addr">' + C.escapeHtml(C.LABELS[a.retailer]) + " · " + C.ago(a.detected_at || a.ts, now) + (a.signal === "text" ? " · unconfirmed" : "") + (a.signal === "email" ? " · from the store's email" : "")
         + (near ? ' · <a class="near" target="_blank" rel="noopener" href="' + C.directionsUrl(near.store) + '">nearest ' + near.miles.toFixed(1) + " mi</a>" : "") + "</div></article>";
     }).join("");
   }
@@ -131,11 +131,29 @@
     try { return await (await fetch(name + "?ts=" + Date.now())).json(); } catch (e) { return fallback; }
   }
 
+  /* Alerts from the stores' own emails: fetched after the page is drawn, so a slow Google answer never delays the map; any failure just means none. */
+  async function loadEmailAlerts() {
+    const cfg = await getJson("config.json", {});
+    if (!cfg.email_alerts_url || !C.isAllowedEmailEndpoint(cfg.email_alerts_url, location.hostname)) { emailHits = []; return; }
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      const r = await fetch(cfg.email_alerts_url, { signal: ctrl.signal, cache: "no-store" });
+      clearTimeout(timer);
+      emailHits = C.emailAlertsToHits((await r.json()).alerts, Date.now());
+    } catch (e) {
+      emailHits = [];
+    }
+    alerts = C.mergeLive(botAlerts, emailHits);
+    drawLive();
+  }
+
   async function load(first) {
     const [s, a, h] = await Promise.all([getJson("stores.json", { stores: [] }), getJson("alerts.json", []), getJson("health.json", {})]);
-    stores = s.stores || []; alerts = a || []; health = h || {};
+    stores = s.stores || []; botAlerts = a || []; alerts = C.mergeLive(botAlerts, emailHits); health = h || {};
     if (first && s.home) { home = [s.home.lat, s.home.lng]; origin = home; placeHome(); }
     drawLamps(); drawLive(); drawChips(); drawStores();
+    loadEmailAlerts();
     if (first) {
       fitAll();
       const wanted = decodeURIComponent(location.hash.slice(1));

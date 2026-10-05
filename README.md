@@ -93,7 +93,7 @@ Best Buy publishes a free product API that answers "can this be ordered online r
 2. Add it as a repository secret named `BESTBUY_API_KEY` (GitHub > Settings > Secrets and variables > Actions, or `gh secret set BESTBUY_API_KEY`).
 3. Run the **Best Buy API check** workflow once: it prints what the API says for each known SKU and lists the Pokemon products Best Buy has, so more SKUs can go into `bestbuy_skus` in `config/search_config.json`. The key is never printed.
 
-A product counts as in stock only when the API says it can be ordered online **and** its ordering status is exactly "Available"; sold-out and coming-soon statuses are out of stock, and anything unrecognised is unknown (never an alert). Without a key nothing changes: Best Buy is read in a browser as before.
+**Heads-up (learned 2026-10-05):** Best Buy's developer portal refuses personal addresses ("Free email and .edu addresses are not allowed at this time"), so a Gmail account cannot get a key; it needs an address on a company or personal domain. Until one exists, Best Buy alerts come from the browser reader and the email route below. A product counts as in stock only when the API says it can be ordered online **and** its ordering status is exactly "Available"; sold-out and coming-soon statuses are out of stock, and anything unrecognised is unknown (never an alert). Without a key nothing changes: Best Buy is read in a browser as before.
 
 ## Alerts from the stores' own emails (Target, Walmart, Pokémon Center and the rest)
 
@@ -106,6 +106,8 @@ One-time setup (about 10 minutes):
 3. **Add the script.** Open script.google.com, New project, paste the whole of `integrations/gmail_to_discord.gs`.
 4. **Give it the webhook.** Project Settings > Script properties > add `DISCORD_WEBHOOK_URL` with the same Discord webhook PokePing uses (keep it private).
 5. **Test, then start it.** Run `sendTestToDiscord` once (a TEST message appears in Discord), then run `installTrigger` once and approve the permissions. It now checks every minute.
+
+6. **Put the alerts on the website too.** In the Apps Script editor choose Deploy > New deployment > Web app, "Execute as: Me", "Who has access: Anyone", and copy the web app URL into `docs/config.json` as `email_alerts_url`. The script remembers each forwarded alert and serves the recent ones there; the site's Live online section reads that feed (only from `script.google.com` / `script.googleusercontent.com`, every entry validated) and shows each as "from the store's email" for 15 minutes, next to the bot's own alerts. Discord and the site are fed by the same record, so they agree; `tests/test_end_to_end.py` runs one email through the real script and checks both.
 
 What it forwards: unread emails labelled `PokePing`, from one of the five stores' own domains (a look-alike domain is ignored), that talk about stock (back in stock, available, restock), are about **Pokémon and one of the products on the watchlist** (the set names in `config/search_config.json`, copied into `FOCUS_TERMS` in the script; a test fails if they drift apart), and are less than a day old. A Pokémon Center queue or waiting-room email is forwarded even when it names no product, because it announces a drop. An email about anything else (other toys, other Pokémon items) is ignored. Each is forwarded once and then marked read. A subject can never ping anyone by itself. `node tests/web/gmail_forwarder.test.js` tests this logic.
 

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -86,6 +87,47 @@ class Discord(BaseHTTPRequestHandler):
 
     def log_message(self, *a):
         pass
+
+
+EMAIL_SCRIPT_RUNNER = r"""
+const F = require(process.argv[1]);
+const sent = [];
+const emails = JSON.parse(process.argv[2]);
+const props = { DISCORD_WEBHOOK_URL: "https://discord.example/webhook" };
+global.PropertiesService = { getScriptProperties: () => ({ getProperty: (k) => props[k], setProperty: (k, v) => { props[k] = v; } }) };
+global.ContentService = { MimeType: { JSON: "JSON" }, createTextOutput: (text) => ({ text, setMimeType() { return this; } }) };
+global.Logger = { log() {} };
+global.UrlFetchApp = { fetch: (url, opts) => { sent.push(JSON.parse(opts.payload)); return { getResponseCode: () => 204 }; } };
+const msgs = emails.map((e, i) => ({ getId: () => "e2e-" + i, isUnread: () => true, getFrom: () => e.from, getSubject: () => e.subject, getPlainBody: () => e.body, getDate: () => new Date(Date.now() - 20000), markRead() {} }));
+global.GmailApp = { getUserLabelByName: () => ({ getThreads: () => [{ getMessages: () => msgs }] }) };
+F.checkRestockEmails();
+process.stdout.write(JSON.stringify({ discord: sent, feed: JSON.parse(F.doGet().text) }));
+"""
+
+
+def run_email_script(emails):
+    import subprocess
+    run = subprocess.run(["node", "-e", EMAIL_SCRIPT_RUNNER, str(ROOT / "integrations" / "gmail_to_discord.gs"), json.dumps(emails)], capture_output=True, text=True, timeout=60)
+    if run.returncode != 0:
+        raise RuntimeError("the email script failed: " + run.stderr[-500:])
+    return json.loads(run.stdout)
+
+
+class Feed(BaseHTTPRequestHandler):
+    body = b'{"alerts": []}'
+    hits = 0
+
+    def do_GET(self):
+        Feed.hits += 1
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        self.wfile.write(Feed.body)
+
+    def log_message(self, *a):
+        pass
+
 
 
 def serve(handler, **kw):
@@ -215,6 +257,67 @@ def main() -> int:
                     pc = next((l for l in lamps if "Pok" in l and "Center" in l), "")
                     check("can't read" in pc, f"Pokémon Center is shown as can't read, never as a source of alerts ({pc!r})")
                     check(not any("Pok" in p["embeds"][0]["title"] and "Center" in p["embeds"][0]["title"] for p in Discord.posts), "no Discord alert ever claims a Pokémon Center restock")
+
+                    # 5. A store with no API (Pokémon Center, Target) tells us by EMAIL: one email must produce the Discord message AND the website entry
+                    emails = [
+                        {"from": "Pokémon Center <noreply@pokemoncenter.com>", "subject": "Pokémon TCG: Mega Evolution—Pitch Black Elite Trainer Box is back in stock", "body": "Shop now https://www.pokemoncenter.com/product/10-10416-112/pitch-black-etb\nUnsubscribe https://www.pokemoncenter.com/unsubscribe"},
+                        {"from": "Target <no-reply@e.target.com>", "subject": "Good news! Pokémon TCG: 30th Celebration Elite Trainer Box is available now", "body": "https://www.target.com/p/-/A-1010892076"},
+                        {"from": "Target <no-reply@e.target.com>", "subject": "20% off patio furniture, back in stock", "body": "https://www.target.com/c/patio"},
+                        {"from": "someone@example.com", "subject": "Pokémon Pitch Black Elite Trainer Box back in stock", "body": "https://example.com"},
+                    ]
+                    cycle("out")   # the bot's own four alerts are gone, so only the email alerts are left to look at
+                    result = run_email_script(emails)
+                    check(len(result["discord"]) == 2, f"two store emails are forwarded to Discord; patio furniture and a stranger are not (got {len(result['discord'])})")
+                    check(all(p["content"] == "@everyone" for p in result["discord"]), "each email alert pings @everyone")
+                    check(len(result["feed"]["alerts"]) == 2, "and the same two are on the website feed")
+                    Feed.body = json.dumps(result["feed"]).encode()
+                    feed = serve(Feed)
+                    (site / "config.json").write_text(json.dumps({"email_alerts_url": f"http://127.0.0.1:{feed.server_port}/feed.json"}), encoding="utf-8")
+                    try:
+                        cards, empty, lamps = live_cards()
+                        check(len(cards) == 2 and not empty, f"Live online shows both email alerts (got {len(cards)})")
+                        by_store = {("Pokémon Center" if "Pok" in c["where"] else "Target"): c for c in cards}
+                        check(set(by_store) == {"Pokémon Center", "Target"}, f"one card each for Pokémon Center and Target: {sorted(by_store)}")
+                        check(all("from the store's email" in c["where"] for c in cards), "each card says it is from the store's email")
+                        for post in result["discord"]:
+                            embed = post["embeds"][0]
+                            store = "Pokémon Center" if "Pok" in embed["title"].split("emailed")[0] else "Target"
+                            card = by_store.get(store)
+                            if not card:
+                                check(False, f"{store}: present in both Discord and Live online")
+                                continue
+                            link = re.search(r"\]\((https?://[^)]+)\)", embed["description"]).group(1)
+                            subject = embed["description"].split("**")[1]
+                            check(card["href"].rstrip("/") == link.rstrip("/"), f"{store}: Discord and the site link to the same page")
+                            check(card["name"] == subject, f"{store}: Discord and the site show the same title")
+                        check("unsubscribe" not in json.dumps(cards).lower(), "the unsubscribe link is never the link")
+                        # it clears when it expires
+                        expired = json.loads(Feed.body)
+                        for a in expired["alerts"]:
+                            a["expires_at"] = "2020-01-01T00:00:00+00:00"
+                        Feed.body = json.dumps(expired).encode()
+                        cards, empty, lamps = live_cards()
+                        check(not cards and empty, "expired email alerts leave Live online")
+                        # a feed from anywhere but Google is never even asked
+                        Feed.hits = 0
+                        (site / "config.json").write_text(json.dumps({"email_alerts_url": f"https://evil.example/feed.json"}), encoding="utf-8")
+                        asked = []
+                        probe = browser.new_page()
+                        probe.on("request", lambda r: asked.append(r.url) if "evil.example" in r.url else None)
+                        probe.goto(f"http://127.0.0.1:{web.server_port}/index.html", wait_until="load", timeout=45000)
+                        probe.wait_for_selector("#live .hit, #live .empty", timeout=20000)
+                        probe.wait_for_timeout(1500)
+                        probe.close()
+                        check(asked == [] and Feed.hits == 0, f"a feed on any other site is never requested (asked: {asked})")
+                        (site / "config.json").write_text(json.dumps({"email_alerts_url": f"http://127.0.0.1:{feed.server_port}/feed.json"}), encoding="utf-8")
+                        feed.shutdown()
+                        cards, empty, lamps = live_cards()
+                        check(not cards and empty, "if the feed is unreachable the map still loads and shows nothing extra")
+                    finally:
+                        try:
+                            feed.shutdown()
+                        except Exception:
+                            pass
                 finally:
                     browser.close()
         finally:

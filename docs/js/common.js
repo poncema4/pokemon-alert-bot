@@ -155,6 +155,43 @@
     return st === "open" ? true : st === "closed" ? false : null;
   }
 
+  /* ---- Alerts from the stores' own emails (the Google script's feed): validated here, merged into Live online next to the bot's own ---- */
+  const EMAIL_ENDPOINT_HOSTS = ["script.google.com", "script.googleusercontent.com"];
+
+  /* Only Google's script domains (or localhost when the page itself is on localhost, for tests) may be asked for email alerts. */
+  function isAllowedEmailEndpoint(url, pageHost) {
+    try {
+      const u = new URL(url);
+      if (u.protocol === "https:" && EMAIL_ENDPOINT_HOSTS.indexOf(u.hostname) !== -1) return true;
+      const local = (h) => h === "127.0.0.1" || h === "localhost";
+      return u.protocol === "http:" && local(u.hostname) && local(pageHost);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /* The feed's entries -> the same shape as the bot's own live hits. Anything malformed, from an unknown store, expired or with a bad link is dropped. */
+  function emailAlertsToHits(list, now) {
+    const t = now || Date.now();
+    return (Array.isArray(list) ? list : []).map((a) => {
+      if (!a || typeof a !== "object" || RETAILERS.indexOf(a.retailer) === -1 || typeof a.title !== "string" || !a.title.trim()) return null;
+      const expires = Date.parse(a.expires_at);
+      if (Number.isNaN(expires) || expires <= t) return null;
+      const url = safeUrl(a.url);
+      if (url === "#") return null;
+      const detected = Number.isNaN(Date.parse(a.detected_at)) ? new Date(expires - 15 * 60000).toISOString() : new Date(Date.parse(a.detected_at)).toISOString();
+      return { kind: "stock", retailer: a.retailer, title: a.title.trim().slice(0, 200), url, verified: true, stock: true, online: true, signal: "email", price: null, msrp: null, stores: [], detected_at: detected, ts: detected, expires_at: new Date(expires).toISOString() };
+    }).filter(Boolean);
+  }
+
+  /* The bot's alerts plus the email hits (newest first). If the bot already lists the same product at the same store, its own entry wins. */
+  function mergeLive(botAlerts, emailHits) {
+    const bot = Array.isArray(botAlerts) ? botAlerts : [];
+    const seen = new Set(bot.filter((a) => a && a.kind === "stock").map((a) => a.retailer + "|" + a.url));
+    const extra = (emailHits || []).filter((e) => !seen.has(e.retailer + "|" + e.url));
+    return bot.concat(extra).sort((x, y) => (Date.parse(y.detected_at || y.ts) || 0) - (Date.parse(x.detected_at || x.ts) || 0));
+  }
+
   /* Nearest store of a retailer, so a live online hit can point at the closest place to pick it up. */
   function nearestStore(stores, retailer, from) {
     let best = null;
@@ -188,5 +225,5 @@
     pokemoncenter: "Pokémon Center blocks automated visitors (403 or a robot check).",
   };
 
-  return { STATE_WORDS, lampsHtml, COVERAGE_NOTES, RETAILERS, LABELS, STALE_MINUTES, miles, ago, retailerState, isLive, openNow, storeStatus, parseSchedule, weekRows, nearestStore, directionsUrl, escapeHtml, safeUrl };
+  return { STATE_WORDS, lampsHtml, COVERAGE_NOTES, RETAILERS, LABELS, STALE_MINUTES, miles, ago, retailerState, isLive, isAllowedEmailEndpoint, emailAlertsToHits, mergeLive, openNow, storeStatus, parseSchedule, weekRows, nearestStore, directionsUrl, escapeHtml, safeUrl };
 });

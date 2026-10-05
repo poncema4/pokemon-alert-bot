@@ -91,9 +91,10 @@ assert.strictEqual(F.normalize("POKÉMON—Pitch  Black!"), "pokemon pitch black
 // ---- the Apps Script glue (what talks to Gmail and Discord), run against mocks that behave like them ----
 const HOOK = "https://discord.com/api/webhooks/123/abc";
 function world({ props = { DISCORD_WEBHOOK_URL: HOOK }, label = "present", status = 204, messages = [] } = {}) {
-  const w = { posts: [], read: [], triggers: [], deleted: [], labelAsked: [] };
-  const mk = (m, i) => ({ isUnread: () => m.unread !== false, getFrom: () => m.from, getSubject: () => m.subject, getPlainBody: () => m.body, getDate: () => new Date(m.when || Date.now() - 1000), markRead: () => w.read.push(i) });
-  global.PropertiesService = { getScriptProperties: () => ({ getProperty: (k) => props[k] }) };
+  const w = { posts: [], read: [], triggers: [], deleted: [], labelAsked: [], props: { ...props } };
+  const mk = (m, i) => ({ getId: () => m.id || "msg-" + i, isUnread: () => m.unread !== false, getFrom: () => m.from, getSubject: () => m.subject, getPlainBody: () => m.body, getDate: () => new Date(m.when || Date.now() - 1000), markRead: () => w.read.push(i) });
+  global.PropertiesService = { getScriptProperties: () => ({ getProperty: (k) => w.props[k], setProperty: (k, v) => { w.props[k] = v; } }) };
+  global.ContentService = { MimeType: { JSON: "JSON" }, createTextOutput: (text) => ({ text, mime: null, setMimeType(t) { this.mime = t; return this; } }) };
   global.GmailApp = { getUserLabelByName: (name) => { w.labelAsked.push(name); return label === "present" ? { getThreads: () => [{ getMessages: () => messages.map(mk) }] } : null; } };
   global.UrlFetchApp = { fetch: (url, opts) => { w.posts.push({ url, opts, body: JSON.parse(opts.payload) }); return { getResponseCode: () => status }; } };
   global.Logger = { log: () => {} };
@@ -155,5 +156,53 @@ w = world();
 F.installTrigger();
 assert.deepStrictEqual(w.deleted, ["checkRestockEmails"], "an old trigger of ours is replaced, never duplicated, and other triggers are left alone");
 assert.deepStrictEqual(w.triggers, [{ fn: "checkRestockEmails", minutes: 1 }], "one trigger, every minute");
+
+// ---- the website feed: what Discord announced is also what the site lists ----
+w = world({ messages: [restock] });
+F.checkRestockEmails();
+let feed = JSON.parse(F.doGet().text);
+assert.strictEqual(F.doGet().mime, "JSON", "the web app answers with JSON");
+assert.strictEqual(feed.alerts.length, 1, "a forwarded email is also on the website feed");
+const rec = feed.alerts[0];
+assert.strictEqual(rec.retailer, "target", "the website's own store key");
+assert.strictEqual(rec.signal, "email");
+assert.ok(rec.title.includes("Pitch Black") && rec.url === "https://www.target.com/p/-/A-1", JSON.stringify(rec));
+assert.ok(Date.parse(rec.expires_at) - Date.now() > 14 * 60000 && Date.parse(rec.expires_at) - Date.now() <= 15 * 60000 + 1000, "it stays on the site for 15 minutes");
+assert.ok(Date.parse(rec.detected_at) <= Date.now());
+assert.ok(!JSON.stringify(feed).includes("hooks") && !JSON.stringify(feed).includes("discord.com"), "the feed never contains the webhook");
+
+w = world({ status: 500, messages: [restock] });
+F.checkRestockEmails();
+assert.strictEqual(JSON.parse(F.doGet().text).alerts.length, 0, "Discord refused: not on the website either (the email will be retried)");
+w = world({ messages: [marketing, stranger] });
+F.checkRestockEmails();
+assert.strictEqual(JSON.parse(F.doGet().text).alerts.length, 0, "an email that is not forwarded is not on the website");
+
+w = world({ messages: [restock, { ...restock, id: "second", subject: "Your Pokémon Chaos Rising Elite Trainer Box is back in stock", from: "Walmart <e@em.walmart.com>", body: "" }] });
+F.checkRestockEmails();
+feed = JSON.parse(F.doGet().text);
+assert.deepStrictEqual(feed.alerts.map((a) => a.retailer), ["walmart", "target"], "newest first");
+assert.strictEqual(feed.alerts[0].url, "https://www.walmart.com/", "no link in the email: the store's home page");
+F.checkRestockEmails();
+assert.strictEqual(JSON.parse(F.doGet().text).alerts.length, 2, "running again does not duplicate (the same ids)");
+
+// expiry and limits of the remembered list
+const NOWMS = Date.now();
+const store = { v: null, getProperty(k) { return this.v; }, setProperty(k, v) { this.v = v; } };
+const make = (id, offsetMs) => ({ id, retailer: "target", title: "t", url: "https://x", detected_at: new Date(NOWMS + offsetMs).toISOString(), expires_at: new Date(NOWMS + offsetMs + 15 * 60000).toISOString(), signal: "email" });
+F.rememberAlert(store, make("a", -30 * 3600000), NOWMS);
+F.rememberAlert(store, make("b", -20 * 60000), NOWMS);
+F.rememberAlert(store, make("c", 0), NOWMS);
+let remembered = JSON.parse(store.v);
+assert.deepStrictEqual(remembered.map((a) => a.id), ["c", "b"], "an alert older than a day is forgotten, newest first");
+assert.deepStrictEqual(F.activeAlerts(store, NOWMS).map((a) => a.id), ["c"], "an expired alert (past its 15 minutes) is not on the site");
+F.rememberAlert(store, { ...make("c", 0), title: "updated" }, NOWMS);
+assert.strictEqual(JSON.parse(store.v).filter((a) => a.id === "c").length, 1, "the same id is replaced, never duplicated");
+for (let i = 0; i < 40; i++) F.rememberAlert(store, make("n" + i, -i * 1000), NOWMS);
+assert.strictEqual(JSON.parse(store.v).length, 30, "at most 30 are kept");
+store.v = "not json";
+assert.deepStrictEqual(F.activeAlerts(store, NOWMS), [], "a corrupt store is an empty feed, never an error");
+assert.strictEqual(JSON.parse(F.rememberAlert(store, make("z", 0), NOWMS)[0].id === "z" ? JSON.stringify(["ok"]) : "[]")[0], "ok", "and is repaired by the next alert");
+assert.strictEqual(F.alertRecord({ from: "x@example.com", subject: "back in stock", plainBody: "" }, NOWMS), null, "no record for an email that is not forwarded");
 
 console.log("gmail forwarder tests passed");
