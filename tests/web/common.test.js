@@ -121,4 +121,49 @@ assert.ok(!/blind/i.test(lamps.replace(/<[^>]*>/g, " ")), "the word blind must n
 assert.ok(lamps.includes('data-state="ok"') && lamps.includes('title="Target: '), "each lamp explains itself on hover");
 assert.deepStrictEqual(Object.keys(C.STATE_WORDS).sort(), ["blind", "ok", "stale", "unknown"]);
 
+
+// ---- alerts from the stores' own emails (the Google script's feed) ----
+// only Google's script domains may be asked (or localhost, but only when the page itself is on localhost)
+assert.strictEqual(C.isAllowedEmailEndpoint("https://script.google.com/macros/s/AKfy123/exec", "poncema4.github.io"), true);
+assert.strictEqual(C.isAllowedEmailEndpoint("https://script.googleusercontent.com/macros/echo?x=1", "poncema4.github.io"), true);
+assert.strictEqual(C.isAllowedEmailEndpoint("https://evil.example/exec", "poncema4.github.io"), false, "any other site is refused");
+assert.strictEqual(C.isAllowedEmailEndpoint("https://script.google.com.evil.example/exec", "poncema4.github.io"), false, "a look-alike host is refused");
+assert.strictEqual(C.isAllowedEmailEndpoint("http://script.google.com/macros/s/x/exec", "poncema4.github.io"), false, "plain http to Google is refused");
+assert.strictEqual(C.isAllowedEmailEndpoint("http://127.0.0.1:8123/feed", "poncema4.github.io"), false, "localhost is only allowed when the page is on localhost");
+assert.strictEqual(C.isAllowedEmailEndpoint("http://127.0.0.1:8123/feed", "127.0.0.1"), true);
+assert.strictEqual(C.isAllowedEmailEndpoint("javascript:alert(1)", "127.0.0.1"), false);
+assert.strictEqual(C.isAllowedEmailEndpoint("", "127.0.0.1"), false);
+assert.strictEqual(C.isAllowedEmailEndpoint("not a url", "127.0.0.1"), false);
+
+const FNOW = Date.parse("2026-10-04T18:00:00Z");
+const fresh = (over) => ({ id: "m1", retailer: "target", title: "Pokémon Pitch Black Elite Trainer Box is back in stock", url: "https://www.target.com/p/-/A-1", detected_at: new Date(FNOW - 60000).toISOString(), expires_at: new Date(FNOW + 14 * 60000).toISOString(), signal: "email", ...over });
+const hits = C.emailAlertsToHits([fresh()], FNOW);
+assert.strictEqual(hits.length, 1);
+assert.deepStrictEqual([hits[0].kind, hits[0].retailer, hits[0].verified, hits[0].signal, hits[0].price], ["stock", "target", true, "email", null]);
+assert.strictEqual(C.isLive(hits[0], FNOW), true, "an email alert is shown by the same rule as the bot's own");
+assert.strictEqual(C.isLive(hits[0], FNOW + 15 * 60000), false, "and disappears when it expires");
+assert.strictEqual(C.emailAlertsToHits([fresh({ expires_at: new Date(FNOW - 1).toISOString() })], FNOW).length, 0, "an expired alert is dropped");
+assert.strictEqual(C.emailAlertsToHits([fresh({ retailer: "ebay" })], FNOW).length, 0, "an unknown store is dropped");
+assert.strictEqual(C.emailAlertsToHits([fresh({ retailer: "Target" })], FNOW).length, 0, "the store must be the site's key, not a display name");
+assert.strictEqual(C.emailAlertsToHits([fresh({ title: "   " })], FNOW).length, 0, "no title: dropped");
+assert.strictEqual(C.emailAlertsToHits([fresh({ title: 42 })], FNOW).length, 0, "a non-text title: dropped");
+assert.strictEqual(C.emailAlertsToHits([fresh({ url: "javascript:alert(1)" })], FNOW).length, 0, "a script link is dropped");
+assert.strictEqual(C.emailAlertsToHits([fresh({ url: "" })], FNOW).length, 0, "no link: dropped");
+assert.strictEqual(C.emailAlertsToHits([fresh({ expires_at: "garbage" })], FNOW).length, 0, "an unreadable expiry is dropped");
+assert.deepStrictEqual(C.emailAlertsToHits([null, 5, "x", {}], FNOW), [], "junk entries are ignored");
+assert.deepStrictEqual(C.emailAlertsToHits(null, FNOW), [], "a missing list is empty");
+assert.deepStrictEqual(C.emailAlertsToHits({ alerts: [] }, FNOW), [], "a wrong shape is empty");
+assert.strictEqual(C.emailAlertsToHits([fresh({ title: "x".repeat(900) })], FNOW)[0].title.length, 200, "a huge title is cut");
+assert.ok(C.emailAlertsToHits([fresh({ detected_at: "garbage" })], FNOW)[0].detected_at, "an unreadable detection time is replaced by one derived from the expiry");
+assert.strictEqual(C.escapeHtml(C.emailAlertsToHits([fresh({ title: "<img src=x onerror=alert(1)>" })], FNOW)[0].title).includes("<img"), false, "titles are escaped before they are shown");
+
+const botLive = { kind: "stock", retailer: "gamestop", title: "GameStop item", url: "https://www.gamestop.com/x", verified: true, detected_at: new Date(FNOW - 5 * 60000).toISOString(), expires_at: new Date(FNOW + 10 * 60000).toISOString() };
+const merged = C.mergeLive([botLive], hits);
+assert.deepStrictEqual(merged.map((a) => a.retailer), ["target", "gamestop"], "both sources are listed, newest first");
+const sameProduct = C.emailAlertsToHits([fresh({ retailer: "gamestop", url: "https://www.gamestop.com/x" })], FNOW);
+assert.deepStrictEqual(C.mergeLive([botLive], sameProduct), [botLive], "the same product at the same store is listed once, as the bot's own entry");
+assert.deepStrictEqual(C.mergeLive(null, hits).map((a) => a.retailer), ["target"], "email alerts alone still show");
+assert.deepStrictEqual(C.mergeLive([botLive], null), [botLive], "bot alerts alone still show");
+assert.deepStrictEqual(C.mergeLive(undefined, undefined), []);
+
 console.log("web helper tests passed");
