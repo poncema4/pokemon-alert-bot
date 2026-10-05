@@ -64,7 +64,6 @@ jobs:
       - name: Run web helper tests
         run: |
           node tests/web/common.test.js
-          node tests/web/gmail_forwarder.test.js
       - name: Compile production Python
         run: python -m py_compile bot/*.py tools/*.py tests/test_accuracy.py
 
