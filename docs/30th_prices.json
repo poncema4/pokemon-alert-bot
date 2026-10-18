@@ -1,6 +1,6 @@
 {
   "source": "TCGplayer marketplace search (market price by product id)",
-  "updated_at": "2026-10-18T00:04:20.848471+00:00",
+  "updated_at": "2026-10-18T04:28:12.164430+00:00",
   "status": "live",
   "note": "This guide intentionally tracks the full announced 30th Celebration product lineup and major variants instead of only the top products. Secondary-market prices are presale/low-liquidity snapshots and can move sharply around release. Use target_buy as the decision price; MSRP is the strongest buy signal.",
   "products": [
@@ -12,7 +12,7 @@
       "variant": "Night / Umbreon ex",
       "release": "2026-11-06",
       "msrp": 179.99,
-      "market": 646.21,
+      "market": 639.21,
       "target_buy": "$180–$225",
       "max_buy": 250,
       "packs": "29 + 1 Classic",
@@ -20,9 +20,9 @@
       "verdict": "BUY ≤ $225; wait above $250",
       "score": 9.8,
       "why": "Best sealed centerpiece and includes the guaranteed Classic Collection pack.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 22,
+      "listings": 21,
       "low": 594.9
     },
     {
@@ -33,7 +33,7 @@
       "variant": "Day / Espeon ex",
       "release": "2026-11-06",
       "msrp": 179.99,
-      "market": 561.24,
+      "market": 561.35,
       "target_buy": "$180–$225",
       "max_buy": 250,
       "packs": "29 + 1 Classic",
@@ -41,10 +41,10 @@
       "verdict": "BUY ≤ $225; wait above $250",
       "score": 9.7,
       "why": "Flagship anniversary product with strong sealed upside and guaranteed Classic Collection content.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
       "listings": 25,
-      "low": 557.66
+      "low": 557.6
     },
     {
       "rank": 3,
@@ -54,7 +54,7 @@
       "variant": "Pokémon Center exclusive",
       "release": "2026-09-16",
       "msrp": 59.99,
-      "market": 295.41,
+      "market": 295.77,
       "target_buy": "$60–$100",
       "max_buy": 150,
       "packs": "11",
@@ -62,9 +62,9 @@
       "verdict": "BUY at MSRP; strong buy ≤ $100",
       "score": 9.6,
       "why": "The stamped promo and extra packs make this the premium ETB to hold sealed.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 152,
+      "listings": 154,
       "low": 103.81
     },
     {
@@ -75,7 +75,7 @@
       "variant": "Regular",
       "release": "2026-09-16",
       "msrp": 49.99,
-      "market": 125.79,
+      "market": 125.02,
       "target_buy": "$50–$65",
       "max_buy": 75,
       "packs": "9",
@@ -83,10 +83,10 @@
       "verdict": "BUY ≤ $65; pass above $75",
       "score": 9.3,
       "why": "Best launch-day balance of sealed collectability, promo value and opening volume.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 502,
-      "low": 119.87
+      "listings": 499,
+      "low": 5.99
     },
     {
       "rank": 5,
@@ -104,9 +104,9 @@
       "verdict": "BUY ≤ $50; pass above $60",
       "score": 9.1,
       "why": "Eight packs plus a dedicated display collectible at a low retail price.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 14,
+      "listings": 13,
       "low": 187.71
     },
     {
@@ -117,7 +117,7 @@
       "variant": "6-pack",
       "release": "2026-10-02",
       "msrp": 26.94,
-      "market": 73.42,
+      "market": 75.44,
       "target_buy": "$27–$35",
       "max_buy": 40,
       "packs": "6",
@@ -125,10 +125,10 @@
       "verdict": "BEST pure pack-value buy at retail",
       "score": 9.0,
       "why": "Lowest MSRP per 30th Celebration booster in the lineup.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 188,
-      "low": 70.0
+      "listings": 177,
+      "low": 4.99
     },
     {
       "rank": 7,
@@ -138,7 +138,7 @@
       "variant": "Kanto Legendary Birds",
       "release": "2026-09-16",
       "msrp": 14.99,
-      "market": 35.13,
+      "market": 35.49,
       "target_buy": "$15–$20",
       "max_buy": 25,
       "packs": "3",
@@ -146,9 +146,9 @@
       "verdict": "BUY at retail; strong collector pickup",
       "score": 8.8,
       "why": "Three promos plus a large anniversary poster for $14.99 MSRP.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 181,
+      "listings": 175,
       "low": 3.0
     },
     {
@@ -167,10 +167,10 @@
       "verdict": "BUY ≤ $40",
       "score": 8.7,
       "why": "Useful long-term storage plus five packs; better for collectors than pure ripping.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
       "listings": 11,
-      "low": 103.8
+      "low": 103.79
     },
     {
       "rank": 9,
@@ -188,10 +188,10 @@
       "verdict": "BUY at retail; collector favorite",
       "score": 8.6,
       "why": "Strong Mew collectible with five packs and two foil promo sizes.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 8,
-      "low": 200.0
+      "listings": 9,
+      "low": 195.01
     },
     {
       "rank": 10,
@@ -209,9 +209,9 @@
       "verdict": "BUY at retail; collector pickup",
       "score": 8.4,
       "why": "Same five-pack format with a Mewtwo figure and promo pair.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 7,
+      "listings": 8,
       "low": 194.91
     },
     {
@@ -222,7 +222,7 @@
       "variant": "Greninja ex",
       "release": "2026-09-16",
       "msrp": 21.99,
-      "market": 57.22,
+      "market": 56.99,
       "target_buy": "$22–$30",
       "max_buy": 35,
       "packs": "4",
@@ -230,7 +230,7 @@
       "verdict": "BUY ≤ $30",
       "score": 8.3,
       "why": "Good low-cost entry with a desirable Pokémon ex promo.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
       "listings": 58,
       "low": 48.0
@@ -243,7 +243,7 @@
       "variant": "Sylveon ex",
       "release": "2026-09-16",
       "msrp": 21.99,
-      "market": 59.98,
+      "market": 59.87,
       "target_buy": "$22–$30",
       "max_buy": 35,
       "packs": "4",
@@ -251,9 +251,9 @@
       "verdict": "BUY ≤ $30; do not chase presale premium",
       "score": 8.2,
       "why": "Strong character appeal, but the current premium is too inflated for opening.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 92,
+      "listings": 91,
       "low": 50.0
     },
     {
@@ -264,7 +264,7 @@
       "variant": "10-design Day & Night lineup",
       "release": "2026-10-02",
       "msrp": 9.99,
-      "market": 25.7,
+      "market": 25.81,
       "target_buy": "$9.99–$12 each",
       "max_buy": 15,
       "packs": "2 each",
@@ -272,10 +272,10 @@
       "verdict": "BUY at retail; collect the designs you like",
       "score": 8.1,
       "why": "Two packs per tin plus a 10-design display concept; do not pay a large secondary premium.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 341,
-      "low": 11.99
+      "listings": 332,
+      "low": 11.97
     },
     {
       "rank": 14,
@@ -293,7 +293,7 @@
       "verdict": "BUY at retail; pass above $25",
       "score": 8.0,
       "why": "Three packs plus a version-specific promo and sticker sheet.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
       "listings": 65,
       "low": 1.99
@@ -306,7 +306,7 @@
       "variant": "Alolan Exeggutor",
       "release": "2026-09-16",
       "msrp": 14.99,
-      "market": 34.66,
+      "market": 34.84,
       "target_buy": "$15–$20",
       "max_buy": 25,
       "packs": "3",
@@ -314,9 +314,9 @@
       "verdict": "BUY at retail; pass above $25",
       "score": 7.9,
       "why": "Same strong pack ratio as Lucario; buy at MSRP rather than chasing presale prices.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 65,
+      "listings": 64,
       "low": 1.99
     },
     {
@@ -327,7 +327,7 @@
       "variant": "Eevee",
       "release": "2026-09-16",
       "msrp": 9.99,
-      "market": 24.09,
+      "market": 23.89,
       "target_buy": "$10–$12",
       "max_buy": 15,
       "packs": "2",
@@ -335,10 +335,10 @@
       "verdict": "BUY at retail; easy rip",
       "score": 7.8,
       "why": "Cheap entry product with two packs and Eevee/coin extras.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 114,
-      "low": 1.0
+      "listings": 112,
+      "low": 0.25
     },
     {
       "rank": 17,
@@ -356,7 +356,7 @@
       "verdict": "BUY at retail; avoid secondary premium",
       "score": 7.7,
       "why": "Good retail rip, but the current secondary price is far above MSRP.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
       "listings": 1,
       "low": 119.0
@@ -369,7 +369,7 @@
       "variant": "Espeon ex / Victini",
       "release": "2026-10-30",
       "msrp": 19.99,
-      "market": 43.53,
+      "market": 43.47,
       "target_buy": "$20–$25",
       "max_buy": 30,
       "packs": "0",
@@ -377,9 +377,9 @@
       "verdict": "BUY for play/collection at retail",
       "score": 7.2,
       "why": "Not a ripping product; value comes from the ready-to-play all-foil deck and exclusive cards.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 10,
+      "listings": 9,
       "low": 40.35
     },
     {
@@ -390,7 +390,7 @@
       "variant": "Umbreon ex / Zeraora",
       "release": "2026-10-30",
       "msrp": 19.99,
-      "market": 62.73,
+      "market": 62.59,
       "target_buy": "$20–$25",
       "max_buy": 30,
       "packs": "0",
@@ -398,9 +398,9 @@
       "verdict": "BUY for play/collection at retail",
       "score": 7.1,
       "why": "Same player-focused format; do not evaluate it by pack value.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
-      "listings": 10,
+      "listings": 9,
       "low": 58.51
     },
     {
@@ -419,7 +419,7 @@
       "verdict": "BUY at retail; wait on secondary",
       "score": 7.0,
       "why": "Four packs and a promo; same promo family as the ex Box, so retail is the play.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
       "listings": 39,
       "low": 55.0
@@ -432,7 +432,7 @@
       "variant": "Greninja ex",
       "release": "2026-12-04",
       "msrp": 21.99,
-      "market": 63.03,
+      "market": 63.09,
       "target_buy": "$22–$28",
       "max_buy": 30,
       "packs": "4",
@@ -440,7 +440,7 @@
       "verdict": "BUY at retail; wait on secondary",
       "score": 7.0,
       "why": "Four packs and a promo; best purchased at MSRP rather than presale prices.",
-      "market_updated_at": "2026-10-18T00:04:20.848471+00:00",
+      "market_updated_at": "2026-10-18T04:28:12.164430+00:00",
       "market_source": "tcgplayer",
       "listings": 24,
       "low": 59.88
@@ -449,75 +449,75 @@
   "hits": [
     {
       "rank": 1,
-      "name": "Mew - R/RGB",
-      "rarity": "RGB Rare",
-      "tcg_value": "$6,000.27 market",
-      "market": 6000.27,
-      "listings": 14,
-      "note": "14 listings on TCGplayer"
-    },
-    {
-      "rank": 2,
       "name": "Mew - B/RGB",
       "rarity": "RGB Rare",
       "tcg_value": "$3,746.75 market",
       "market": 3746.75,
-      "listings": 12,
-      "note": "12 listings on TCGplayer"
+      "listings": 11,
+      "note": "11 listings on TCGplayer"
+    },
+    {
+      "rank": 2,
+      "name": "Mew - R/RGB",
+      "rarity": "RGB Rare",
+      "tcg_value": "$3,249.64 market",
+      "market": 3249.64,
+      "listings": 13,
+      "note": "13 listings on TCGplayer"
     },
     {
       "rank": 3,
       "name": "Mew - G/RGB",
       "rarity": "RGB Rare",
-      "tcg_value": "$3,738.75 market",
-      "market": 3738.75,
-      "listings": 22,
-      "note": "22 listings on TCGplayer"
+      "tcg_value": "$3,090.99 market",
+      "market": 3090.99,
+      "listings": 21,
+      "note": "21 listings on TCGplayer"
     },
     {
       "rank": 4,
       "name": "Mew ex - 152/128",
       "rarity": "Special Illustration Rare",
-      "tcg_value": "$91.08 market",
-      "market": 91.08,
-      "listings": 116,
-      "note": "116 listings on TCGplayer"
+      "tcg_value": "$94.61 market",
+      "market": 94.61,
+      "listings": 107,
+      "note": "107 listings on TCGplayer"
     },
     {
       "rank": 5,
       "name": "Gengar ex - 154/128",
       "rarity": "Special Illustration Rare",
-      "tcg_value": "$77.21 market",
-      "market": 77.21,
-      "listings": 183,
-      "note": "183 listings on TCGplayer"
+      "tcg_value": "$76.89 market",
+      "market": 76.89,
+      "listings": 178,
+      "note": "178 listings on TCGplayer"
     },
     {
       "rank": 6,
       "name": "Pikachu ex - 150/128",
       "rarity": "Special Illustration Rare",
-      "tcg_value": "$60.06 market",
-      "market": 60.06,
-      "listings": 128,
-      "note": "128 listings on TCGplayer"
+      "tcg_value": "$60.68 market",
+      "market": 60.68,
+      "listings": 125,
+      "note": "125 listings on TCGplayer"
     },
     {
       "rank": 7,
       "name": "Mew ex - 158/128",
       "rarity": "Futuristic Rare",
-      "tcg_value": "$51.26 market",
-      "market": 51.26,
-      "listings": 175,
-      "note": "175 listings on TCGplayer"
+      "tcg_value": "$50.98 market",
+      "market": 50.98,
+      "listings": 212,
+      "note": "212 listings on TCGplayer"
     },
     {
       "rank": 8,
       "name": "Mewtwo ex - 151/128",
       "rarity": "Special Illustration Rare",
-      "tcg_value": "$49.88 market",
-      "market": 49.88,
-      "listings": 147,
-      "note": "147 listings on TCGplayer"
+      "tcg_value": "$49.24 market",
+      "market": 49.24,
+      "listings": 143,
+      "note": "143 listings on TCGplayer"
     }
   ],
   "method": {
@@ -526,7 +526,7 @@
     "hit_values": "Presale observations are explicitly labeled when sales volume is too low to establish a reliable market value.",
     "coverage": "21 tracked product variants across the full announced 30th Celebration lineup; Mini Tins are one family with ten designs."
   },
-  "checked_at": "2026-10-18T00:04:20.848471+00:00",
+  "checked_at": "2026-10-18T04:28:12.164430+00:00",
   "refresh": {
     "updated": 21,
     "flagged": [],
