@@ -110,6 +110,10 @@ def main() -> int:
         tmp = Path(d)
         site = tmp / "docs"
         shutil.copytree(ROOT / "docs", site)
+        # The sandbox is a copy of the live site, but it must not inherit what the live watcher remembers. A stored "Target is blind and was
+        # already announced" made this run post a RECOVERED notice (a fifth message), the test failed, and the watcher is gated on this test, so
+        # no alert was sent from Oct 5 on. Every run starts with an empty health record, whatever the live one says.
+        (site / "health.json").unlink(missing_ok=True)
         config = json.loads((ROOT / "config" / "search_config.json").read_text(encoding="utf-8"))
         config.update({"retailers": ["target", "walmart", "bestbuy", "gamestop"], "keywords": [], "browser_retailers": ["bestbuy"],
                        "seed_urls": {r: [PAGES[r][0]] for r in PAGES}, "listing_pages": {}})

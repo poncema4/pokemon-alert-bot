@@ -23,7 +23,7 @@ import notify
 import notify_new_listings
 import refresh_live_hits
 import update_30th_prices as prices_mod
-from monitor import classify_response, extract_structured_availability, is_pokemon, recently_stock_alerted, retailer_url_is_valid, should_prune, update_health
+from monitor import classify_response, extract_structured_availability, forgive_downtime, is_pokemon, recently_stock_alerted, retailer_url_is_valid, should_prune, update_health
 
 
 def test_retailer_urls():
@@ -274,6 +274,30 @@ def test_classify_response():
     assert classify_response(200, "https://x.com/p", "<html>nothing useful</html>") == (None, "no_signal", None)
 
 
+def test_a_restart_after_downtime_does_not_announce_stale_blind_spots():
+    # The watcher was stopped from Oct 5 to Oct 19. Stores that had been blind before the stop must not announce "unreadable for
+    # 14 days" (with a ping) on the first run back; the clock starts again, and an already-announced store is not announced twice.
+    stopped = datetime(2026, 10, 5, 16, 0, tzinfo=timezone.utc)
+    blind = {"checked": 5, "readable": 0, "blocked": 5, "errors": 0}
+    health = {
+        "walmart": {"last_run": stopped.isoformat(), "blind_since": (stopped - timedelta(hours=5)).isoformat()},
+        "target": {"last_run": stopped.isoformat(), "blind_since": (stopped - timedelta(days=1)).isoformat(), "blind_notified": True},
+        "gamestop": {"last_run": stopped.isoformat()},
+    }
+    back = stopped + timedelta(days=14)
+    assert sorted(forgive_downtime(health, back)) == ["target", "walmart"], "only stores with a blind clock are restarted"
+    assert update_health(health, "walmart", blind, back) == [], "no 14-day notice on the first run back"
+    late = update_health(health, "walmart", blind, back + timedelta(hours=25))
+    assert [n[0] for n in late] == ["blind"] and "25 h" in late[0][2], "the 24 h rule counts from the restart"
+    assert update_health(health, "target", blind, back + timedelta(hours=30)) == [] and health["target"]["blind_notified"] is True, "not announced twice"
+    # Normal operation: a run follows the last by seconds (or a hand-over by minutes), so nothing is touched.
+    steady = {"walmart": {"last_run": back.isoformat(), "blind_since": (back - timedelta(hours=30)).isoformat()}}
+    assert forgive_downtime(steady, back + timedelta(seconds=30)) == [] and "blind_since" in steady["walmart"]
+    assert forgive_downtime(steady, back + timedelta(minutes=10)) == [] and "blind_since" in steady["walmart"], "a hand-over gap is not downtime"
+    # A damaged record never stops the watcher.
+    assert forgive_downtime({"a": "bad", "b": {"last_run": "nope"}, "c": None, "d": {"last_run": 5}}, back) == []
+
+
 def test_health_blind_spot_and_recovery():
     now = datetime(2026, 10, 4, 12, 0, tzinfo=timezone.utc)
     blind = {"checked": 5, "readable": 0, "blocked": 5, "errors": 0}
@@ -372,6 +396,24 @@ def test_main_blocked_retailer_is_silent_but_visible():
     assert sent == [], "a blocked retailer must never send a stock alert"
     assert health["checked"] == 8 and health["readable"] == 0 and health["blocked"] == 8 and "blind_since" in health
     assert all(v["in_stock"] is None and v["reason"] == "blocked" for k, v in state.items() if k != "schema_version")
+
+
+def test_main_after_downtime_sends_no_stale_blind_spot_notice():
+    # What happened on Oct 5-19: the watcher was stopped, its health record kept "walmart blind since ...". On the first run back the
+    # 24 h rule saw a blind clock that was weeks old and would have posted "unreadable for 14 days" with an @everyone ping.
+    import tempfile
+    walmart_urls = [f"https://www.walmart.com/ip/{n}" for n in range(1, 4)]
+    config = {"retailers": ["walmart"], "keywords": [], "seed_urls": {"walmart": walmart_urls}}
+    blocked = lambda url: _Resp(200, "https://www.walmart.com/blocked?url=x", "<html>Robot or human?</html>")
+    stopped = datetime.now(timezone.utc) - timedelta(days=14)
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        (tmp / "health.json").write_text(json.dumps({"walmart": {"checked": 3, "readable": 0, "blocked": 3, "errors": 0, "last_run": stopped.isoformat(), "blind_since": (stopped - timedelta(hours=6)).isoformat()}}))
+        _, sent = _run_main(tmp, config, {"schema_version": 4}, {"walmart.com": blocked})
+        health = json.loads((tmp / "health.json").read_text())["walmart"]
+    assert sent == [], "no BLIND SPOT notice on the first run back from a long stop"
+    assert datetime.fromisoformat(health["blind_since"]) > datetime.now(timezone.utc) - timedelta(minutes=5), "the blind clock restarted at this run"
+    assert "blind_notified" not in health
 
 
 def test_main_stops_probing_a_wall_but_keeps_reading_the_rest():
@@ -2589,8 +2631,10 @@ if __name__ == "__main__":
     test_30th_complete_coverage()
     test_classify_response()
     test_health_blind_spot_and_recovery()
+    test_a_restart_after_downtime_does_not_announce_stale_blind_spots()
     test_prune_only_dead_discovered_listings()
     test_main_blocked_retailer_is_silent_but_visible()
+    test_main_after_downtime_sends_no_stale_blind_spot_notice()
     test_main_stops_probing_a_wall_but_keeps_reading_the_rest()
     test_real_pages_classify_correctly()
     test_price_and_msrp_rules()

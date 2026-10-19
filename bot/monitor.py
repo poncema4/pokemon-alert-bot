@@ -365,6 +365,26 @@ def update_health(health, retailer, counts, now):
     return notices
 
 
+WATCHER_GAP_HOURS = 2.0
+
+
+def forgive_downtime(health, now):
+    """Restart the blind-spot clocks after the watcher itself was down; returns the retailers restarted.
+
+    "Unreadable for N hours" only means something while the watcher was looking. A run follows the last one by seconds (a hand-over by
+    minutes); when a record's last_run is older than WATCHER_GAP_HOURS the watcher was stopped, and a blind_since from before the gap would
+    announce "unreadable for 14 days" (with an @everyone ping) the moment it restarts. Dropping blind_since starts the clock again at the first
+    blind reading. blind_notified is kept, so a store that was already announced is not announced twice. Never raises on a damaged record."""
+    restarted = []
+    for retailer, entry in list(health.items()):
+        try:
+            if now - datetime.fromisoformat(entry["last_run"]) >= timedelta(hours=WATCHER_GAP_HOURS) and entry.pop("blind_since", None) is not None:
+                restarted.append(retailer)
+        except (KeyError, TypeError, ValueError, AttributeError):
+            continue
+    return restarted
+
+
 def should_prune(entry, seed, now):
     """Drop discovered listings that have never been readable for PRUNE_AFTER_DAYS (seed URLs stay)."""
     if seed:
@@ -501,6 +521,8 @@ def main(discover=True, cycle=0):
     print("Niche shops: MAP ONLY — no Discord alerts")
 
     health = load_json(HEALTH_FILE, {})
+    for retailer in forgive_downtime(health, now):
+        print(f"  {retailer}: the watcher was stopped for a while, so its blind-spot clock starts again now")
     market_cache = load_json(MARKET_FILE, {})
     pid_cache = load_json(PIDS_FILE, {})
     notices = []
