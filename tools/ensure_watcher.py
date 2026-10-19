@@ -112,11 +112,13 @@ def post_discord(url, payload):
 
 
 def open_issues(label):
-    listed = gh("issue", "list", "--label", label, "--state", "open", "--json", "number", "--limit", "5")
+    """Open issues carrying the label, via the REST list (read-after-write consistent). `gh issue list --label` goes through search, which lags
+    for a few seconds after an issue is created: the live drill could not find the issue it had just opened."""
+    listed = gh("api", f"repos/{os.environ.get('GH_REPO', '')}/issues?labels={label}&state=open&per_page=5")
     if listed.returncode != 0:
         return None
     try:
-        return [item["number"] for item in json.loads(listed.stdout or "[]")]
+        return [item["number"] for item in json.loads(listed.stdout or "[]") if "pull_request" not in item]
     except (ValueError, KeyError, TypeError):
         return None
 
@@ -131,9 +133,10 @@ def raise_alarm(label, minutes, repo, ping, drill, now):
     created = gh("issue", "create", "--title", title, "--body", body, "--label", label)
     if created.returncode != 0:
         print(f"could not open the alarm issue ({created.stderr.strip()[:200]}); not posting, so a retry cannot spam")
-        return False
+        return None
     post_discord(os.environ.get("DISCORD_WEBHOOK_URL", ""), notice("alarm", minutes, repo, ping, drill, now))
-    return True
+    tail = (created.stdout or "").strip().rsplit("/", 1)[-1]
+    return int(tail) if tail.isdigit() else 0  # the new issue's number (0 = opened, number unknown)
 
 
 def clear_alarm(label, numbers, repo, drill, now):
@@ -161,10 +164,13 @@ def heartbeat_alarm(drill=False, now=None, health=None):
             print("could not read the alarm issues; not alarming (an unreadable state must not cause repeats)")
             return None
         action = decide(age, bool(numbers))
-        if action == "alarm" and raise_alarm(label, age, repo, ping, drill, now):
-            if drill:  # rehearsal: close it again straight away, which also proves the "back" path
-                clear_alarm(label, open_issues(label) or [], repo, drill, now)
-            return "alarm"
+        if action == "alarm":
+            opened = raise_alarm(label, age, repo, ping, drill, now)
+            if opened is not None:
+                if drill and opened:  # rehearsal: close the issue it just opened (by number), which also proves the "back" path
+                    clear_alarm(label, [opened], repo, drill, now)
+                return "alarm"
+            return None
         if action == "recover" and clear_alarm(label, numbers, repo, drill, now):
             return "recover"
         print(f"watcher heartbeat: {'unknown' if age is None else f'{age:.0f} min old'}; nothing to do")
