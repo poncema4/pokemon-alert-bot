@@ -2564,6 +2564,73 @@ def test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued():
     assert monitor_name == "Pokemon Stock Monitor", "the watchdog listens for the monitor workflow by name"
 
 
+def test_the_watcher_down_alarm_fires_once_and_clears_when_the_watcher_reports_again():
+    """Oct 5-19: the watchdog restarted a watcher that failed every time and looked healthy, so nobody was told. The alarm keys on the heartbeat
+    the watcher commits, opens ONE issue + ONE Discord notice, never repeats, and closes quietly when the watcher is back."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import ensure_watcher as ew
+    now = datetime(2026, 10, 20, 12, 0, tzinfo=timezone.utc)
+    health = lambda minutes_ago: {"gamestop": {"last_run": (now - timedelta(minutes=minutes_ago)).isoformat()}, "target": {"last_run": (now - timedelta(minutes=minutes_ago + 90)).isoformat()}}
+    # The rules on their own.
+    assert ew.heartbeat_age_minutes(health(7), now) == 7, "the newest last_run counts, not the oldest"
+    assert ew.heartbeat_age_minutes({}, now) is None and ew.heartbeat_age_minutes("bad", now) is None and ew.heartbeat_age_minutes({"a": {"last_run": "nope"}, "b": None}, now) is None
+    assert [ew.decide(a, o) for a, o in [(5, False), (24.9, False), (25, False), (300, True), (5, True), (None, True), (None, False)]] == ["none", "none", "alarm", "none", "recover", "none", "none"]
+    # The whole path with a fake GitHub and a fake Discord.
+    state, calls, posts = {"open": [], "create_ok": True, "list_ok": True}, [], []
+    def fake_gh(*args):
+        calls.append(args)
+        reply = lambda code=0, out="": type("R", (), {"returncode": code, "stdout": out, "stderr": "boom"})()
+        if args[:2] == ("issue", "list"):
+            return reply(0, json.dumps([{"number": n} for n in state["open"]])) if state["list_ok"] else reply(1)
+        if args[:2] == ("issue", "create"):
+            if not state["create_ok"]:
+                return reply(1)
+            state["open"].append(41)
+            state["label"] = args[args.index("--label") + 1]
+            return reply(0, "https://github.com/x/y/issues/41")
+        if args[:2] == ("issue", "close"):
+            state["open"].remove(int(args[2]))
+            return reply(0)
+        return reply(0)
+    real_gh, real_post, real_env = ew.gh, ew.post_discord, {k: os.environ.get(k) for k in ("GH_REPO", "DISCORD_PING", "DISCORD_WEBHOOK_URL")}
+    ew.gh, ew.post_discord = fake_gh, lambda url, payload: posts.append(payload)
+    os.environ.update({"GH_REPO": "me/bot", "DISCORD_PING": "true", "DISCORD_WEBHOOK_URL": "http://example.invalid/hook"})
+    creates = lambda: sum(1 for c in calls if c[:2] == ("issue", "create"))
+    try:
+        assert ew.heartbeat_alarm(now=now, health=health(7)) is None and posts == [] and creates() == 0, "a healthy watcher is silent"
+        assert ew.heartbeat_alarm(now=now, health=health(180)) == "alarm"
+        assert state["open"] == [41] and state["label"] == "watcher-down" and len(posts) == 1 and creates() == 1, "dead for 3 h: ONE issue and ONE notice"
+        card = posts[0]["embeds"][0]
+        assert posts[0]["content"] == "@everyone" and "DOWN" in card["title"] and "180 minutes" in card["description"] and "me/bot/actions" in card["description"]
+        for _ in range(20):
+            assert ew.heartbeat_alarm(now=now, health=health(190)) is None
+        assert len(posts) == 1 and creates() == 1, "still dead on the next 20 runs: nothing more is sent (no spam)"
+        assert ew.heartbeat_alarm(now=now, health=health(3)) == "recover"
+        assert state["open"] == [] and len(posts) == 2 and posts[1]["content"] == "" and "back" in posts[1]["embeds"][0]["title"], "back: the issue closes, one quiet notice"
+        assert ew.heartbeat_alarm(now=now, health=health(3)) is None and len(posts) == 2
+        assert ew.heartbeat_alarm(now=now, health={}) is None and len(posts) == 2, "an unreadable record never alarms"
+        state["list_ok"] = False
+        assert ew.heartbeat_alarm(now=now, health=health(180)) is None and len(posts) == 2 and creates() == 1, "if the alarm state cannot be read, do not alarm (it would repeat)"
+        state["list_ok"], state["create_ok"] = True, False
+        assert ew.heartbeat_alarm(now=now, health=health(180)) is None and len(posts) == 2, "if the issue cannot be opened, do not post (every retry would spam)"
+        state["create_ok"] = True
+        os.environ["DISCORD_PING"] = "false"
+        assert ew.heartbeat_alarm(now=now, health=health(180)) == "alarm" and posts[-1]["content"] == "", "no ping when the DISCORD_PING secret is off"
+        ew.heartbeat_alarm(now=now, health=health(2))
+        n_before = len(posts)
+        os.environ["DISCORD_PING"] = "true"
+        assert ew.heartbeat_alarm(drill=True, now=now) == "alarm", "a drill runs the whole path"
+        assert state["label"] == "watcher-drill" and state["open"] == [] and len(posts) == n_before + 2, "a drill opens and closes its own labelled issue and posts two messages"
+        assert all(p["content"] == "" and "DRILL" in p["embeds"][0]["title"] for p in posts[-2:]), "a drill never pings and is labelled DRILL"
+    finally:
+        ew.gh, ew.post_discord = real_gh, real_post
+        for k, v in real_env.items():
+            os.environ.pop(k, None) if v is None else os.environ.__setitem__(k, v)
+    workflow = (ROOT / ".github" / "workflows" / "watchdog.yml").read_text(encoding="utf-8")
+    assert "issues: write" in workflow and "DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}" in workflow and "DISCORD_PING: ${{ secrets.DISCORD_PING }}" in workflow
+    assert 'cron: "*/15 * * * *"' in workflow and "inputs.drill" in workflow and "python tools/ensure_watcher.py" in workflow, "the alarm also runs on a timer and can be rehearsed"
+
+
 def test_the_scheduled_watcher_is_never_gated_on_the_tests():
     """Oct 5-19: check-stock needed validate, a data-dependent end-to-end failure skipped it on ~140 runs, and no alert was sent for two weeks.
     The tests gate code changes (push, pull_request); the watcher (schedule, dispatch) starts without them."""
@@ -2710,6 +2777,7 @@ if __name__ == "__main__":
     test_ci_runs_the_end_to_end_test()
     test_every_tool_script_can_be_imported_the_way_its_workflow_runs_it()
     test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued()
+    test_the_watcher_down_alarm_fires_once_and_clears_when_the_watcher_reports_again()
     test_the_scheduled_watcher_is_never_gated_on_the_tests()
     test_the_watcher_never_shares_a_concurrency_group_with_test_runs()
     test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
