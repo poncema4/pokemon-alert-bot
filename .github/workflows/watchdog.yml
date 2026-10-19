@@ -2,15 +2,25 @@ name: Watcher watchdog
 
 # The stock watcher (monitor.yml) starts its own successor in its last step, but that step does not run when a job is killed outright (lost
 # runner, job timeout), and GitHub's cron is best effort. This runs whenever ANY monitor run ends and starts a watcher if none is running or queued.
+# It also keeps the alarm: if the watcher has not committed its heartbeat for 25 minutes it opens ONE issue and posts ONE Discord notice (and closes
+# it when the watcher reports again), so a watcher that restarts and fails, as it did Oct 5-19, can never be silent again.
 on:
   workflow_run:
     workflows: ["Pokemon Stock Monitor"]
     types: [completed]
+  schedule:
+    - cron: "*/15 * * * *"
   workflow_dispatch:
+    inputs:
+      drill:
+        description: "Rehearse the alarm: opens and closes a DRILL issue and posts two labelled DRILL messages (no ping)"
+        type: boolean
+        default: false
 
 permissions:
   actions: write
   contents: read
+  issues: write
 
 concurrency:
   group: pokeping-watchdog
@@ -26,4 +36,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: python tools/ensure_watcher.py
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_PING: ${{ secrets.DISCORD_PING }}
+        run: python tools/ensure_watcher.py ${{ inputs.drill && '--drill' || '' }}
