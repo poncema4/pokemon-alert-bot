@@ -2580,8 +2580,9 @@ def test_the_watcher_down_alarm_fires_once_and_clears_when_the_watcher_reports_a
     def fake_gh(*args):
         calls.append(args)
         reply = lambda code=0, out="": type("R", (), {"returncode": code, "stdout": out, "stderr": "boom"})()
-        if args[:2] == ("issue", "list"):
-            return reply(0, json.dumps([{"number": n} for n in state["open"]])) if state["list_ok"] else reply(1)
+        if args[0] == "api":
+            assert "/issues?labels=" in args[1] and "state=open" in args[1], "the open alarm issues come from the REST list, not from search"
+            return reply(0, json.dumps([{"number": n} for n in state["open"]] + [{"number": 99, "pull_request": {}}])) if state["list_ok"] else reply(1)
         if args[:2] == ("issue", "create"):
             if not state["create_ok"]:
                 return reply(1)
