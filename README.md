@@ -64,7 +64,7 @@ Home is hard-set in `docs/stores.json`. Store pins come from each store's own Op
 
 ## How it runs
 
-`.github/workflows/monitor.yml` runs the tests, then one long-lived watcher job (`bot/monitor_loop.py`, about 55 minutes) that starts its own successor. GitHub's cron is best effort (measured median gap between scheduled runs was 239 minutes), so the job polls inside itself every 30 seconds and the 30-minute cron is only a safety net.
+`.github/workflows/monitor.yml` runs the tests on every push and pull request, and, separately and without waiting for them, one long-lived watcher job (`bot/monitor_loop.py`, about 55 minutes) on schedule or dispatch that starts its own successor. The tests gate code changes only: a scheduled run that waited for them left nobody watching for about three minutes an hour, and a data-dependent test failure there once silenced every alert for two weeks. GitHub's cron is best effort (measured median gap between scheduled runs was 239 minutes), so the job polls inside itself every 30 seconds and the 30-minute cron is only a safety net.
 
 If a watcher job is killed outright (a lost runner, the job timeout) its hand-over step never runs, so `watchdog.yml` runs whenever any monitor run ends and `tools/ensure_watcher.py` starts a watcher if none is running or queued. Hand-over, watchdog and the 30-minute cron are three independent ways the watcher comes back.
 
@@ -74,7 +74,7 @@ Each cycle checks the seed and recently readable listings, refreshes the live-hi
 
 | Workflow | Purpose |
 | --- | --- |
-| `monitor.yml` | tests on every PR and push; the watcher on schedule or manual dispatch |
+| `monitor.yml` | tests on every PR and push (they gate code, not the watcher); the watcher on schedule or manual dispatch |
 | `30th-prices.yml` | hourly fallback refresh of the 30th guide prices |
 | `snapshot.yml` | manual: saves the retailer pages exactly as the runner receives them |
 | `watchdog.yml` | whenever a monitor run ends: starts a watcher if none is running or queued |

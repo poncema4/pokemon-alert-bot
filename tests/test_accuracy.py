@@ -2564,6 +2564,18 @@ def test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued():
     assert monitor_name == "Pokemon Stock Monitor", "the watchdog listens for the monitor workflow by name"
 
 
+def test_the_scheduled_watcher_is_never_gated_on_the_tests():
+    """Oct 5-19: check-stock needed validate, a data-dependent end-to-end failure skipped it on ~140 runs, and no alert was sent for two weeks.
+    The tests gate code changes (push, pull_request); the watcher (schedule, dispatch) starts without them."""
+    workflow = (ROOT / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
+    validate = workflow[workflow.index("  validate:"):workflow.index("  check-stock:")]
+    watcher = workflow[workflow.index("  check-stock:"):]
+    assert "if: github.event_name == 'push' || github.event_name == 'pull_request'" in validate, "the tests run for code changes only"
+    assert "if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'" in watcher, "the watcher runs for schedule and dispatch only"
+    assert "needs:" not in watcher.split("steps:")[0], "the watcher must not wait for (or be skipped by) the test job"
+    assert "needs:" not in validate.split("steps:")[0]
+
+
 def test_the_watcher_never_shares_a_concurrency_group_with_test_runs():
     """GitHub keeps one PENDING run per group. The watcher's queued handover shared a group with push test runs, so every merge replaced it
     (cancelled) and the watcher chain broke: the data went stale after each merge until the 30-minute cron."""
@@ -2698,6 +2710,7 @@ if __name__ == "__main__":
     test_ci_runs_the_end_to_end_test()
     test_every_tool_script_can_be_imported_the_way_its_workflow_runs_it()
     test_the_watchdog_starts_a_watcher_only_when_none_is_running_or_queued()
+    test_the_scheduled_watcher_is_never_gated_on_the_tests()
     test_the_watcher_never_shares_a_concurrency_group_with_test_runs()
     test_the_deploy_verifier_passes_a_good_site_and_fails_a_broken_one()
     test_browser_stores_are_read_gently()
