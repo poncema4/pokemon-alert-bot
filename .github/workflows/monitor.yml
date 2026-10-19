@@ -36,6 +36,10 @@ concurrency:
 
 jobs:
   validate:
+    # The tests gate CODE changes (a push to main, a pull request). A scheduled or dispatched watcher run only re-tests code that main already
+    # passed, and a data-dependent failure there silently stopped every alert from Oct 5 to Oct 19. It also left nobody watching for about three
+    # minutes in every hour (the tests ran between one watcher and the next).
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -69,7 +73,6 @@ jobs:
 
   check-stock:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 62
     steps:
