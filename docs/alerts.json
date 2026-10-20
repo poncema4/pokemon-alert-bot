@@ -1,19 +1,19 @@
 [
   {
-    "ts": "2026-10-20T20:09:13.172168+00:00",
-    "detected_at": "2026-10-20T20:09:13.172168+00:00",
+    "ts": "2026-10-20T20:12:20.430242+00:00",
+    "detected_at": "2026-10-20T20:12:20.430242+00:00",
     "posted_at": null,
-    "expires_at": "2026-10-20T20:24:13.172168+00:00",
+    "expires_at": "2026-10-20T20:27:20.430242+00:00",
     "kind": "stock",
     "retailer": "walmart",
-    "title": "Pokemon Trading Card Games Scarlet & Violet Destined Rivals Elite Trainer Box - Walmart Business Supplies",
-    "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
+    "title": "Collectible Pokemon Trading Card Game Scarlet & Violet 10 Destined Rivals Elite Trainer Box - Walmart.com",
+    "url": "https://www.walmart.com/ip/15718673510",
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 109.87,
+    "price": 299.0,
     "msrp": null,
-    "signal": "structured",
+    "signal": "text",
     "stores": []
   }
 ]
