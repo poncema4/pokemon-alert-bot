@@ -105,7 +105,11 @@ def commit_and_push():
         return False
     git("commit", "-m", "Update stock state [skip ci]")
     for attempt in range(3):
-        git("pull", "--rebase", "--autostash")
+        # The hourly price-refresh workflow also writes docs/30th_prices.json, so a pull can conflict. In a rebase "ours" is the
+        # remote side: the remote copy wins the conflicting lines and the next heartbeat rewrites everything the watcher owns.
+        # Without this a conflict left the rebase half done and EVERY later heartbeat of the run failed (stale site, false alarm).
+        if git("pull", "--rebase", "--autostash", "-X", "ours").returncode != 0:
+            git("rebase", "--abort")
         if git("push").returncode == 0:
             return True
         time.sleep(2 + attempt * 3)
