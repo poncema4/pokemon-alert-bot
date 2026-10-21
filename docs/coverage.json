@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-21T18:39:00.513503+00:00",
+  "updated_at": "2026-10-21T18:41:06.381709+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -107,7 +107,7 @@
         },
         "walmart": {
           "state": "out",
-          "price": 147.98,
+          "price": 29.99,
           "url": "https://www.walmart.com/ip/20161351456"
         },
         "bestbuy": {
@@ -281,8 +281,8 @@
         },
         "walmart": {
           "state": "in_stock",
-          "price": 108.13,
-          "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
+          "price": 109.75,
+          "url": "https://www.walmart.com/ip/15718673510",
           "since": "2026-10-21T18:31:51.783947+00:00"
         },
         "bestbuy": {
