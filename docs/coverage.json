@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-21T20:29:53.709499+00:00",
+  "updated_at": "2026-10-21T20:30:42.951462+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -14,7 +14,7 @@
         },
         "walmart": {
           "state": "in_stock",
-          "price": 142.89,
+          "price": 139.77,
           "url": "https://www.walmart.com/ip/20754418655",
           "since": "2026-10-21T20:23:41.448530+00:00"
         },
@@ -202,9 +202,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "out",
-          "price": 74.99,
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html"
+          "state": "unreadable",
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html",
+          "reason": "error"
         },
         "pokemoncenter": {
           "state": "unreadable",
