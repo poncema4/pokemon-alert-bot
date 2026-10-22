@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-22T05:48:20.818386+00:00",
+  "updated_at": "2026-10-22T05:50:57.171343+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -18,7 +18,7 @@
         "bestbuy": {
           "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "reason": "no_signal"
+          "reason": "blocked"
         },
         "gamestop": {
           "state": "out",
@@ -276,7 +276,7 @@
         },
         "walmart": {
           "state": "in_stock",
-          "price": 108.95,
+          "price": 114.99,
           "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
           "since": "2026-10-22T05:45:15.293557+00:00"
         },
@@ -443,9 +443,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "unreadable",
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "reason": "no_signal"
+          "state": "out",
+          "price": 179.99,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
         },
         "gamestop": {
           "state": "out",
@@ -473,9 +473,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "unreadable",
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "reason": "no_signal"
+          "state": "out",
+          "price": 179.99,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
         },
         "gamestop": {
           "state": "out",
