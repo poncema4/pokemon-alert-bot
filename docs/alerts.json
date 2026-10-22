@@ -1,19 +1,19 @@
 [
   {
-    "ts": "2026-10-22T10:33:05.779835+00:00",
-    "detected_at": "2026-10-22T10:33:05.779835+00:00",
+    "ts": "2026-10-22T10:36:24.610557+00:00",
+    "detected_at": "2026-10-22T10:36:24.610557+00:00",
     "posted_at": null,
-    "expires_at": "2026-10-22T10:48:05.779835+00:00",
+    "expires_at": "2026-10-22T10:51:24.610557+00:00",
     "kind": "stock",
-    "retailer": "bestbuy",
-    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
-    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
+    "retailer": "walmart",
+    "title": "Pokemon Trading Card Games Scarlet & Violet Destined Rivals Elite Trainer Box - Walmart Business Supplies",
+    "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 186.53,
-    "msrp": 49.99,
-    "signal": "browser",
+    "price": 108.95,
+    "msrp": null,
+    "signal": "structured",
     "stores": []
   }
 ]
