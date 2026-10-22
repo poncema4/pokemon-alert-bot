@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-22T21:33:41.569140+00:00",
+  "updated_at": "2026-10-22T21:39:52.209236+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -17,7 +17,7 @@
         },
         "bestbuy": {
           "state": "in_stock",
-          "price": 192.08,
+          "price": null,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
           "since": "2026-10-22T21:31:48.001709+00:00"
         },
