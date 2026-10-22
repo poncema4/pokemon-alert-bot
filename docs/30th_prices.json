@@ -233,7 +233,7 @@
       "market_updated_at": "2026-10-22T18:30:32.894513+00:00",
       "market_source": "tcgplayer",
       "listings": 76,
-      "low": 45.0
+      "low": 10.0
     },
     {
       "rank": 12,
@@ -442,7 +442,7 @@
       "why": "Four packs and a promo; best purchased at MSRP rather than presale prices.",
       "market_updated_at": "2026-10-22T18:30:32.894513+00:00",
       "market_source": "tcgplayer",
-      "listings": 25,
+      "listings": 26,
       "low": 12.95
     }
   ],
