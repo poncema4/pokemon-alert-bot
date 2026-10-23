@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-23T09:05:06.145221+00:00",
+  "updated_at": "2026-10-23T09:07:13.066663+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -18,7 +18,7 @@
         "bestbuy": {
           "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "reason": "blocked"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "out",
@@ -275,9 +275,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 108.95,
           "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
-          "reason": "blocked"
+          "since": "2026-10-23T09:07:00.150824+00:00"
         },
         "bestbuy": {
           "state": "not_tracked"
@@ -442,9 +443,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "unreadable",
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "reason": "no_signal"
+          "state": "out",
+          "price": null,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
         },
         "gamestop": {
           "state": "out",
@@ -472,9 +473,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "unreadable",
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "reason": "no_signal"
+          "state": "out",
+          "price": null,
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
         },
         "gamestop": {
           "state": "out",
