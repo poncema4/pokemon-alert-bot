@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-23T08:58:59.160224+00:00",
+  "updated_at": "2026-10-23T09:01:08.212979+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -275,9 +275,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 108.95,
           "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
-          "reason": "blocked"
+          "since": "2026-10-23T09:00:54.564069+00:00"
         },
         "bestbuy": {
           "state": "not_tracked"
@@ -442,9 +443,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "out",
-          "price": null,
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
+          "state": "unreadable",
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "out",
@@ -472,9 +473,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "out",
-          "price": null,
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
+          "state": "unreadable",
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "out",
