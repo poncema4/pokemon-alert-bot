@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-23T19:32:56.255901+00:00",
+  "updated_at": "2026-10-23T19:36:12.050178+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -103,7 +103,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "not_tracked"
+          "state": "in_stock",
+          "price": 79.88,
+          "url": "https://www.walmart.com/ip/20161351456",
+          "since": "2026-10-23T19:36:00.605387+00:00"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -111,10 +114,9 @@
           "reason": "blocked"
         },
         "gamestop": {
-          "state": "in_stock",
+          "state": "out",
           "price": 89.99,
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
-          "since": "2026-10-23T14:50:34.289352+00:00"
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
