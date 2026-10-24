@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "ts": "2026-10-24T13:45:48.110055+00:00",
+    "detected_at": "2026-10-24T13:45:48.110055+00:00",
+    "posted_at": null,
+    "expires_at": "2026-10-24T14:00:48.110055+00:00",
+    "kind": "stock",
+    "retailer": "walmart",
+    "title": "Collectible Pokemon Trading Card Game Scarlet & Violet 10 Destined Rivals Elite Trainer Box - Walmart.com",
+    "url": "https://www.walmart.com/ip/15718673510",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "price": 299.0,
+    "msrp": null,
+    "signal": "text",
+    "stores": []
+  }
+]
