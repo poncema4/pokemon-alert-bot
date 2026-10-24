@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-24T17:18:11.505553+00:00",
+  "updated_at": "2026-10-24T17:21:07.128856+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -16,10 +16,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "in_stock",
-          "price": 149.99,
+          "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "since": "2026-10-24T17:03:08.743388+00:00"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "unreadable",
@@ -277,7 +276,7 @@
         },
         "walmart": {
           "state": "in_stock",
-          "price": 108.89,
+          "price": 114.99,
           "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
           "since": "2026-10-24T17:12:43.922765+00:00"
         },
