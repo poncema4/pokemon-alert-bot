@@ -1,7 +1,7 @@
 {
   "source": "TCGplayer marketplace search (market price by product id)",
   "updated_at": "2026-10-24T23:10:22.679333+00:00",
-  "status": "live",
+  "status": "stale",
   "note": "This guide intentionally tracks the full announced 30th Celebration product lineup and major variants instead of only the top products. Secondary-market prices are presale/low-liquidity snapshots and can move sharply around release. Use target_buy as the decision price; MSRP is the strongest buy signal.",
   "products": [
     {
@@ -526,11 +526,12 @@
     "hit_values": "Presale observations are explicitly labeled when sales volume is too low to establish a reliable market value.",
     "coverage": "21 tracked product variants across the full announced 30th Celebration lineup; Mini Tins are one family with ten designs."
   },
-  "checked_at": "2026-10-24T23:10:22.679333+00:00",
+  "checked_at": "2026-10-24T23:34:20.798883+00:00",
   "refresh": {
     "updated": 21,
     "flagged": [],
     "missing": [],
     "total": 21
-  }
+  },
+  "last_error": "HTTPError: 504 Server Error: Gateway Time-out for url: https://mp-search-api.tcgplayer.com/v1/search/request?q=&isList=true&mpfev=3060"
 }
