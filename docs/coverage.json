@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-26T08:12:59.545382+00:00",
+  "updated_at": "2026-10-26T08:14:38.358452+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,10 +13,7 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 134.75,
-          "url": "https://www.walmart.com/ip/20754418655",
-          "since": "2026-10-26T08:12:41.514210+00:00"
+          "state": "not_tracked"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -106,10 +103,7 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 84.99,
-          "url": "https://www.walmart.com/ip/20161351456",
-          "since": "2026-10-26T08:12:41.514210+00:00"
+          "state": "not_tracked"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -449,9 +443,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "out",
-          "price": 179.99,
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
+          "state": "unreadable",
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
+          "reason": "blocked"
         },
         "gamestop": {
           "state": "unreadable",
@@ -479,9 +473,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "out",
-          "price": 179.99,
-          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254"
+          "state": "unreadable",
+          "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
+          "reason": "blocked"
         },
         "gamestop": {
           "state": "unreadable",
