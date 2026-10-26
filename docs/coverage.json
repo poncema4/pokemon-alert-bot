@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-26T08:11:53.915127+00:00",
+  "updated_at": "2026-10-26T08:12:59.545382+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,7 +13,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "not_tracked"
+          "state": "in_stock",
+          "price": 134.75,
+          "url": "https://www.walmart.com/ip/20754418655",
+          "since": "2026-10-26T08:12:41.514210+00:00"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -103,7 +106,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "not_tracked"
+          "state": "in_stock",
+          "price": 84.99,
+          "url": "https://www.walmart.com/ip/20161351456",
+          "since": "2026-10-26T08:12:41.514210+00:00"
         },
         "bestbuy": {
           "state": "unreadable",
