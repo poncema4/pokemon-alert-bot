@@ -1,5 +1,22 @@
 [
   {
+    "ts": "2026-10-28T01:16:37.102797+00:00",
+    "detected_at": "2026-10-28T01:16:37.102797+00:00",
+    "posted_at": null,
+    "expires_at": "2026-10-28T01:31:37.102797+00:00",
+    "kind": "stock",
+    "retailer": "bestbuy",
+    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
+    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "price": null,
+    "msrp": 49.99,
+    "signal": "browser",
+    "stores": []
+  },
+  {
     "ts": "2026-10-28T01:10:05.528990+00:00",
     "detected_at": "2026-10-28T01:10:05.528990+00:00",
     "posted_at": null,
@@ -11,7 +28,7 @@
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 114.99,
+    "price": 108.59,
     "msrp": null,
     "signal": "structured",
     "stores": []
@@ -28,7 +45,7 @@
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 132.99,
+    "price": 133.7,
     "msrp": null,
     "signal": "text",
     "stores": []
@@ -45,7 +62,7 @@
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 82.0,
+    "price": 79.97,
     "msrp": null,
     "signal": "text",
     "stores": []
