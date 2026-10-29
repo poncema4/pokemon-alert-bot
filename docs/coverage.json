@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-10-29T14:51:01.889325+00:00",
+  "updated_at": "2026-10-29T14:56:59.386295+00:00",
   "rows": [
     {
       "id": "30th-celebration",
       "label": "30th Celebration",
       "msrp": 49.99,
-      "market": 117.99,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market": 118.03,
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/704143",
       "retailers": {
         "target": {
@@ -35,8 +35,8 @@
       "id": "delta-reign",
       "label": "Delta Reign",
       "msrp": null,
-      "market": 104.4,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market": 105.05,
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/712102",
       "retailers": {
         "target": {
@@ -66,7 +66,7 @@
       "label": "Chaos Rising",
       "msrp": null,
       "market": 70.32,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/684450",
       "retailers": {
         "target": {
@@ -95,8 +95,8 @@
       "id": "pitch-black",
       "label": "Pitch Black",
       "msrp": null,
-      "market": 66.35,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market": 66.54,
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/692947",
       "retailers": {
         "target": {
@@ -126,7 +126,7 @@
       "label": "Perfect Order",
       "msrp": null,
       "market": 72.32,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/672401",
       "retailers": {
         "target": {
@@ -155,8 +155,8 @@
       "id": "ascended-heroes",
       "label": "Ascended Heroes",
       "msrp": null,
-      "market": 123.87,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market": 124.1,
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/668496",
       "retailers": {
         "target": {
@@ -183,8 +183,8 @@
       "id": "phantasmal-flames",
       "label": "Phantasmal Flames",
       "msrp": null,
-      "market": 147.2,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market": 147.5,
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/654136",
       "retailers": {
         "target": {
@@ -212,7 +212,7 @@
       "label": "Mega Evolution",
       "msrp": null,
       "market": 122.16,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/648394",
       "retailers": {
         "target": {
@@ -240,7 +240,7 @@
       "label": "Prismatic Evolutions",
       "msrp": null,
       "market": 116.47,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/593355",
       "retailers": {
         "target": {
@@ -268,7 +268,7 @@
       "label": "Destined Rivals",
       "msrp": null,
       "market": 107.18,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/624676",
       "retailers": {
         "target": {
@@ -298,7 +298,7 @@
       "label": "Black Bolt",
       "msrp": null,
       "market": 158.39,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/630686",
       "retailers": {
         "target": {
@@ -324,7 +324,7 @@
       "label": "White Flare",
       "msrp": null,
       "market": 141.96,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/630689",
       "retailers": {
         "target": {
@@ -352,7 +352,7 @@
       "label": "Journey Together",
       "msrp": null,
       "market": 136.5,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/610930",
       "retailers": {
         "target": {
@@ -377,8 +377,8 @@
       "id": "surging-sparks",
       "label": "Surging Sparks",
       "msrp": null,
-      "market": 120.87,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market": 120.79,
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/565630",
       "retailers": {
         "target": {
@@ -406,7 +406,7 @@
       "label": "151",
       "msrp": null,
       "market": 497.13,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/503313",
       "retailers": {
         "target": {
@@ -432,7 +432,7 @@
       "label": "30th Celebration UPC (Day, Espeon)",
       "msrp": 179.99,
       "market": 541.03,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/704190",
       "retailers": {
         "target": {
@@ -462,7 +462,7 @@
       "label": "30th Celebration UPC (Night, Umbreon)",
       "msrp": 179.99,
       "market": 580.61,
-      "market_updated_at": "2026-10-29T14:36:07.374015+00:00",
+      "market_updated_at": "2026-10-29T14:51:15.569637+00:00",
       "market_url": "https://www.tcgplayer.com/product/704191",
       "retailers": {
         "target": {
