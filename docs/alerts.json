@@ -1,5 +1,22 @@
 [
   {
+    "ts": "2026-10-30T17:16:33.452047+00:00",
+    "detected_at": "2026-10-30T17:16:33.452047+00:00",
+    "posted_at": null,
+    "expires_at": "2026-10-30T17:31:33.452047+00:00",
+    "kind": "stock",
+    "retailer": "bestbuy",
+    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
+    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "price": null,
+    "msrp": 49.99,
+    "signal": "browser",
+    "stores": []
+  },
+  {
     "ts": "2026-10-30T17:13:00.531632+00:00",
     "detected_at": "2026-10-30T17:13:00.531632+00:00",
     "posted_at": null,
@@ -29,23 +46,6 @@
     "stock": true,
     "online": true,
     "price": 129.5,
-    "msrp": null,
-    "signal": "text",
-    "stores": []
-  },
-  {
-    "ts": "2026-10-30T17:13:00.531632+00:00",
-    "detected_at": "2026-10-30T17:13:00.531632+00:00",
-    "posted_at": null,
-    "expires_at": "2026-10-30T17:28:00.531632+00:00",
-    "kind": "stock",
-    "retailer": "walmart",
-    "title": "Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com",
-    "url": "https://www.walmart.com/ip/20161351456",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "price": 80.0,
     "msrp": null,
     "signal": "text",
     "stores": []
