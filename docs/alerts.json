@@ -15,39 +15,5 @@
     "msrp": null,
     "signal": "text",
     "stores": []
-  },
-  {
-    "ts": "2026-10-31T13:59:38.952884+00:00",
-    "detected_at": "2026-10-31T13:59:38.952884+00:00",
-    "posted_at": null,
-    "expires_at": "2026-10-31T14:14:38.952884+00:00",
-    "kind": "stock",
-    "retailer": "bestbuy",
-    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
-    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "price": null,
-    "msrp": 49.99,
-    "signal": "browser",
-    "stores": []
-  },
-  {
-    "ts": "2026-10-31T13:48:18.816784+00:00",
-    "detected_at": "2026-10-31T13:48:18.816784+00:00",
-    "posted_at": null,
-    "expires_at": "2026-10-31T14:03:18.816784+00:00",
-    "kind": "stock",
-    "retailer": "walmart",
-    "title": "Pokemon Trading Card Game Scarlet & Violet 10 Destined Rivals Elite Trainer Box - Walmart.com",
-    "url": "https://www.walmart.com/ip/15718673510",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "price": 109.49,
-    "msrp": null,
-    "signal": "text",
-    "stores": []
   }
 ]
