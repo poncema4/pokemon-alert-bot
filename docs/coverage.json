@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-31T01:21:02.551964+00:00",
+  "updated_at": "2026-10-31T01:23:00.436120+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -21,7 +21,7 @@
         "bestbuy": {
           "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "reason": "blocked"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "unreadable",
@@ -106,10 +106,7 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 84.99,
-          "url": "https://www.walmart.com/ip/20161351456",
-          "since": "2026-10-31T01:20:54.028558+00:00"
+          "state": "not_tracked"
         },
         "bestbuy": {
           "state": "unreadable",
