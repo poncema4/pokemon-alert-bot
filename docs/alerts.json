@@ -1,19 +1,19 @@
 [
   {
-    "ts": "2026-11-01T20:03:00.955606+00:00",
-    "detected_at": "2026-11-01T20:03:00.955606+00:00",
+    "ts": "2026-11-01T20:18:08.722153+00:00",
+    "detected_at": "2026-11-01T20:18:08.722153+00:00",
     "posted_at": null,
-    "expires_at": "2026-11-01T20:18:00.955606+00:00",
+    "expires_at": "2026-11-01T20:33:08.722153+00:00",
     "kind": "stock",
-    "retailer": "walmart",
-    "title": "Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com",
-    "url": "https://www.walmart.com/ip/20161351456",
+    "retailer": "bestbuy",
+    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
+    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 83.77,
-    "msrp": null,
-    "signal": "text",
+    "price": 288.99,
+    "msrp": 49.99,
+    "signal": "browser",
     "stores": []
   }
 ]
