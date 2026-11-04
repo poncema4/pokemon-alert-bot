@@ -5,15 +5,15 @@
     "listings": 229,
     "name": "Pitch Black Elite Trainer Box",
     "product_id": 692947,
-    "updated_at": "2026-11-04T20:21:10.635826+00:00"
+    "updated_at": "2026-11-04T20:35:57.106141+00:00"
   },
   "30th-etb": {
     "market": 113.7,
     "low": 89.0,
-    "listings": 535,
+    "listings": 536,
     "name": "30th Celebration Elite Trainer Box",
     "product_id": 704143,
-    "updated_at": "2026-11-04T20:21:10.635826+00:00"
+    "updated_at": "2026-11-04T20:35:57.106141+00:00"
   },
   "auto:destined rivals elite trainer box": {
     "market": 108.99,
@@ -26,30 +26,30 @@
   "watch:30th-celebration": {
     "market": 113.7,
     "low": 89.0,
-    "listings": 535,
+    "listings": 536,
     "name": "30th Celebration Elite Trainer Box",
     "product_id": 704143,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "30th Celebration",
     "msrp": 49.99
   },
   "watch:delta-reign": {
-    "market": 103.67,
+    "market": 102.95,
     "low": 94.5,
-    "listings": 29,
+    "listings": 30,
     "name": "Delta Reign Elite Trainer Box",
     "product_id": 712102,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Delta Reign",
     "msrp": null
   },
   "watch:chaos-rising": {
     "market": 69.12,
-    "low": 1.0,
+    "low": 49.99,
     "listings": 349,
     "name": "Chaos Rising Elite Trainer Box",
     "product_id": 684450,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Chaos Rising",
     "msrp": null
   },
@@ -59,7 +59,7 @@
     "listings": 229,
     "name": "Pitch Black Elite Trainer Box",
     "product_id": 692947,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Pitch Black",
     "msrp": null
   },
@@ -69,7 +69,7 @@
     "listings": 260,
     "name": "Perfect Order Elite Trainer Box",
     "product_id": 672401,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Perfect Order",
     "msrp": null
   },
@@ -79,57 +79,57 @@
     "listings": 275,
     "name": "Ascended Heroes Elite Trainer Box",
     "product_id": 668496,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Ascended Heroes",
     "msrp": null
   },
   "watch:phantasmal-flames": {
     "market": 145.93,
-    "low": 91.97,
+    "low": 135.99,
     "listings": 99,
     "name": "Phantasmal Flames Elite Trainer Box",
     "product_id": 654136,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Phantasmal Flames",
     "msrp": null
   },
   "watch:mega-evolution": {
-    "market": 114.3,
-    "low": 105.0,
-    "listings": 81,
-    "name": "Mega Evolution Elite Trainer Box [Mega Gardevoir]",
-    "product_id": 644279,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "market": 117.08,
+    "low": 100.0,
+    "listings": 70,
+    "name": "Mega Evolution Elite Trainer Box [Mega Lucario]",
+    "product_id": 648394,
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Mega Evolution",
     "msrp": null
   },
   "watch:prismatic-evolutions": {
     "market": 121.5,
     "low": 2.0,
-    "listings": 327,
+    "listings": 328,
     "name": "Prismatic Evolutions Elite Trainer Box",
     "product_id": 593355,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Prismatic Evolutions",
     "msrp": null
   },
   "watch:destined-rivals": {
     "market": 108.53,
-    "low": 41.95,
+    "low": 99.29,
     "listings": 203,
     "name": "Destined Rivals Elite Trainer Box",
     "product_id": 624676,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Destined Rivals",
     "msrp": null
   },
   "watch:black-bolt": {
     "market": 155.44,
-    "low": 5.0,
+    "low": 128.36,
     "listings": 92,
     "name": "Black Bolt Elite Trainer Box",
     "product_id": 630686,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Black Bolt",
     "msrp": null
   },
@@ -139,7 +139,7 @@
     "listings": 89,
     "name": "White Flare Elite Trainer Box",
     "product_id": 630689,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "White Flare",
     "msrp": null
   },
@@ -149,7 +149,7 @@
     "listings": 59,
     "name": "Journey Together Elite Trainer Box",
     "product_id": 610930,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Journey Together",
     "msrp": null
   },
@@ -159,35 +159,35 @@
     "listings": 103,
     "name": "Surging Sparks Elite Trainer Box",
     "product_id": 565630,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "Surging Sparks",
     "msrp": null
   },
   "watch:151": {
-    "market": 494.68,
+    "market": 494.44,
     "low": 480.0,
-    "listings": 61,
+    "listings": 60,
     "name": "151 Elite Trainer Box",
     "product_id": 503313,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "151",
     "msrp": null
   },
   "auto:chaos rising elite trainer box": {
     "market": 69.12,
-    "low": 1.0,
+    "low": 49.99,
     "listings": 349,
     "name": "Chaos Rising Elite Trainer Box",
     "product_id": 684450,
-    "updated_at": "2026-11-04T20:21:10.635826+00:00"
+    "updated_at": "2026-11-04T20:35:57.106141+00:00"
   },
   "auto:delta reign elite trainer box": {
     "market": 102.95,
     "low": 94.5,
-    "listings": 29,
+    "listings": 30,
     "name": "Delta Reign Elite Trainer Box",
     "product_id": 712102,
-    "updated_at": "2026-11-04T20:21:10.635826+00:00"
+    "updated_at": "2026-11-04T20:35:57.106141+00:00"
   },
   "auto:prismatic evolutions elite trainer box": {
     "market": 125.05,
@@ -211,7 +211,7 @@
     "listings": 260,
     "name": "Perfect Order Elite Trainer Box",
     "product_id": 672401,
-    "updated_at": "2026-11-04T20:21:10.635826+00:00"
+    "updated_at": "2026-11-04T20:35:57.106141+00:00"
   },
   "auto:ascended heroes elite trainer box": {
     "market": 132.5,
@@ -251,17 +251,17 @@
     "listings": 51,
     "name": "30th Celebration Ultra-Premium Collection [Day]",
     "product_id": 704190,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "30th Celebration UPC (Day, Espeon)",
     "msrp": 179.99
   },
   "watch:30th-upc-night": {
-    "market": 438.67,
+    "market": 437.66,
     "low": 430.96,
-    "listings": 34,
+    "listings": 33,
     "name": "30th Celebration Ultra-Premium Collection [Night]",
     "product_id": 704191,
-    "updated_at": "2026-11-04T20:21:18.043856+00:00",
+    "updated_at": "2026-11-04T20:36:05.322059+00:00",
     "label": "30th Celebration UPC (Night, Umbreon)",
     "msrp": 179.99
   },
