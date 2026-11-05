@@ -1,20 +1,20 @@
 {
   "target": {
-    "checked": 0,
+    "checked": 2,
     "readable": 0,
     "blocked": 0,
-    "errors": 0,
-    "last_run": "2026-11-05T12:01:21.973540+00:00",
+    "errors": 2,
+    "last_run": "2026-11-05T12:08:06.838809+00:00",
     "last_readable_at": "2026-10-04T15:31:14.144299+00:00",
     "blind_notified": true,
     "blind_since": "2026-10-19T22:18:54.501409+00:00"
   },
   "walmart": {
-    "checked": 0,
+    "checked": 4,
     "readable": 0,
-    "blocked": 0,
+    "blocked": 4,
     "errors": 0,
-    "last_run": "2026-11-05T12:01:21.973540+00:00",
+    "last_run": "2026-11-05T12:08:06.838809+00:00",
     "last_readable_at": "2026-11-04T02:23:21.437415+00:00",
     "blind_since": "2026-11-04T02:23:51.437630+00:00",
     "blind_notified": true
@@ -24,7 +24,7 @@
     "readable": 0,
     "blocked": 0,
     "errors": 2,
-    "last_run": "2026-11-05T12:01:21.973540+00:00",
+    "last_run": "2026-11-05T12:08:06.838809+00:00",
     "last_readable_at": "2026-11-05T11:52:25.312847+00:00",
     "blind_since": "2026-11-05T11:55:21.687980+00:00"
   },
@@ -33,7 +33,7 @@
     "readable": 0,
     "blocked": 0,
     "errors": 0,
-    "last_run": "2026-11-05T12:01:21.973540+00:00",
+    "last_run": "2026-11-05T12:08:06.838809+00:00",
     "last_readable_at": "2026-10-23T23:16:19.788104+00:00",
     "blind_since": "2026-10-23T23:22:49.104202+00:00",
     "blind_notified": true
