@@ -21,7 +21,7 @@
     "listings": 202,
     "name": "Destined Rivals Elite Trainer Box",
     "product_id": 624676,
-    "updated_at": "2026-11-06T08:25:36.703137+00:00"
+    "updated_at": "2026-11-06T09:48:33.104279+00:00"
   },
   "watch:30th-celebration": {
     "market": 108.88,
@@ -266,19 +266,19 @@
     "msrp": 179.99
   },
   "auto:pitch black elite trainer box": {
-    "market": 70.34,
+    "market": 70.73,
     "low": 49.0,
-    "listings": 236,
+    "listings": 235,
     "name": "Pitch Black Elite Trainer Box",
     "product_id": 692947,
-    "updated_at": "2026-11-06T08:25:36.703137+00:00"
+    "updated_at": "2026-11-06T09:48:37.551757+00:00"
   },
   "auto:30th celebration elite trainer box": {
-    "market": 108.9,
+    "market": 108.88,
     "low": 3.5,
-    "listings": 547,
+    "listings": 548,
     "name": "30th Celebration Elite Trainer Box",
     "product_id": 704143,
-    "updated_at": "2026-11-06T08:25:36.703137+00:00"
+    "updated_at": "2026-11-06T09:48:44.048308+00:00"
   }
 }
