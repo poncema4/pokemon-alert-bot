@@ -1,5 +1,22 @@
 [
   {
+    "ts": "2026-11-06T00:33:19.940652+00:00",
+    "detected_at": "2026-11-06T00:33:19.940652+00:00",
+    "posted_at": null,
+    "expires_at": "2026-11-06T00:48:19.940652+00:00",
+    "kind": "stock",
+    "retailer": "walmart",
+    "title": "Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com",
+    "url": "https://www.walmart.com/ip/20161351456",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "stores": [],
+    "price": 79.87,
+    "msrp": null,
+    "signal": "structured"
+  },
+  {
     "ts": "2026-11-06T00:22:34.316558+00:00",
     "detected_at": "2026-11-06T00:22:34.316558+00:00",
     "posted_at": null,
