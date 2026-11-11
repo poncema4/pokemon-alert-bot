@@ -46,7 +46,7 @@
   "watch:chaos-rising": {
     "market": 70.13,
     "low": 1.0,
-    "listings": 362,
+    "listings": 363,
     "name": "Chaos Rising Elite Trainer Box",
     "product_id": 684450,
     "updated_at": "2026-11-11T03:02:31.821745+00:00",
@@ -66,7 +66,7 @@
   "watch:perfect-order": {
     "market": 68.51,
     "low": 60.0,
-    "listings": 257,
+    "listings": 258,
     "name": "Perfect Order Elite Trainer Box",
     "product_id": 672401,
     "updated_at": "2026-11-11T03:02:31.821745+00:00",
@@ -208,7 +208,7 @@
   "auto:perfect order elite trainer box": {
     "market": 68.51,
     "low": 60.0,
-    "listings": 257,
+    "listings": 258,
     "name": "Perfect Order Elite Trainer Box",
     "product_id": 672401,
     "updated_at": "2026-11-11T03:02:19.388554+00:00"
