@@ -201,7 +201,7 @@
       "variant": "Mewtwo",
       "release": "2026-11-06",
       "msrp": 29.99,
-      "market": 65.51,
+      "market": 65.75,
       "target_buy": "$30–$40",
       "max_buy": 45,
       "packs": "5",
@@ -503,7 +503,7 @@
     },
     {
       "rank": 7,
-      "name": "Mewtwo ex - 151/128",
+      "name": "Sylveon ex - 153/128",
       "rarity": "Special Illustration Rare",
       "tcg_value": "$33.32 market",
       "market": 33.32,
@@ -512,7 +512,7 @@
     },
     {
       "rank": 8,
-      "name": "Sylveon ex - 153/128",
+      "name": "Mewtwo ex - 151/128",
       "rarity": "Special Illustration Rare",
       "tcg_value": "$33.08 market",
       "market": 33.08,
