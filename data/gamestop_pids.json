@@ -9,19 +9,19 @@
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-unova-heavy-hitters-premium-collection-box/452199.html",
     "title": "Pokemon Trading Card Game: Unova Heavy Hitters Premium Collection Box",
     "wanted": false,
-    "checked_at": "2026-10-19T22:21:02.437170+00:00"
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
   },
   "448589": {
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-binder-collection/448589.html",
     "title": "Pokemon Trading Card Game: 30th Celebration Binder Collection",
     "wanted": false,
-    "checked_at": "2026-10-19T22:21:02.437170+00:00"
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
   },
   "447217": {
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-forces-tin-styles-may-vary/447217.html",
     "title": "Pokemon Trading Card Game: Mega Forces Tin (Styles May Vary)",
     "wanted": false,
-    "checked_at": "2026-10-19T22:21:02.437170+00:00"
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
   },
   "450768": {
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
@@ -39,13 +39,13 @@
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-prismatic-evolutions-mini-tin-styles-may-vary/418756.html",
     "title": "Pokemon Trading Card Game Prismatic Evolutions Mini Tin (Styles May Vary)",
     "wanted": false,
-    "checked_at": "2026-10-19T22:21:02.437170+00:00"
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
   },
   "450760": {
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-build-and-battle-box/450760.html",
     "title": "Pokemon Trading Card Game: Delta Reign Build and Battle Box",
     "wanted": false,
-    "checked_at": "2026-10-19T22:21:02.437170+00:00"
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
   },
   "450757": {
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-booster-box/450757.html",
@@ -87,7 +87,7 @@
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-unova-poster-collection/426115.html",
     "title": "Pokemon Trading Card Game: Unova Poster Collection",
     "wanted": false,
-    "checked_at": "2026-10-19T22:37:00.934275+00:00"
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
   },
   "452105": {
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-booster-bundle-box/452105.html",
@@ -423,7 +423,7 @@
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-tin-styles-may-vary/453350.html",
     "title": "Pokemon Trading Card Game: 30th Celebration Tin (Styles May Vary)",
     "wanted": false,
-    "checked_at": "2026-10-22T16:26:35.052861+00:00"
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
   },
   "449048": {
     "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/449048.html",
@@ -436,5 +436,35 @@
     "title": "GameStop Power Pack 2026 Sapphire Series 01 (Styles May Vary)",
     "wanted": false,
     "checked_at": "2026-10-23T14:49:27.885878+00:00"
+  },
+  "453567": {
+    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-rayquaza-ex-premium-tournament-box/453567.html",
+    "title": "Pokemon Trading Card Game: Mega Rayquaza ex Premium Tournament Box",
+    "wanted": false,
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
+  },
+  "454507": {
+    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pokemon-day-2027-collection/454507.html",
+    "title": "Pokemon Trading Card Game: Pokemon Day 2027 Collection",
+    "wanted": false,
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
+  },
+  "453745": {
+    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-unova-heavy-hitter-premium-collection-and-squishmallows-pokemon-eevee-10-in-medium-plush-bundle/453745.html",
+    "title": "Pokemon Trading Card Game Unova Heavy Hitter Premium Collection and Squishmallows Pokemon Eevee 10-in Medium Plush Bundle",
+    "wanted": false,
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
+  },
+  "453748": {
+    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-tcg-30th-celebration-bundle-with-1-tin-style-may-vary-10-inch-squishmallows-eevee-plush/453748.html",
+    "title": "Pok\u00e9mon TCG: 30th Celebration Bundle with 1 Tin (Style May Vary) + 10-Inch Squishmallows Eevee Plush",
+    "wanted": false,
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
+  },
+  "454504": {
+    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-prismatic-evolutions-elite-trainer-box-and-clear-display-acrylic-case-bundle/454504.html",
+    "title": "Pokemon Trading Card Game: Prismatic Evolutions Elite Trainer Box and Clear Display Acrylic Case Bundle",
+    "wanted": true,
+    "checked_at": "2026-11-13T06:35:33.709543+00:00"
   }
 }
