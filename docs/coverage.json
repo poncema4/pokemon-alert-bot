@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-13T07:19:20.729075+00:00",
+  "updated_at": "2026-11-13T07:19:43.129911+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -105,10 +105,7 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 81.77,
-          "url": "https://www.walmart.com/ip/20161351456",
-          "since": "2026-11-13T07:19:12.039971+00:00"
+          "state": "not_tracked"
         },
         "bestbuy": {
           "state": "unreadable",
