@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-13T14:01:30.917214+00:00",
+  "updated_at": "2026-11-13T14:04:10.699196+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,14 +13,16 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "reason": "blocked"
+          "state": "in_stock",
+          "price": 123.77,
+          "url": "https://www.walmart.com/ip/20754418655",
+          "since": "2026-11-13T14:02:05.689359+00:00"
         },
         "bestbuy": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 147.26,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "reason": "no_signal"
+          "since": "2026-11-13T14:02:05.689359+00:00"
         },
         "gamestop": {
           "state": "out",
@@ -105,7 +107,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "not_tracked"
+          "state": "in_stock",
+          "price": 84.99,
+          "url": "https://www.walmart.com/ip/20161351456",
+          "since": "2026-11-13T14:02:05.689359+00:00"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -278,9 +283,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
-          "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
-          "reason": "blocked"
+          "state": "in_stock",
+          "price": 104.91,
+          "url": "https://www.walmart.com/ip/15718673510",
+          "since": "2026-11-13T14:02:05.689359+00:00"
         },
         "bestbuy": {
           "state": "not_tracked"
