@@ -1,1 +1,36 @@
-[]
+[
+  {
+    "ts": "2026-11-13T06:29:52.221338+00:00",
+    "detected_at": "2026-11-13T06:29:52.221338+00:00",
+    "posted_at": null,
+    "expires_at": "2026-11-13T06:44:52.221338+00:00",
+    "kind": "stock",
+    "retailer": "gamestop",
+    "title": "Pokemon Trading Card Game: Pitch Black Elite Trainer Box | GameStop",
+    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "stores": [],
+    "price": 89.99,
+    "msrp": null,
+    "signal": "page"
+  },
+  {
+    "ts": "2026-11-13T06:29:52.221338+00:00",
+    "detected_at": "2026-11-13T06:29:52.221338+00:00",
+    "posted_at": null,
+    "expires_at": "2026-11-13T06:44:52.221338+00:00",
+    "kind": "stock",
+    "retailer": "gamestop",
+    "title": "Pokemon Trading Card Game: 30th Celebration Ultra-Premium Collection (Styles May Vary) | GameStop",
+    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "stores": [],
+    "price": 399.99,
+    "msrp": null,
+    "signal": "page"
+  }
+]

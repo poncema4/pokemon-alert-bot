@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-13T06:29:19.748895+00:00",
+  "updated_at": "2026-11-13T06:30:03.119989+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -23,9 +23,9 @@
           "reason": "no_signal"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 99.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-elite-trainer-box/20036324.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -53,9 +53,9 @@
           "reason": "error"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/20037568.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 99.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/20037568.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -83,9 +83,9 @@
           "reason": "error"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-chaos-rising-elite-trainer-box/20033749.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 89.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-chaos-rising-elite-trainer-box/20033749.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -113,9 +113,10 @@
           "reason": "error"
         },
         "gamestop": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 89.99,
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
-          "reason": "blocked"
+          "since": "2026-11-13T06:29:52.221338+00:00"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -143,9 +144,9 @@
           "reason": "error"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-perfect-order-elite-trainer-box/20031957.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 84.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-perfect-order-elite-trainer-box/20031957.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -171,9 +172,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 119.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -199,9 +200,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 74.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -227,9 +228,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 69.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -255,9 +256,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-prismatic-evolutions-elite-trainer-box/20018505.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 149.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-prismatic-evolutions-elite-trainer-box/20018505.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -285,9 +286,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 99.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -339,9 +340,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 59.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -393,9 +394,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-surging-sparks-elite-trainer-box/20015259.html",
-          "reason": "blocked"
+          "state": "out",
+          "price": 59.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-surging-sparks-elite-trainer-box/20015259.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -449,9 +450,10 @@
           "reason": "no_signal"
         },
         "gamestop": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 399.99,
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
-          "reason": "blocked"
+          "since": "2026-11-13T06:29:52.221338+00:00"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -479,9 +481,10 @@
           "reason": "no_signal"
         },
         "gamestop": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 399.99,
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
-          "reason": "blocked"
+          "since": "2026-11-13T06:29:52.221338+00:00"
         },
         "pokemoncenter": {
           "state": "unreadable",
