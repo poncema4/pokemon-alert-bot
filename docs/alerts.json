@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "ts": "2026-11-14T09:37:58.492275+00:00",
+    "detected_at": "2026-11-14T09:37:58.492275+00:00",
+    "posted_at": null,
+    "expires_at": "2026-11-14T09:52:58.492275+00:00",
+    "kind": "stock",
+    "retailer": "gamestop",
+    "title": "Pokemon Trading Card Game: Pitch Black Elite Trainer Box | GameStop",
+    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "price": 89.99,
+    "msrp": null,
+    "signal": "page",
+    "stores": []
+  }
+]
