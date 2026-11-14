@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-14T14:08:23.377312+00:00",
+  "updated_at": "2026-11-14T14:08:41.313761+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -204,9 +204,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html",
-          "reason": "error"
+          "state": "out",
+          "price": 74.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-phantasmal-flames-elite-trainer-box/20027391.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -232,9 +232,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "out",
-          "price": 69.99,
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html"
+          "state": "gone",
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html",
+          "reason": "http_410"
         },
         "pokemoncenter": {
           "state": "unreadable",
