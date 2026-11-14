@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-14T08:33:16.961771+00:00",
+  "updated_at": "2026-11-14T08:35:56.093864+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,14 +13,15 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "reason": "blocked"
+          "state": "in_stock",
+          "price": 118.77,
+          "url": "https://www.walmart.com/ip/20754418655",
+          "since": "2026-11-14T08:35:39.766480+00:00"
         },
         "bestbuy": {
           "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "reason": "no_signal"
+          "reason": "blocked"
         },
         "gamestop": {
           "state": "out",
@@ -105,7 +106,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "not_tracked"
+          "state": "in_stock",
+          "price": 73.47,
+          "url": "https://www.walmart.com/ip/20161351456",
+          "since": "2026-11-14T08:35:39.766480+00:00"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -278,9 +282,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
-          "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
-          "reason": "blocked"
+          "state": "in_stock",
+          "price": 104.91,
+          "url": "https://www.walmart.com/ip/15718673510",
+          "since": "2026-11-14T08:35:39.766480+00:00"
         },
         "bestbuy": {
           "state": "not_tracked"
@@ -445,10 +450,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "in_stock",
-          "price": 470.24,
+          "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "since": "2026-11-14T08:22:22.966041+00:00"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "in_stock",
@@ -477,10 +481,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "in_stock",
-          "price": 470.24,
+          "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "since": "2026-11-14T08:22:22.966041+00:00"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "in_stock",
