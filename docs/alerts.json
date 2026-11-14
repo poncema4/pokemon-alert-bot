@@ -11,7 +11,7 @@
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 581.56,
+    "price": null,
     "msrp": null,
     "signal": "browser",
     "stores": []
