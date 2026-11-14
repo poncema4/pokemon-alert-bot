@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-14T14:08:41.313761+00:00",
+  "updated_at": "2026-11-14T14:14:06.147802+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -232,9 +232,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "gone",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html",
-          "reason": "http_410"
+          "state": "out",
+          "price": 69.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-mega-evolution-elite-trainer-box/20023792.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
