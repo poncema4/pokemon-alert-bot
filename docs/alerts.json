@@ -11,9 +11,9 @@
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 135.5,
+    "price": 119.45,
     "msrp": 49.99,
-    "signal": "structured",
+    "signal": "text",
     "stores": []
   }
 ]
