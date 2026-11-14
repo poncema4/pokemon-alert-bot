@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-14T08:08:41.542108+00:00",
+  "updated_at": "2026-11-14T08:11:21.491062+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -451,7 +451,7 @@
         },
         "bestbuy": {
           "state": "in_stock",
-          "price": 470.24,
+          "price": null,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
           "since": "2026-11-14T08:07:11.635493+00:00"
         },
@@ -483,7 +483,7 @@
         },
         "bestbuy": {
           "state": "in_stock",
-          "price": 470.24,
+          "price": null,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
           "since": "2026-11-14T08:07:11.635493+00:00"
         },
