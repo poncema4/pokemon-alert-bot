@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-15T18:33:15.157117+00:00",
+  "updated_at": "2026-11-15T18:36:14.733111+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -18,10 +18,9 @@
           "reason": "blocked"
         },
         "bestbuy": {
-          "state": "in_stock",
-          "price": null,
+          "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "since": "2026-11-15T18:31:31.226556+00:00"
+          "reason": "blocked"
         },
         "gamestop": {
           "state": "out",
@@ -341,9 +340,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html",
-          "reason": "error"
+          "state": "out",
+          "price": 59.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-white-flare-elite-trainer-box/20021658.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
