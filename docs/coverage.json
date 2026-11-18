@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-18T07:30:09.133511+00:00",
+  "updated_at": "2026-11-18T07:32:37.803510+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -19,10 +19,9 @@
           "since": "2026-11-18T07:29:59.731756+00:00"
         },
         "bestbuy": {
-          "state": "in_stock",
-          "price": null,
+          "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "since": "2026-11-18T07:28:33.879378+00:00"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "out",
@@ -451,7 +450,7 @@
         },
         "bestbuy": {
           "state": "in_stock",
-          "price": null,
+          "price": 599.99,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
           "since": "2026-11-18T06:39:52.249838+00:00"
         },
@@ -483,7 +482,7 @@
         },
         "bestbuy": {
           "state": "in_stock",
-          "price": null,
+          "price": 599.99,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
           "since": "2026-11-18T06:39:52.249838+00:00"
         },
