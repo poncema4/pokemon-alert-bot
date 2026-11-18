@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-18T07:08:33.344690+00:00",
+  "updated_at": "2026-11-18T07:11:03.575464+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -14,9 +14,9 @@
         },
         "walmart": {
           "state": "in_stock",
-          "price": 114.99,
-          "url": "https://www.walmart.com/ip/20754418655",
-          "since": "2026-11-18T07:08:24.760083+00:00"
+          "price": 119.0,
+          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
+          "since": "2026-11-18T07:03:25.033356+00:00"
         },
         "bestbuy": {
           "state": "in_stock",
@@ -112,9 +112,10 @@
           "url": "https://www.walmart.com/ip/20161351456"
         },
         "bestbuy": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": null,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45",
-          "reason": "no_signal"
+          "since": "2026-11-18T07:08:55.692332+00:00"
         },
         "gamestop": {
           "state": "in_stock",
