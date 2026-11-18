@@ -1,19 +1,19 @@
 [
   {
-    "ts": "2026-11-18T12:30:02.412121+00:00",
-    "detected_at": "2026-11-18T12:30:02.412121+00:00",
+    "ts": "2026-11-18T12:30:32.412193+00:00",
+    "detected_at": "2026-11-18T12:30:32.412193+00:00",
     "posted_at": null,
-    "expires_at": "2026-11-18T12:45:02.412121+00:00",
+    "expires_at": "2026-11-18T12:45:32.412193+00:00",
     "kind": "stock",
-    "retailer": "walmart",
-    "title": "Pokemon TCG: 30th Celebration Elite Trainer Box - Walmart.com",
-    "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
+    "retailer": "bestbuy",
+    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
+    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 119.0,
+    "price": null,
     "msrp": 49.99,
-    "signal": "text",
+    "signal": "browser",
     "stores": []
   }
 ]
