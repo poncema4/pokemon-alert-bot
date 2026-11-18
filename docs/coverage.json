@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-18T02:53:19.622860+00:00",
+  "updated_at": "2026-11-18T02:55:56.016081+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,14 +13,16 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "reason": "blocked"
+          "state": "in_stock",
+          "price": 114.99,
+          "url": "https://www.walmart.com/ip/20754418655",
+          "since": "2026-11-18T02:53:53.280020+00:00"
         },
         "bestbuy": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": null,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "reason": "no_signal"
+          "since": "2026-11-18T02:53:53.280020+00:00"
         },
         "gamestop": {
           "state": "out",
@@ -105,7 +107,9 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "not_tracked"
+          "state": "out",
+          "price": 23.99,
+          "url": "https://www.walmart.com/ip/20161351456"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -278,9 +282,10 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "unreadable",
-          "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
-          "reason": "blocked"
+          "state": "in_stock",
+          "price": 104.9,
+          "url": "https://www.walmart.com/ip/15718673510",
+          "since": "2026-11-18T02:53:53.280020+00:00"
         },
         "bestbuy": {
           "state": "not_tracked"
@@ -485,6 +490,35 @@
           "price": 399.99,
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
           "since": "2026-11-16T10:22:33.695889+00:00"
+        },
+        "pokemoncenter": {
+          "state": "unreadable",
+          "reason": "Pok\u00e9mon Center blocks automated visitors"
+        }
+      }
+    },
+    {
+      "id": "auto:walmart-product",
+      "label": "Walmart Product",
+      "auto": true,
+      "msrp": null,
+      "market": null,
+      "market_updated_at": null,
+      "market_url": null,
+      "retailers": {
+        "target": {
+          "state": "not_tracked"
+        },
+        "walmart": {
+          "state": "unreadable",
+          "url": "https://www.walmart.com/ip/Pokemon-151-Ultra-Premium-Collection-Box/3606845180",
+          "reason": "blocked"
+        },
+        "bestbuy": {
+          "state": "not_tracked"
+        },
+        "gamestop": {
+          "state": "not_tracked"
         },
         "pokemoncenter": {
           "state": "unreadable",
