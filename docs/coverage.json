@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-19T08:57:32.595052+00:00",
+  "updated_at": "2026-11-19T09:01:13.116753+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -111,7 +111,7 @@
         "bestbuy": {
           "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45",
-          "reason": "blocked"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "in_stock",
