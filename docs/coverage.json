@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-19T08:04:02.289230+00:00",
+  "updated_at": "2026-11-19T08:06:48.550584+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -106,9 +106,7 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "out",
-          "price": 23.99,
-          "url": "https://www.walmart.com/ip/20161351456"
+          "state": "not_tracked"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -281,10 +279,9 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 104.89,
-          "url": "https://www.walmart.com/ip/15718673510",
-          "since": "2026-11-19T07:08:52.541582+00:00"
+          "state": "unreadable",
+          "url": "https://business.walmart.com/ip/POKEMON-SV10-DESTINED-RIVALS-D7-ELITE-TRAINER-BOX/19965460207",
+          "reason": "blocked"
         },
         "bestbuy": {
           "state": "not_tracked"
@@ -449,9 +446,10 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 567.24,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "reason": "no_signal"
+          "since": "2026-11-19T08:04:41.003609+00:00"
         },
         "gamestop": {
           "state": "in_stock",
@@ -480,9 +478,10 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 567.24,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "reason": "no_signal"
+          "since": "2026-11-19T08:04:41.003609+00:00"
         },
         "gamestop": {
           "state": "in_stock",
