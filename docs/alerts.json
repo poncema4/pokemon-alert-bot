@@ -1,22 +1,5 @@
 [
   {
-    "ts": "2026-11-20T11:40:44.620877+00:00",
-    "detected_at": "2026-11-20T11:40:44.620877+00:00",
-    "posted_at": null,
-    "expires_at": "2026-11-20T11:55:44.620877+00:00",
-    "kind": "stock",
-    "retailer": "walmart",
-    "title": "Pokemon TCG: 30th Celebration Elite Trainer Box - Walmart.com",
-    "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "price": 99.95,
-    "msrp": 49.99,
-    "signal": "text",
-    "stores": []
-  },
-  {
     "ts": "2026-11-20T11:37:51.862788+00:00",
     "detected_at": "2026-11-20T11:37:51.862788+00:00",
     "posted_at": null,
