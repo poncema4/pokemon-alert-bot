@@ -4,7 +4,7 @@
     "readable": 0,
     "blocked": 0,
     "errors": 0,
-    "last_run": "2026-11-21T11:58:09.435988+00:00",
+    "last_run": "2026-11-21T12:02:08.143989+00:00",
     "last_readable_at": "2026-10-04T15:31:14.144299+00:00",
     "blind_notified": true,
     "blind_since": "2026-10-19T22:18:54.501409+00:00"
@@ -14,25 +14,25 @@
     "readable": 0,
     "blocked": 1,
     "errors": 0,
-    "last_run": "2026-11-21T11:58:09.435988+00:00",
+    "last_run": "2026-11-21T12:02:08.143989+00:00",
     "last_readable_at": "2026-11-21T11:56:10.602212+00:00",
     "blind_since": "2026-11-21T11:57:39.435895+00:00"
   },
   "bestbuy": {
-    "checked": 0,
+    "checked": 2,
     "readable": 0,
     "blocked": 0,
-    "errors": 0,
-    "last_run": "2026-11-21T11:58:09.435988+00:00",
+    "errors": 2,
+    "last_run": "2026-11-21T12:02:08.143989+00:00",
     "last_readable_at": "2026-11-21T11:20:57.991087+00:00",
     "blind_since": "2026-11-21T11:24:35.406638+00:00"
   },
   "gamestop": {
-    "checked": 3,
-    "readable": 3,
+    "checked": 0,
+    "readable": 0,
     "blocked": 0,
     "errors": 0,
-    "last_run": "2026-11-21T11:58:09.435988+00:00",
-    "last_readable_at": "2026-11-21T11:58:09.435988+00:00"
+    "last_run": "2026-11-21T12:02:08.143989+00:00",
+    "last_readable_at": "2026-11-21T12:01:38.143894+00:00"
   }
 }
