@@ -30,7 +30,7 @@
     "online": true,
     "price": 118.76,
     "msrp": 49.99,
-    "signal": "text",
+    "signal": "structured",
     "stores": []
   }
 ]
