@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-22T21:39:42.939435+00:00",
+  "updated_at": "2026-11-22T21:41:48.564186+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,10 +13,9 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 118.75,
+          "state": "unreadable",
           "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "since": "2026-11-22T21:39:39.736866+00:00"
+          "reason": "blocked"
         },
         "bestbuy": {
           "state": "in_stock",
@@ -288,9 +287,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "out",
-          "price": 99.99,
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html"
+          "state": "unreadable",
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html",
+          "reason": "error"
         },
         "pokemoncenter": {
           "state": "unreadable",
