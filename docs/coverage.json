@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-22T21:41:48.564186+00:00",
+  "updated_at": "2026-11-22T21:44:59.639205+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -287,9 +287,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html",
-          "reason": "error"
+          "state": "out",
+          "price": 99.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-destined-rivals-elite-trainer-box/20021586.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
