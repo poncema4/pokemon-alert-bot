@@ -1,22 +1,5 @@
 [
   {
-    "ts": "2026-11-22T20:47:38.859697+00:00",
-    "detected_at": "2026-11-22T20:47:38.859697+00:00",
-    "posted_at": null,
-    "expires_at": "2026-11-22T21:02:38.859697+00:00",
-    "kind": "stock",
-    "retailer": "walmart",
-    "title": "Pokemon Trading Card Game Scarlet & Violet 10 Destined Rivals Elite Trainer Box - Walmart.com",
-    "url": "https://www.walmart.com/ip/15718673510",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "price": 104.89,
-    "msrp": null,
-    "signal": "text",
-    "stores": []
-  },
-  {
     "ts": "2026-11-22T20:45:23.327969+00:00",
     "detected_at": "2026-11-22T20:45:23.327969+00:00",
     "posted_at": null,
@@ -31,40 +14,6 @@
     "price": null,
     "msrp": null,
     "signal": "browser",
-    "stores": []
-  },
-  {
-    "ts": "2026-11-22T20:45:23.327969+00:00",
-    "detected_at": "2026-11-22T20:45:23.327969+00:00",
-    "posted_at": null,
-    "expires_at": "2026-11-22T21:00:23.327969+00:00",
-    "kind": "stock",
-    "retailer": "bestbuy",
-    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
-    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "price": null,
-    "msrp": 49.99,
-    "signal": "browser",
-    "stores": []
-  },
-  {
-    "ts": "2026-11-22T20:44:53.327747+00:00",
-    "detected_at": "2026-11-22T20:44:53.327747+00:00",
-    "posted_at": null,
-    "expires_at": "2026-11-22T20:59:53.327747+00:00",
-    "kind": "stock",
-    "retailer": "walmart",
-    "title": "Pokemon Trading Card Games Mega Evolution 5 Pitch Black Elite Trainer Box - Walmart.com",
-    "url": "https://www.walmart.com/ip/20161351456",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "price": 79.99,
-    "msrp": null,
-    "signal": "text",
     "stores": []
   }
 ]
