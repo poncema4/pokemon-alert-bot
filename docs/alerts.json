@@ -1,5 +1,22 @@
 [
   {
+    "ts": "2026-11-22T01:21:08.594783+00:00",
+    "detected_at": "2026-11-22T01:21:08.594783+00:00",
+    "posted_at": null,
+    "expires_at": "2026-11-22T01:36:08.594783+00:00",
+    "kind": "stock",
+    "retailer": "walmart",
+    "title": "Pokemon TCG: 30th Celebration Elite Trainer Box - Walmart.com",
+    "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "price": 119.46,
+    "msrp": 49.99,
+    "signal": "text",
+    "stores": []
+  },
+  {
     "ts": "2026-11-22T01:18:31.220270+00:00",
     "detected_at": "2026-11-22T01:18:31.220270+00:00",
     "posted_at": null,
@@ -48,23 +65,6 @@
     "price": 104.89,
     "msrp": null,
     "signal": "text",
-    "stores": []
-  },
-  {
-    "ts": "2026-11-22T01:16:12.777110+00:00",
-    "detected_at": "2026-11-22T01:16:12.777110+00:00",
-    "posted_at": null,
-    "expires_at": "2026-11-22T01:31:12.777110+00:00",
-    "kind": "stock",
-    "retailer": "bestbuy",
-    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Ultra Premium Collection Day Or Night (1 Ultra Premium Collection per Order) Styles May Vary - Best Buy",
-    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-    "verified": true,
-    "stock": true,
-    "online": true,
-    "price": null,
-    "msrp": null,
-    "signal": "browser",
     "stores": []
   }
 ]
