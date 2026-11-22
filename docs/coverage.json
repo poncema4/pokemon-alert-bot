@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-22T00:36:01.356644+00:00",
+  "updated_at": "2026-11-22T00:39:36.464714+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -20,7 +20,7 @@
         "bestbuy": {
           "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "reason": "no_signal"
+          "reason": "blocked"
         },
         "gamestop": {
           "state": "out",
@@ -53,9 +53,9 @@
           "reason": "error"
         },
         "gamestop": {
-          "state": "unreadable",
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/20037568.html",
-          "reason": "error"
+          "state": "out",
+          "price": 99.99,
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-delta-reign-elite-trainer-box/20037568.html"
         },
         "pokemoncenter": {
           "state": "unreadable",
