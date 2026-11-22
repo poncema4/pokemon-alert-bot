@@ -1,5 +1,22 @@
 [
   {
+    "ts": "2026-11-22T05:33:10.269454+00:00",
+    "detected_at": "2026-11-22T05:33:10.269454+00:00",
+    "posted_at": null,
+    "expires_at": "2026-11-22T05:48:10.269454+00:00",
+    "kind": "stock",
+    "retailer": "bestbuy",
+    "title": "Pok\u00e9mon Trading Card Game: Mega Evolution Pitch Black Elite Trainer Box - Best Buy",
+    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-mega-evolution-pitch-black-elite-trainer-box/JJG2TL8J45",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "price": 89.99,
+    "msrp": null,
+    "signal": "browser",
+    "stores": []
+  },
+  {
     "ts": "2026-11-22T05:30:12.445489+00:00",
     "detected_at": "2026-11-22T05:30:12.445489+00:00",
     "posted_at": null,
