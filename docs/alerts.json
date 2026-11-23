@@ -1,5 +1,22 @@
 [
   {
+    "ts": "2026-11-23T10:46:31.418928+00:00",
+    "detected_at": "2026-11-23T10:46:31.418928+00:00",
+    "posted_at": null,
+    "expires_at": "2026-11-23T11:01:31.418928+00:00",
+    "kind": "stock",
+    "retailer": "walmart",
+    "title": "Pokemon TCG 30th Celebration Elite Trainer Box ETB - Walmart.com",
+    "url": "https://www.walmart.com/ip/20754418655",
+    "verified": true,
+    "stock": true,
+    "online": true,
+    "price": 118.76,
+    "msrp": null,
+    "signal": "structured",
+    "stores": []
+  },
+  {
     "ts": "2026-11-23T10:44:34.274937+00:00",
     "detected_at": "2026-11-23T10:44:34.274937+00:00",
     "posted_at": null,
