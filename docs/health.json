@@ -1,37 +1,38 @@
 {
   "target": {
-    "checked": 0,
+    "checked": 2,
     "readable": 0,
     "blocked": 0,
-    "errors": 0,
-    "last_run": "2026-11-23T06:52:27.108641+00:00",
+    "errors": 2,
+    "last_run": "2026-11-23T06:55:41.963819+00:00",
     "last_readable_at": "2026-10-04T15:31:14.144299+00:00",
     "blind_notified": true,
     "blind_since": "2026-10-19T22:18:54.501409+00:00"
   },
   "walmart": {
-    "checked": 1,
+    "checked": 4,
     "readable": 0,
-    "blocked": 1,
+    "blocked": 4,
     "errors": 0,
-    "last_run": "2026-11-23T06:52:27.108641+00:00",
+    "last_run": "2026-11-23T06:55:41.963819+00:00",
     "last_readable_at": "2026-11-23T06:49:27.283460+00:00",
     "blind_since": "2026-11-23T06:50:57.108313+00:00"
   },
   "bestbuy": {
     "checked": 2,
-    "readable": 1,
+    "readable": 0,
     "blocked": 0,
-    "errors": 1,
-    "last_run": "2026-11-23T06:52:27.108641+00:00",
-    "last_readable_at": "2026-11-23T06:52:27.108641+00:00"
+    "errors": 2,
+    "last_run": "2026-11-23T06:55:41.963819+00:00",
+    "last_readable_at": "2026-11-23T06:52:27.108641+00:00",
+    "blind_since": "2026-11-23T06:55:41.963819+00:00"
   },
   "gamestop": {
     "checked": 0,
     "readable": 0,
     "blocked": 0,
     "errors": 0,
-    "last_run": "2026-11-23T06:52:27.108641+00:00",
-    "last_readable_at": "2026-11-23T06:51:57.108486+00:00"
+    "last_run": "2026-11-23T06:55:41.963819+00:00",
+    "last_readable_at": "2026-11-23T06:55:11.963725+00:00"
   }
 }
