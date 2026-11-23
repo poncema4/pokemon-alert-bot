@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-23T17:35:46.317018+00:00",
+  "updated_at": "2026-11-23T17:36:22.109571+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -114,10 +114,9 @@
           "reason": "no_signal"
         },
         "gamestop": {
-          "state": "in_stock",
-          "price": 89.99,
+          "state": "unreadable",
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
-          "since": "2026-11-23T17:32:04.865407+00:00"
+          "reason": "error"
         },
         "pokemoncenter": {
           "state": "unreadable",
