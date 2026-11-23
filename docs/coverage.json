@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-23T20:51:14.028410+00:00",
+  "updated_at": "2026-11-23T20:51:55.501127+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,10 +13,9 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 116.97,
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "since": "2026-11-23T20:49:45.869915+00:00"
+          "state": "out",
+          "price": 108.77,
+          "url": "https://www.walmart.com/ip/20754418655"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -147,9 +146,9 @@
           "reason": "error"
         },
         "gamestop": {
-          "state": "out",
-          "price": 84.99,
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-perfect-order-elite-trainer-box/20031957.html"
+          "state": "gone",
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-perfect-order-elite-trainer-box/20031957.html",
+          "reason": "http_410"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -175,9 +174,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "out",
-          "price": 119.99,
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html"
+          "state": "gone",
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-ascended-heroes-elite-trainer-box/437099.html",
+          "reason": "http_410"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -397,9 +396,9 @@
           "state": "not_tracked"
         },
         "gamestop": {
-          "state": "out",
-          "price": 59.99,
-          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-surging-sparks-elite-trainer-box/20015259.html"
+          "state": "gone",
+          "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-scarlet-and-violet-surging-sparks-elite-trainer-box/20015259.html",
+          "reason": "http_410"
         },
         "pokemoncenter": {
           "state": "unreadable",
