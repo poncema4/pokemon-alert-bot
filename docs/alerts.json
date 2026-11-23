@@ -1,19 +1,19 @@
 [
   {
-    "ts": "2026-11-23T17:58:03.279361+00:00",
-    "detected_at": "2026-11-23T17:58:03.279361+00:00",
+    "ts": "2026-11-23T18:13:24.681664+00:00",
+    "detected_at": "2026-11-23T18:13:24.681664+00:00",
     "posted_at": null,
-    "expires_at": "2026-11-23T18:13:03.279361+00:00",
+    "expires_at": "2026-11-23T18:28:24.681664+00:00",
     "kind": "stock",
-    "retailer": "gamestop",
-    "title": "Pokemon Trading Card Game: Pitch Black Elite Trainer Box | GameStop",
-    "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
+    "retailer": "bestbuy",
+    "title": "Pok\u00e9mon Trading Card Game: 30th Celebration Elite Trainer Box - Best Buy",
+    "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
     "verified": true,
     "stock": true,
     "online": true,
-    "price": 89.99,
-    "msrp": null,
-    "signal": "page",
+    "price": null,
+    "msrp": 49.99,
+    "signal": "browser",
     "stores": []
   }
 ]
