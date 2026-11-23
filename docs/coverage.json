@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-23T23:33:09.448247+00:00",
+  "updated_at": "2026-11-23T23:35:39.780797+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,10 +13,9 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 116.97,
+          "state": "unreadable",
           "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "since": "2026-11-23T23:33:03.189831+00:00"
+          "reason": "blocked"
         },
         "bestbuy": {
           "state": "unreadable",
@@ -114,10 +113,9 @@
           "reason": "no_signal"
         },
         "gamestop": {
-          "state": "in_stock",
-          "price": 89.99,
+          "state": "unreadable",
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-pitch-black-elite-trainer-box/445744.html",
-          "since": "2026-11-23T17:58:03.279361+00:00"
+          "reason": "error"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -452,10 +450,9 @@
           "since": "2026-11-23T23:16:56.452854+00:00"
         },
         "gamestop": {
-          "state": "in_stock",
-          "price": 399.99,
+          "state": "unreadable",
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
-          "since": "2026-11-21T22:20:56.686738+00:00"
+          "reason": "error"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -484,10 +481,9 @@
           "since": "2026-11-23T23:16:56.452854+00:00"
         },
         "gamestop": {
-          "state": "in_stock",
-          "price": 399.99,
+          "state": "unreadable",
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
-          "since": "2026-11-21T22:20:56.686738+00:00"
+          "reason": "error"
         },
         "pokemoncenter": {
           "state": "unreadable",
