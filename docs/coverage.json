@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-23T23:40:48.029076+00:00",
+  "updated_at": "2026-11-23T23:41:07.216450+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -450,10 +450,9 @@
           "since": "2026-11-23T23:16:56.452854+00:00"
         },
         "gamestop": {
-          "state": "in_stock",
-          "price": 399.99,
+          "state": "unreadable",
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
-          "since": "2026-11-23T23:39:28.024491+00:00"
+          "reason": "error"
         },
         "pokemoncenter": {
           "state": "unreadable",
@@ -482,10 +481,9 @@
           "since": "2026-11-23T23:16:56.452854+00:00"
         },
         "gamestop": {
-          "state": "in_stock",
-          "price": 399.99,
+          "state": "unreadable",
           "url": "https://www.gamestop.com/toys-games/trading-cards/products/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-styles-may-vary/450768.html",
-          "since": "2026-11-23T23:39:28.024491+00:00"
+          "reason": "error"
         },
         "pokemoncenter": {
           "state": "unreadable",
