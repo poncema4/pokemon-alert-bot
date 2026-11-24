@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-24T11:10:12.574310+00:00",
+  "updated_at": "2026-11-24T11:12:48.675324+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -14,15 +14,14 @@
         },
         "walmart": {
           "state": "in_stock",
-          "price": 114.99,
-          "url": "https://www.walmart.com/ip/20754418655",
-          "since": "2026-11-24T10:41:30.034488+00:00"
+          "price": 115.98,
+          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
+          "since": "2026-11-24T11:10:05.841140+00:00"
         },
         "bestbuy": {
-          "state": "in_stock",
-          "price": 179.0,
+          "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
-          "since": "2026-11-24T11:04:40.855891+00:00"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "out",
@@ -451,10 +450,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "in_stock",
-          "price": null,
+          "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "since": "2026-11-24T10:44:45.207324+00:00"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "in_stock",
@@ -483,10 +481,9 @@
           "state": "not_tracked"
         },
         "bestbuy": {
-          "state": "in_stock",
-          "price": null,
+          "state": "unreadable",
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "since": "2026-11-24T10:44:45.207324+00:00"
+          "reason": "no_signal"
         },
         "gamestop": {
           "state": "in_stock",
