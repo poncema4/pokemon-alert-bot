@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-24T09:13:38.428838+00:00",
+  "updated_at": "2026-11-24T09:14:11.525036+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,10 +13,9 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 115.98,
+          "state": "unreadable",
           "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "since": "2026-11-24T09:12:13.010286+00:00"
+          "reason": "blocked"
         },
         "bestbuy": {
           "state": "unreadable",
