@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-24T13:21:39.229738+00:00",
+  "updated_at": "2026-11-24T13:28:09.730875+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -14,9 +14,9 @@
         },
         "walmart": {
           "state": "in_stock",
-          "price": 115.98,
-          "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "since": "2026-11-24T13:13:32.831758+00:00"
+          "price": 118.74,
+          "url": "https://www.walmart.com/ip/20754418655",
+          "since": "2026-11-24T13:11:15.462185+00:00"
         },
         "bestbuy": {
           "state": "in_stock",
@@ -453,9 +453,10 @@
           "reason": "blocked"
         },
         "bestbuy": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 568.53,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "reason": "no_signal"
+          "since": "2026-11-24T13:25:53.507448+00:00"
         },
         "gamestop": {
           "state": "in_stock",
@@ -486,9 +487,10 @@
           "reason": "blocked"
         },
         "bestbuy": {
-          "state": "unreadable",
+          "state": "in_stock",
+          "price": 568.53,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-ultra-premium-collection-day-or-night-1-ultra-premium-collection-per-order-styles-may-vary/JJG2TL8254",
-          "reason": "no_signal"
+          "since": "2026-11-24T13:25:53.507448+00:00"
         },
         "gamestop": {
           "state": "in_stock",
