@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-24T23:39:35.568410+00:00",
+  "updated_at": "2026-11-24T23:42:04.654497+00:00",
   "rows": [
     {
       "id": "30th-celebration",
@@ -13,14 +13,13 @@
           "state": "not_tracked"
         },
         "walmart": {
-          "state": "in_stock",
-          "price": 108.77,
+          "state": "unreadable",
           "url": "https://www.walmart.com/ip/Pokemon-TCG-30th-Celebration-Elite-Trainer-Box/20640569221",
-          "since": "2026-11-24T23:39:32.222495+00:00"
+          "reason": "blocked"
         },
         "bestbuy": {
           "state": "in_stock",
-          "price": null,
+          "price": 149.95,
           "url": "https://www.bestbuy.com/product/pokemon-trading-card-game-30th-celebration-elite-trainer-box/JJG2TL8XCJ",
           "since": "2026-11-24T23:25:53.863540+00:00"
         },
